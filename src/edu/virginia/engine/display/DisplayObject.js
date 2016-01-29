@@ -9,6 +9,19 @@ class DisplayObject{
 	constructor(id, filename){
 		this.id = id;
 		this.loaded = false;
+		this.visible = true;
+		this.position = {
+			x: 0.0,
+			y: 0.0
+		};
+		this.pivotPoint = {
+			x: 0.0,
+			y: 0.0
+		};
+		this.scaleX = 1.0;
+		this.scaleY = 1.0;
+		this.rotation = 0.0; // Radians
+		this.alpha = 1.0;
 		this.loadImage(filename);
 	}
 
@@ -71,5 +84,31 @@ class DisplayObject{
 
 	getUnscaledHeight(){return this.displayImage.height;}
 	getUnscaledWidth(){return this.displayImage.width;}
-}
 
+	/**
+	 * Getters and setters
+	 */
+	getLoaded () { return this.loaded; }
+	setLoaded (loaded) { this.loaded = loaded; }
+
+	getVisible () { return this.visible; }
+	setVisible (visible) { this.visible = visible; }
+
+	getPosition () { return this.postion; }
+	setPosition (position) { this.postion = position; }
+
+	getPivotPoint () { return this.pivotPoint; }
+	setPivotPoint (pivotPoint) { this.pivotPoint = pivotPoint; }
+
+	getScaleX () { return this.scaleX; }
+	setScaleX (scaleX) { this.scaleX = scaleX; }
+
+	getScaleY () { return this.scaleY; }
+	setScaleY (scaleY) { this.scaleY = scaleY; }
+
+	getRotation () { return this.rotation; }
+	setRotation (rotation) { this.rotation = rotation; }
+
+	getAlpha () { return this.alpha; }
+	setAlpha (alpha) { this.alpha = alpha; }
+}
