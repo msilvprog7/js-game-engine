@@ -29,12 +29,14 @@ class DisplayObject{
 	 * Loads the image, sets a flag called 'loaded' when the image is ready to be drawn
 	 */
 	loadImage(filename){
-		var t = this;
-		this.displayImage = new Image();
-  		this.displayImage.onload = function(){
-  			t.loaded = true;
-  		};
-  		this.displayImage.src = 'resources/' + filename;
+		if(filename) {
+			var t = this;
+			this.displayImage = new Image();
+  			this.displayImage.onload = function(){
+  				t.loaded = true;
+  			};
+  			this.displayImage.src = 'resources/' + filename;
+		}
 	}
 
 	/**
@@ -48,9 +50,11 @@ class DisplayObject{
 	 * Draws this image to the screen
 	 */
 	draw(g){
-		if(this.displayImage){
+		if(this.displayImage && this.visible){
 			this.applyTransformations(g);
-			if(this.loaded) g.drawImage(this.displayImage,0,0);
+			if(this.loaded) {
+				g.drawImage(this.displayImage,0,0);
+			}
 			this.reverseTransformations(g);
 		}
 	}
@@ -60,7 +64,21 @@ class DisplayObject{
 	 * object
 	 * */
 	applyTransformations(g) {
-	
+		g.save();
+		g.translate(this.position.x + this.pivotPoint.x, this.position.y + this.pivotPoint.y);
+		g.rotate(this.rotation);
+		g.translate(-this.pivotPoint.x, -this.pivotPoint.y);
+
+		// Adjust negatives to flip in place
+		if (this.scaleX < 0) {
+			g.translate(Math.abs(this.scaleX) * this.displayImage.width, 0);
+		}
+		if (this.scaleY < 0) {
+			g.translate(0, Math.abs(this.scaleY) * this.displayImage.height);
+		}
+		g.scale(this.scaleX, this.scaleY);
+
+		g.globalAlpha = this.alpha;
 	}
 
 	/**
@@ -68,7 +86,7 @@ class DisplayObject{
 	 * object
 	 * */
 	reverseTransformations(g) {
-
+		g.restore();
 	}
 
 	/**
@@ -94,17 +112,23 @@ class DisplayObject{
 	getVisible () { return this.visible; }
 	setVisible (visible) { this.visible = visible; }
 
-	getPosition () { return this.postion; }
-	setPosition (position) { this.postion = position; }
+	getPosition () { return {x: this.position.x, y: this.position.y}; }
+	setPosition (position) { this.position.x = position.x; this.position.y = position.y; }
 
 	getPivotPoint () { return this.pivotPoint; }
-	setPivotPoint (pivotPoint) { this.pivotPoint = pivotPoint; }
+	setPivotPoint (pivotPoint) { this.pivotPoint.x = pivotPoint.x; this.pivotPoint.y = pivotPoint.y; }
 
 	getScaleX () { return this.scaleX; }
-	setScaleX (scaleX) { this.scaleX = scaleX; }
+	setScaleX (scaleX) {
+		this.pivotPoint.x *= Math.abs(scaleX / this.scaleX);
+		this.scaleX = scaleX; 
+	}
 
 	getScaleY () { return this.scaleY; }
-	setScaleY (scaleY) { this.scaleY = scaleY; }
+	setScaleY (scaleY) {
+		this.pivotPoint.y *= Math.abs(scaleY / this.scaleY);
+		this.scaleY = scaleY; 
+	}
 
 	getRotation () { return this.rotation; }
 	setRotation (rotation) { this.rotation = rotation; }
