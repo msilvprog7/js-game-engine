@@ -34,7 +34,7 @@ class LabTwoGame extends Game{
 		this.mario.update(pressedKeys);
 		this.mario2.update(pressedKeys);
 
-		this.mario.setRotation(this.mario.getRotation() + Math.PI / 64);
+		this.mario.setRotation(this.mario.getRotation() + Math.PI / 32);
 		this.mario2.setRotation(this.mario2.getRotation() + Math.PI / 64);
 
 		// V for invisible
