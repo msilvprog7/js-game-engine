@@ -12,6 +12,7 @@ class LabThreeGame extends Game{
 		this.mario.addAnimation("run", {images: ["Mario_Run_0.png", "Mario_Run_1.png", "Mario_Idle.png", "Mario_Run_1.png"], loop: true});
 		this.mario.addAnimation("jump", {images: ["Mario_Jump_0.png", "Mario_Jump_1.png"], loop: false});
 		this.mario.setPosition({x: 100, y: 100});
+		this.mario.setPivotPoint({x: 64, y: 64});
 		this.mario.setSpeed(4.0);
 
 		// Child mario
@@ -38,7 +39,9 @@ class LabThreeGame extends Game{
 
 		// Right arrow key
 		if (pressedKeys.contains(39)) {
-			if(this.mario.getScaleX() < 0) { this.mario.setScaleX(-1 * this.mario.getScaleX()); }		
+			if(this.mario.getScaleX() < 0) { 
+				this.mario.setScaleX(-1 * this.mario.getScaleX()); 
+			}
 			this.mario.setPosition({x: this.mario.getPosition().x + 8 / (this.mario.getSpeed()), y: this.mario.getPosition().y});
 			this.mario.setCurrentAnimation("run");
 			this.babyMario.setRotation(this.babyMario.getRotation() + Math.PI / 64);
@@ -48,7 +51,9 @@ class LabThreeGame extends Game{
 		// Left arrow key
 		var pressedLeft = false;
 		if (pressedKeys.contains(37)) {
-			if(this.mario.getScaleX() >= 0) { this.mario.setScaleX(-1 * this.mario.getScaleX()); }			
+			if(this.mario.getScaleX() >= 0) { 
+				this.mario.setScaleX(-1 * this.mario.getScaleX()); 
+			}			
 			this.mario.setPosition({x: this.mario.getPosition().x - 8 / (this.mario.getSpeed()), y: this.mario.getPosition().y});
 			this.mario.setCurrentAnimation("run");
 			this.babyMario.setRotation(this.babyMario.getRotation() - Math.PI / 64);
@@ -63,17 +68,24 @@ class LabThreeGame extends Game{
 		}
 
 		// 1 key
+		var xModifier = 1.0;
+		var yModifier = 1.0;
 		if (pressedKeys.contains(49)) {
-			this.mario.setScaleX(this.mario.getScaleX() + 0.01);
-			this.mario.setScaleY(this.mario.getScaleY() + 0.01 * this.mario.getAspectRatio());
+			xModifier = (this.mario.getScaleX() < 0) ? -1 : 1;
+			yModifier = (this.mario.getScaleY() < 0) ? -1 : 1;
+			this.mario.setScaleX(this.mario.getScaleX() + xModifier * 0.01);
+			this.mario.setScaleY(this.mario.getScaleY() + yModifier * 0.01 * this.mario.getAspectRatio());
 		}
 
 		// 2 key
 		if (pressedKeys.contains(50)) {
-			this.mario.setScaleX(this.mario.getScaleX() - 0.01);
-			this.mario.setScaleY(this.mario.getScaleY() - 0.01 * this.mario.getAspectRatio());
+			xModifier = (this.mario.getScaleX() < 0) ? -1 : 1;
+			yModifier = (this.mario.getScaleY() < 0) ? -1 : 1;
+			this.mario.setScaleX(this.mario.getScaleX() - xModifier * 0.01);
+			this.mario.setScaleY(this.mario.getScaleY() - yModifier * 0.01 * this.mario.getAspectRatio());
 		}
 
+		// 3 key - rotate
 		if(pressedKeys.contains(51)) {
 			this.mario.setRotation(this.mario.getRotation() + Math.PI/64);
 		}
