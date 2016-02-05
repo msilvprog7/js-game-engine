@@ -70,7 +70,7 @@ class Animation {
 
 	setReverse(reverse) {
 		this.reverse = reverse;
-		this.currentFrame = (this.reverse) ? this.imageList.length-1 : 0;
+		this.currentFrame = (this.reverse) ? this.frames.length-1 : 0;
 	}
 
 	getReverse() {

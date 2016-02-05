@@ -23,6 +23,7 @@ class DisplayObject{
 		this.rotation = 0.0; // Radians
 		this.alpha = 1.0;
 		this.loadImage(filename);
+		this.parent = undefined;
 	}
 
 	/**
@@ -130,9 +131,37 @@ class DisplayObject{
 		this.scaleY = scaleY; 
 	}
 
+	setScale (scale) {
+		this.setScaleX(scale);
+		this.setScaleY(scale);
+	}
+
 	getRotation () { return this.rotation; }
 	setRotation (rotation) { this.rotation = rotation; }
 
 	getAlpha () { return this.alpha; }
 	setAlpha (alpha) { this.alpha = alpha; }
+
+	getParent () { return this.parent; }
+	setParent (parent) { this.parent = parent; }
+
+	getAspectRatio () {
+		return this.getUnscaledWidth() / this.getUnscaledHeight();
+	}
+
+	getWidth () {
+		return (this.displayImage !== undefined) ? this.displayImage.width * this.scaleX : -1;
+	}
+
+	getHeight() {
+		return (this.displayImage !== undefined) ? this.displayImage.height * this.scaleY : -1;
+	}
+
+	getUnscaledWidth () {
+		return (this.displayImage !== undefined) ? this.displayImage.width : -1;
+	}
+
+	getUnscaledHeight() {
+		return (this.displayImage !== undefined) ? this.displayImage.height : -1;
+	}
 }

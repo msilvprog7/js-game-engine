@@ -3,9 +3,10 @@
 /**
  * Main class. Instantiate or extend Game to create a new game of your own
  */
-class Game{
+class Game extends DisplayObjectContainer{
 	
 	constructor(gameId, width, height, canvas){
+		super(gameId, undefined);
 		Game.instance = this;
 
 		this.gameId = gameId;
@@ -25,7 +26,7 @@ class Game{
 	static getInstance(){ return Game.instance; }
 
 	update(pressedKeys){}
-	draw(g){}
+	draw(g){ super.draw(g); }
 
 	nextFrame(){
 		game.update(this.pressedKeys);

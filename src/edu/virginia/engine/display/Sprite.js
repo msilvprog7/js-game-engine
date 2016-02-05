@@ -4,7 +4,7 @@
  * A very basic Sprite. For now, does not do anything.
  * 
  * */
-class Sprite extends DisplayObject{
+class Sprite extends DisplayObjectContainer{
 	
 	constructor(id, filename){
 		super(id, filename);
@@ -14,7 +14,7 @@ class Sprite extends DisplayObject{
 	 * Invoked every frame, manually for now, but later automatically if this DO is in DisplayTree
 	 */
 	update(){
-		
+		super.update();
 	}
 
 	/**
