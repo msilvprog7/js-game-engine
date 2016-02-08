@@ -33,10 +33,11 @@ class DisplayObjectContainer extends DisplayObject{
 
 	addChild (child, index) {
 		if(index === undefined) { 
-			this.children.push(child); 
+			this.children.push(child);
 		} else {
 			this.children.splice(index, 0, child);
 		}
+		child.setParent(this);
 	}
 
 	removeChild (child) {
