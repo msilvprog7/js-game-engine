@@ -34,7 +34,7 @@ class LabThreeGame extends Game{
 		// P for pause animation
 		this.mario.setPaused(pressedKeys.contains(80));
 
-		// V for invisible mario (not baby mario)
+		// V for invisible mario
 		this.mario.setVisible(!pressedKeys.contains(86));
 
 		// Right arrow key
