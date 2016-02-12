@@ -4,9 +4,10 @@
  * A very basic display object for a javascript based gaming engine
  * 
  * */
-class DisplayObject{
+class DisplayObject extends EventDispatcher{
 	
 	constructor(id, filename){
+		super();
 		this.id = id;
 		this.loaded = false;
 		this.visible = true;
@@ -164,4 +165,5 @@ class DisplayObject{
 	getUnscaledHeight() {
 		return (this.displayImage !== undefined) ? this.displayImage.height : -1;
 	}
+	
 }
