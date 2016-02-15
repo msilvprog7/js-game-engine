@@ -33,7 +33,7 @@ class LabFourGame extends Game{
 		// Add event
 		this.COIN_PICKED_UP = "picked-up-event";
 		var that = this;
-		this.coin.addEventListener(this.COIN_PICKED_UP, this.questManager, function () { 
+		this.coin.addEventListener(this.COIN_PICKED_UP, this.questManager, function () {
 			that.coin.setVisible(false);
 			that.questManager.completeQuest(that.coinCollectQuest);
 		});
