@@ -17,6 +17,9 @@ class DisplayObjectContainer extends DisplayObject{
 		if(this.visible){
 			if(this.loaded && this.displayImage) {
 				g.drawImage(this.displayImage,0,0);
+
+				// Test drawing hitbox
+				// this.drawHitbox(g);
 			}
 
 			this.children.forEach(function (child) {
@@ -25,6 +28,9 @@ class DisplayObjectContainer extends DisplayObject{
 		}
 
 		this.reverseTransformations(g);
+
+		// Test drawing transformed hitbox
+		this.drawTransformedHitbox(g);
 	}
 
 	update () {

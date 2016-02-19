@@ -1,23 +1,34 @@
 "use strict";
 
 class Matrix{
-	constructor(2dArray) {
-		this.matrix = 2dArray;
-		this.n = 2dArray.length;
-		this.m = 2dArray[0].length;
+	constructor(twoDimArray) {
+		this.matrix = twoDimArray;
+		this.n = twoDimArray.length;
+		this.m = twoDimArray[0].length;
 	}
 
 	multiply(otherMatrix) {
-		var m1 = this.matrix, m2 = otherMatrix.matrix;
-		if(m1.n !== m2.m) { return; }
-		var result = new Array(m1.n);
+		var matrix1 = this.matrix,
+			n1 = this.n,
+			m1 = this.m,
+			matrix2 = otherMatrix.matrix,
+			n2 = otherMatrix.n,
+			m2 = otherMatrix.m;
+
+		if(m1 !== n2) {
+			console.error("You can't multiply a " + n1 + "x" + m1 + " matrix with a " + n2 + "x" + m2 + " matrix...");
+			return;
+		}
+
+		var result = new Array(n1);
 		
-		for (var r = 0; r < m1.n; r++) {
-			result[r] = new Array(m2.m);
-			for (var c = 0; c < m2.m; c++) {
+		for (var r = 0; r < n1; r++) {
+			result[r] = new Array(m2);
+
+			for (var c = 0; c < m2; c++) {
 				result[r][c] = 0;
-				for(var i = 0; i < m1.m; i++) {
-					result[r][c] += m1[r][i]*m2[i][c];
+				for(var i = 0; i < m1; i++) {
+					result[r][c] += matrix1[r][i] * matrix2[i][c];
 				}
 			}
 		}
@@ -43,7 +54,7 @@ class Point{
 				[this.x],
 				[this.y],
 				[1.0]
-			];)
+			]);
 	}
 }
 
@@ -70,9 +81,12 @@ class DisplayObject extends EventDispatcher{
 		this.scaleY = 1.0;
 		this.rotation = 0.0; // Radians
 		this.alpha = 1.0;
-		this.hitbox = [];
 
-		// matrices
+		// hitboxes
+		this.hitbox = [];
+		this.transformedHitbox = [];
+
+		// hitboxes for matrices
 		this.positionMatrix = new Matrix([
 				[1.0, 0.0, this.position.x],
 				[0.0, 1.0, this.position.y],
@@ -103,11 +117,8 @@ class DisplayObject extends EventDispatcher{
 			this.displayImage = new Image();
   			this.displayImage.onload = function(){
   				t.loaded = true;
-  				// Set default hitbox
-  				t.hitbox = [new Point(0, 0), 
-  					new Point(t.displayImage.width, 0), 
-  					new Point(t.displayImage.width, t.displayImage.height), 
-  					new Point(0, t.displayImage.height)];
+  				// Set default hitbox for single images
+  				t.setHitBoxFromImage(t.displayImage);
   			};
   			this.displayImage.src = 'resources/' + filename;
 		}
@@ -128,9 +139,53 @@ class DisplayObject extends EventDispatcher{
 			this.applyTransformations(g);
 			if(this.loaded) {
 				g.drawImage(this.displayImage,0,0);
+
+				// Test drawing hitbox
+				// this.drawHitbox(g);
 			}
 			this.reverseTransformations(g);
+
+			// Test drawing transformed hitbox
+			this.drawTransformedHitbox(g);
 		}
+	}
+
+	/**
+	  * Test to draw the hit box
+	  */
+	drawHitbox(g) {
+		if (this.hitbox.length <= 0) {
+			return;
+		}
+
+		g.save();
+
+		g.beginPath();
+		g.moveTo(this.hitbox[0].x, this.hitbox[0].y);
+		this.hitbox.slice(1).forEach(point => g.lineTo(point.x, point.y));
+		g.lineTo(this.hitbox[0].x, this.hitbox[0].y);
+		g.stroke();
+
+		g.restore();
+	}
+
+	/**
+	  * Test to draw the transformed hit box
+	  */
+	drawTransformedHitbox(g) {
+		if (this.transformedHitbox.length <= 0) {
+			return;
+		}
+
+		g.save();
+
+		g.beginPath();
+		g.moveTo(this.transformedHitbox[0].x, this.transformedHitbox[0].y);
+		this.transformedHitbox.slice(1).forEach(point => g.lineTo(point.x, point.y));
+		g.lineTo(this.transformedHitbox[0].x, this.transformedHitbox[0].y);
+		g.stroke();
+
+		g.restore();
 	}
 
 	/**
@@ -193,7 +248,7 @@ class DisplayObject extends EventDispatcher{
 		this.computePositionMatrix();
 	}
 
-	getPivotPoint () { return this.pivotPoint; }
+	getPivotPoint () { return {x: this.pivotPoint.x, y: this.pivotPoint.y}; }
 	setPivotPoint (pivotPoint) { this.pivotPoint.x = pivotPoint.x; this.pivotPoint.y = pivotPoint.y; }
 
 	getScaleX () { return this.scaleX; }
@@ -276,7 +331,12 @@ class DisplayObject extends EventDispatcher{
 	}
 
 	computeTransformMatrix() {
+		// Compute transformation matrix
 		this.transformMatrix = this.positionMatrix.multiply(this.rotationMatrix.multiply(this.scaleMatrix));
+
+		// Update points in transformed hit box
+		this.transformedHitbox = this.hitbox.map(point => this.transformPointWithMatrix(point));
+		console.log(this.transformedHitbox);
 	}
 
 	transformPointWithMatrix(point) {
@@ -287,12 +347,20 @@ class DisplayObject extends EventDispatcher{
 		this.hitbox = pointList;
 	}
 
+	setHitBoxFromImage(image) {
+		this.hitbox = [new Point(0, 0), 
+			new Point(image.width, 0), 
+			new Point(image.width, image.height), 
+			new Point(0, image.height)];
+		this.transformedHitbox = this.hitbox.map(point => this.transformPointWithMatrix(point));
+	}
+
 	getHitBox() {
 		return this.hitbox;
 	}
 
 	getTransformedHitBox() {
-
+		return this.transformedHitBox;
 	}
 
 	collidesWith(otherDO) {

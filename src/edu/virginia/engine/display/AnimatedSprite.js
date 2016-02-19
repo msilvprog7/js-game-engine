@@ -97,8 +97,12 @@ class AnimatedSprite extends Sprite{
 	
 	constructor(id, filename){
 		super(id, undefined);
+		var that = this;
 		this.animations = {
-			'idle': new Animation([filename], true, x => this.setLoaded(true))
+			'idle': new Animation([filename], true, function () {
+				that.setLoaded(true);
+				that.setHitBoxFromImage(that.animations["idle"].frames[0]);
+			})
 		};
 		this.setCurrentAnimation('idle');
 		this.speed = 1.0; // ticks per frame
