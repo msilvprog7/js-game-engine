@@ -29,6 +29,7 @@ class DisplayObjectContainer extends DisplayObject{
 
 	update () {
 		super.update();
+		this.children.forEach(c => c.update());
 	}
 
 	addChild (child, index) {

@@ -1,5 +1,52 @@
 "use strict";
 
+class Matrix{
+	constructor(2dArray) {
+		this.matrix = 2dArray;
+		this.n = 2dArray.length;
+		this.m = 2dArray[0].length;
+	}
+
+	multiply(otherMatrix) {
+		var m1 = this.matrix, m2 = otherMatrix.matrix;
+		if(m1.n !== m2.m) { return; }
+		var result = new Array(m1.n);
+		
+		for (var r = 0; r < m1.n; r++) {
+			result[r] = new Array(m2.m);
+			for (var c = 0; c < m2.m; c++) {
+				result[r][c] = 0;
+				for(var i = 0; i < m1.m; i++) {
+					result[r][c] += m1[r][i]*m2[i][c];
+				}
+			}
+		}
+		return new Matrix(result);
+	}
+
+	getPoint() {
+		if (this.n !== 3 || this.m !== 1) {
+			return undefined;
+		}
+		return new Point(this.matrix[0][0], this.matrix[1][0]);
+	}
+}
+
+class Point{
+	constructor(x, y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	getMatrix() {
+		return new Matrix([
+				[this.x],
+				[this.y],
+				[1.0]
+			];)
+	}
+}
+
 /**
  * A very basic display object for a javascript based gaming engine
  * 
@@ -23,6 +70,26 @@ class DisplayObject extends EventDispatcher{
 		this.scaleY = 1.0;
 		this.rotation = 0.0; // Radians
 		this.alpha = 1.0;
+		this.hitbox = [];
+
+		// matrices
+		this.positionMatrix = new Matrix([
+				[1.0, 0.0, this.position.x],
+				[0.0, 1.0, this.position.y],
+				[0.0, 0.0, 1.0]
+			]);
+		this.rotationMatrix = new Matrix([
+				[Math.cos(this.rotation), -Math.sin(this.rotation), 0.0],
+				[Math.sin(this.rotation), Math.cos(this.rotation), 0.0],
+				[0.0, 0.0, 1.0]
+			]);
+		this.scaleMatrix = new Matrix([
+				[this.scaleX, 0.0, 0.0],
+				[0.0, this.scaleY, 0.0],
+				[0.0, 0.0, 1.0]
+			]);
+		this.computeTransformMatrix();
+
 		this.loadImage(filename);
 		this.parent = undefined;
 	}
@@ -36,6 +103,11 @@ class DisplayObject extends EventDispatcher{
 			this.displayImage = new Image();
   			this.displayImage.onload = function(){
   				t.loaded = true;
+  				// Set default hitbox
+  				t.hitbox = [new Point(0, 0), 
+  					new Point(t.displayImage.width, 0), 
+  					new Point(t.displayImage.width, t.displayImage.height), 
+  					new Point(0, t.displayImage.height)];
   			};
   			this.displayImage.src = 'resources/' + filename;
 		}
@@ -115,7 +187,11 @@ class DisplayObject extends EventDispatcher{
 	setVisible (visible) { this.visible = visible; }
 
 	getPosition () { return {x: this.position.x, y: this.position.y}; }
-	setPosition (position) { this.position.x = position.x; this.position.y = position.y; }
+	setPosition (position) { 
+		this.position.x = position.x; 
+		this.position.y = position.y;
+		this.computePositionMatrix();
+	}
 
 	getPivotPoint () { return this.pivotPoint; }
 	setPivotPoint (pivotPoint) { this.pivotPoint.x = pivotPoint.x; this.pivotPoint.y = pivotPoint.y; }
@@ -124,21 +200,27 @@ class DisplayObject extends EventDispatcher{
 	setScaleX (scaleX) {
 		this.pivotPoint.x *= Math.abs(scaleX / this.scaleX);
 		this.scaleX = scaleX; 
+		this.computeScaleMatrix();
 	}
 
 	getScaleY () { return this.scaleY; }
 	setScaleY (scaleY) {
 		this.pivotPoint.y *= Math.abs(scaleY / this.scaleY);
-		this.scaleY = scaleY; 
+		this.scaleY = scaleY;
+		this.computeScaleMatrix();
 	}
 
 	setScale (scale) {
 		this.setScaleX(scale);
 		this.setScaleY(scale);
+		this.computeScaleMatrix();
 	}
 
 	getRotation () { return this.rotation; }
-	setRotation (rotation) { this.rotation = rotation; }
+	setRotation (rotation) { 
+		this.rotation = rotation;
+		this.computeRotationMatrix();
+	}
 
 	getAlpha () { return this.alpha; }
 	setAlpha (alpha) { this.alpha = alpha; }
@@ -164,6 +246,57 @@ class DisplayObject extends EventDispatcher{
 
 	getUnscaledHeight() {
 		return (this.displayImage !== undefined) ? this.displayImage.height : -1;
+	}
+
+	computePositionMatrix() {
+		this.positionMatrix = new Matrix([
+				[1.0, 0.0, this.position.x],
+				[0.0, 1.0, this.position.y],
+				[0.0, 0.0, 1.0]
+			]);
+		this.computeTransformMatrix();
+	}
+
+	computeScaleMatrix() {
+		this.scaleMatrix = new Matrix([
+				[this.scaleX, 0.0, 0.0],
+				[0.0, this.scaleY, 0.0],
+				[0.0, 0.0, 1.0]
+			]);
+		this.computeTransformMatrix();
+	}
+
+	computeRotationMatrix() {
+		this.rotationMatrix = new Matrix([
+				[Math.cos(this.rotation), -Math.sin(this.rotation), 0.0],
+				[Math.sin(this.rotation), Math.cos(this.rotation), 0.0],
+				[0.0, 0.0, 1.0]
+			]);
+		this.computeTransformMatrix();
+	}
+
+	computeTransformMatrix() {
+		this.transformMatrix = this.positionMatrix.multiply(this.rotationMatrix.multiply(this.scaleMatrix));
+	}
+
+	transformPointWithMatrix(point) {
+		return this.transformMatrix.multiply(point.getMatrix()).getPoint();
+	}
+
+	setHitBox(pointList) {
+		this.hitbox = pointList;
+	}
+
+	getHitBox() {
+		return this.hitbox;
+	}
+
+	getTransformedHitBox() {
+
+	}
+
+	collidesWith(otherDO) {
+
 	}
 	
 }
