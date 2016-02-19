@@ -87,14 +87,24 @@ class DisplayObject extends EventDispatcher{
 		this.transformedHitbox = [];
 
 		// hitboxes for matrices
-		this.positionMatrix = new Matrix([
-				[1.0, 0.0, this.position.x],
-				[0.0, 1.0, this.position.y],
+		this.preRotationPositionMatrix = new Matrix([
+				[1.0, 0.0, this.position.x + this.pivotPoint.x],
+				[0.0, 1.0, this.position.y + this.pivotPoint.y],
+				[0.0, 0.0, 1.0]
+			]);
+		this.postRotationPositionMatrix = new Matrix([
+				[1.0, 0.0, -this.pivotPoint.x],
+				[0.0, 1.0, -this.pivotPoint.y],
 				[0.0, 0.0, 1.0]
 			]);
 		this.rotationMatrix = new Matrix([
 				[Math.cos(this.rotation), -Math.sin(this.rotation), 0.0],
 				[Math.sin(this.rotation), Math.cos(this.rotation), 0.0],
+				[0.0, 0.0, 1.0]
+			]);
+		this.preScaleTranslationMatrix = new Matrix([
+				[1.0, 0.0, 0.0],
+				[0.0, 1.0, 0.0],
 				[0.0, 0.0, 1.0]
 			]);
 		this.scaleMatrix = new Matrix([
@@ -249,12 +259,16 @@ class DisplayObject extends EventDispatcher{
 	}
 
 	getPivotPoint () { return {x: this.pivotPoint.x, y: this.pivotPoint.y}; }
-	setPivotPoint (pivotPoint) { this.pivotPoint.x = pivotPoint.x; this.pivotPoint.y = pivotPoint.y; }
+	setPivotPoint (pivotPoint) { 
+		this.pivotPoint.x = pivotPoint.x; 
+		this.pivotPoint.y = pivotPoint.y; 
+		this.computePivotPointMatrix();
+	}
 
 	getScaleX () { return this.scaleX; }
 	setScaleX (scaleX) {
 		this.pivotPoint.x *= Math.abs(scaleX / this.scaleX);
-		this.scaleX = scaleX; 
+		this.scaleX = scaleX;
 		this.computeScaleMatrix();
 	}
 
@@ -303,16 +317,39 @@ class DisplayObject extends EventDispatcher{
 		return (this.displayImage !== undefined) ? this.displayImage.height : -1;
 	}
 
+	computePivotPointMatrix() {
+		this.preRotationPositionMatrix = new Matrix([
+				[1.0, 0.0, this.position.x + this.pivotPoint.x],
+				[0.0, 1.0, this.position.y + this.pivotPoint.y],
+				[0.0, 0.0, 1.0]
+			]);
+		this.postRotationPositionMatrix = new Matrix([
+				[1.0, 0.0, -this.pivotPoint.x],
+				[0.0, 1.0, -this.pivotPoint.y],
+				[0.0, 0.0, 1.0]
+			]);
+		this.computeTransformMatrix();
+	}
+
 	computePositionMatrix() {
-		this.positionMatrix = new Matrix([
-				[1.0, 0.0, this.position.x],
-				[0.0, 1.0, this.position.y],
+		this.preRotationPositionMatrix = new Matrix([
+				[1.0, 0.0, this.position.x + this.pivotPoint.x],
+				[0.0, 1.0, this.position.y + this.pivotPoint.y],
 				[0.0, 0.0, 1.0]
 			]);
 		this.computeTransformMatrix();
 	}
 
 	computeScaleMatrix() {
+		// Translate for in-place flip
+		var additionalFlipX = (this.scaleX < 0) ? Math.abs(this.scaleX) * this.displayImage.width : 0;
+		var additionalFlipY = (this.scaleY < 0) ? Math.abs(this.scaleY) * this.displayImage.height : 0;
+
+		this.preScaleTranslationMatrix = new Matrix([
+				[1.0, 0.0, additionalFlipX],
+				[0.0, 1.0, additionalFlipY],
+				[0.0, 0.0, 1.0]
+			]);
 		this.scaleMatrix = new Matrix([
 				[this.scaleX, 0.0, 0.0],
 				[0.0, this.scaleY, 0.0],
@@ -332,11 +369,11 @@ class DisplayObject extends EventDispatcher{
 
 	computeTransformMatrix() {
 		// Compute transformation matrix
-		this.transformMatrix = this.positionMatrix.multiply(this.rotationMatrix.multiply(this.scaleMatrix));
+		this.transformMatrix = this.preRotationPositionMatrix.multiply(this.rotationMatrix).multiply(this.postRotationPositionMatrix).multiply(
+			this.preScaleTranslationMatrix).multiply(this.scaleMatrix);
 
 		// Update points in transformed hit box
 		this.transformedHitbox = this.hitbox.map(point => this.transformPointWithMatrix(point));
-		console.log(this.transformedHitbox);
 	}
 
 	transformPointWithMatrix(point) {
