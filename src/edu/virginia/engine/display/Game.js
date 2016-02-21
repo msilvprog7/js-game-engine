@@ -25,7 +25,7 @@ class Game extends DisplayObjectContainer{
 
 	static getInstance(){ return Game.instance; }
 
-	update(pressedKeys){}
+	update(pressedKeys){ super.update(pressedKeys); }
 	draw(g){ super.draw(g); }
 
 	nextFrame(){
