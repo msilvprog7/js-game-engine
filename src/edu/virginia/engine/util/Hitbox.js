@@ -6,7 +6,23 @@ class Hitbox {
 		this.hitbox = [];
 		this.parent = parent;
 		this.update();
+		this.collidingWith = [];
 	} 
+
+	isCollidingWith(id) {
+		return this.collidingWith.some(x => x === id);
+	}
+	addCollidingWith(id) {
+		if(this.collidingWith.indexOf(id) < 0 ) { 
+			this.collidingWith.push(id);
+		}
+	}
+	removeCollidingWith(id) {
+		var index = this.collidingWith.indexOf(id);
+		if(index !== -1) {
+			this.collidingWith.splice(index, 1);
+		}
+	}
 
 	getHitbox() {
 		return this.hitbox;

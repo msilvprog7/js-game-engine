@@ -32,8 +32,11 @@ class LabFiveGame extends Game{
 		SM.loadMusic('background', 'schwifty.mp3', true);
 		SM.playMusic('background');
 
-		this.mario.addEventListener(EVENTS.COLLISION, this, function() {			
-			console.log("COLLISION");
+		this.mario.addEventListener(EVENTS.COLLISION, this, function(id) {			
+			console.log("COLLISION WITH " + id.toUpperCase());
+		});
+		this.mario.addEventListener(EVENTS.END_COLLISION, this, function(id) {			
+			console.log("END COLLISION WITH " + id.toUpperCase());
 		});
 	}
 

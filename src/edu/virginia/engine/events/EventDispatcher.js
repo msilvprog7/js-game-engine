@@ -53,7 +53,7 @@ class EventDispatcher{
 		}
 
 		// Call callbacks
-		this.events[eventType].forEach(e => e.callback(data));
+		this.events[eventType].forEach(e => e.callback(...data));
 	}
 
 }

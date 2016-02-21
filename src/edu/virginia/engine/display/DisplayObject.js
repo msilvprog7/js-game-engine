@@ -217,10 +217,18 @@ class DisplayObject extends EventDispatcher{
 			lines2 = hitbox2.map((point, i) => new Line(point, hitbox2[(i + 1) % hitbox2.length]));
 		for(var i = 0; i < lines1.length; i++) {
 			for(var j = 0; j < lines2.length; j++) {
-				if(lines1[i].intersects(lines2[j])) { 
-					this.dispatchEvent(EVENTS.COLLISION);
+				if(lines1[i].intersects(lines2[j])) {
+					if(!this.hitbox.isCollidingWith(otherDO.id)) {
+						this.dispatchEvent(EVENTS.COLLISION, [otherDO.id]);
+						this.hitbox.addCollidingWith(otherDO.id);
+					}
+					return;
 				}
 			}
+		}
+		if(this.hitbox.isCollidingWith(otherDO.id)) {
+			this.dispatchEvent(EVENTS.END_COLLISION, [otherDO.id]);
+			this.hitbox.removeCollidingWith(otherDO.id);
 		}
 	}
 	
