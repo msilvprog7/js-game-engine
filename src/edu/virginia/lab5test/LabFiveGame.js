@@ -3,6 +3,9 @@
 /**
  * Main class. Instantiate or extend Game to create a new game of your own
  */
+//import SoundManager from 'SoundManager';
+var SM =  new SoundManager();
+
 class LabFiveGame extends Game{
 
 	constructor(canvas){
@@ -15,7 +18,23 @@ class LabFiveGame extends Game{
 		this.mario.setPosition({x: 100, y: 100});
 		this.mario.setPivotPoint({x: 64, y: 64});
 		this.mario.setSpeed(4.0);
+
+		this.mario2 = new AnimatedSprite("Mario2", "Mario_Idle.png");
+		this.mario2.addAnimation("run", {images: ["Mario_Run_0.png", "Mario_Run_1.png", "Mario_Idle.png", "Mario_Run_1.png"], loop: true});
+		this.mario2.addAnimation("jump", {images: ["Mario_Jump_0.png", "Mario_Jump_1.png"], loop: false});
+		this.mario2.setPosition({x: 400, y: 100});
+		this.mario2.setPivotPoint({x: 64, y: 64});
+		this.mario2.setSpeed(4.0);
+		this.mario2.setScaleX(-1);
 		this.addChild(this.mario);
+		this.addChild(this.mario2);
+
+		SM.loadMusic('background', 'schwifty.mp3', true);
+		SM.playMusic('background');
+
+		this.mario.addEventListener(EVENTS.COLLISION, this, function() {			
+			console.log("COLLISION");
+		});
 	}
 
 	update(pressedKeys){
@@ -36,6 +55,12 @@ class LabFiveGame extends Game{
 			}
 			this.mario.setPosition({x: this.mario.getPosition().x + 8 / (this.mario.getSpeed()), y: this.mario.getPosition().y});
 			this.mario.setCurrentAnimation("run");
+
+			if(this.mario2.getScaleX() >= 0) { 
+				this.mario2.setScaleX(-1 * this.mario2.getScaleX()); 
+			}			
+			this.mario2.setPosition({x: this.mario2.getPosition().x - 8 / (this.mario2.getSpeed()), y: this.mario2.getPosition().y});
+			this.mario2.setCurrentAnimation("run");
 			idle = false;
 		}
 
@@ -48,6 +73,12 @@ class LabFiveGame extends Game{
 			this.mario.setPosition({x: this.mario.getPosition().x - 8 / (this.mario.getSpeed()), y: this.mario.getPosition().y});
 			this.mario.setCurrentAnimation("run");
 			idle = false;
+
+			if(this.mario2.getScaleX() < 0) { 
+				this.mario2.setScaleX(-1 * this.mario2.getScaleX()); 
+			}
+			this.mario2.setPosition({x: this.mario2.getPosition().x + 8 / (this.mario2.getSpeed()), y: this.mario2.getPosition().y});
+			this.mario2.setCurrentAnimation("run");
 		}
 
 		// Up arrow key
@@ -83,9 +114,12 @@ class LabFiveGame extends Game{
 		// Switch back to idle
 		if (idle) {
 			this.mario.setCurrentAnimation("idle");
+			this.mario2.setCurrentAnimation("idle");
 		}
 
+		this.mario.collidesWith(this.mario2);
 		this.mario.update(pressedKeys);
+		this.mario2.update(pressedKeys);
 	}
 
 	draw(g){

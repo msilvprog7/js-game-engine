@@ -30,7 +30,7 @@ class Animation {
 					}
 				}
 			};
-			image.src = 'resources/' + imageList[i];
+			image.src = 'resources/images/' + imageList[i];
 			that.frames.push(image);
 		}
 	}
@@ -101,7 +101,7 @@ class AnimatedSprite extends Sprite{
 		this.animations = {
 			'idle': new Animation([filename], true, function () {
 				that.setLoaded(true);
-				that.setHitBoxFromImage(that.animations["idle"].frames[0]);
+				that.hitbox.setHitboxFromImage(that.animations["idle"].frames[0]);
 			})
 		};
 		this.setCurrentAnimation('idle');
