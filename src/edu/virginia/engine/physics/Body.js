@@ -49,6 +49,8 @@ class Body{
 	}
 
 	checkConstraints(collidingBody) {
+		var normals = this.displayObject.hitbox.getNormals(collidingBody.displayObject.id);
+		
 		// Static or dynamic
 		if (collidingBody.behavior > BODY.NONE) {
 			if(collidingBody.behavior === BODY.STATIC) {
@@ -66,7 +68,7 @@ class Body{
 			// Apply forces
 
 			// Resolve positions
-			checkConstraints();
+			checkConstraints(otherBody);
 		}
 	}
 

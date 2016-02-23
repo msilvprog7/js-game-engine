@@ -58,6 +58,35 @@ class Point{
 	}
 }
 
+class Vector{
+	constructor(x, y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	unit() {
+		if (this.x === 0.0 && this.y === 0.0) {
+			return new Vector(0.0, 0.0);
+		}
+
+		return new Vector(this.x / this.distance(), this.y / this.distance());
+	}
+
+	distance() {
+		return Math.sqrt(this.x * this.x + this.y * this.y);
+	}
+
+	project(v) {
+		var unitV = this.unit();
+		var scale = v.dot(unitV);
+		return new Vector(unitV.x * scale, unitV.y * scale);
+	}
+
+	dot(v) {
+		return (this.x * v.x + this.y * v.y);
+	}
+}
+
 class Line{
 	constructor(p1, p2) {
 		this.p1 = p1;
@@ -83,6 +112,9 @@ class Line{
 
 	normal(point) {
 		// Returns a unit vector normal from line to the point
-		return {x: 0.0, y: 0.0};
+		var undirectedNormal = new Vector(this.p2.y - this.p1.y, -(this.p2.x - this.p1.x)),
+			lineToPoint = new Vector(point.x - this.p1.x, point.y - this.p1.y);
+
+		return undirectedNormal.project(lineToPoint).unit();
 	}
 }

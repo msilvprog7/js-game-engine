@@ -12,6 +12,20 @@ class Hitbox {
 	isCollidingWith(id) {
 		return this.collidingWith.some(x => x.id === id);
 	}
+	getNormals(id) {
+		var normalToOther = null,
+			normalToMe = null;
+
+		for (let i = 0; i < this.collidingWith.length; i++) {
+			if (this.collidingWith[i].id === id) {
+				normalToOther = this.collidingWith[i].normalToOther;
+				normalToMe = this.collidingWith[i].normalToMe;
+				break;
+			}
+		}
+
+		return {normalToOther: normalToOther, normalToMe: normalToMe};
+	}
 	addCollidingWith(id, normalToOther, normalToMe) {
 		if (!this.collidingWith.some(x => x.id === id)) {
 			this.collidingWith.push({id: id, normalToOther: normalToOther, normalToMe: normalToMe});

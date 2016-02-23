@@ -206,7 +206,7 @@ class DisplayObject extends EventDispatcher{
 					if(!this.hitbox.isCollidingWith(otherDO.id)) {
 						this.dispatchEvent(EVENTS.COLLISION, [otherDO.id]);
 						this.hitbox.addCollidingWith(otherDO.id, lines1[i].normal(otherDO.pivotPoint),
-							lines2[j].normal(this.pivotPoint););
+							lines2[j].normal(this.pivotPoint));
 					}
 					return;
 				}
