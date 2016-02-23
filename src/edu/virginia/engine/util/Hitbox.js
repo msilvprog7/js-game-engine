@@ -10,17 +10,19 @@ class Hitbox {
 	} 
 
 	isCollidingWith(id) {
-		return this.collidingWith.some(x => x === id);
+		return this.collidingWith.some(x => x.id === id);
 	}
-	addCollidingWith(id) {
-		if(this.collidingWith.indexOf(id) < 0 ) { 
-			this.collidingWith.push(id);
+	addCollidingWith(id, normalToOther, normalToMe) {
+		if (!this.collidingWith.some(x => x.id === id)) {
+			this.collidingWith.push({id: id, normalToOther: normalToOther, normalToMe: normalToMe});
 		}
 	}
 	removeCollidingWith(id) {
-		var index = this.collidingWith.indexOf(id);
-		if(index !== -1) {
-			this.collidingWith.splice(index, 1);
+		for (let i = 0; i < this.collidingWith.length; i++) {
+			if (this.collidingWith[i].id === id) {
+				this.collidingWith.splice(i, 1);
+				return;
+			}
 		}
 	}
 

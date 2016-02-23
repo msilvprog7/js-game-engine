@@ -11,7 +11,6 @@ class DisplayObject extends EventDispatcher{
 		this.id = id;
 		this.loaded = false;
 		this.visible = true;
-		this.physics = new Physics();
 		this.position = new Point(0.0, 0.0);
 		this.pivotPoint = new Point(0.0, 0.0);
 		this.scaleX = 1.0;
@@ -104,20 +103,6 @@ class DisplayObject extends EventDispatcher{
 
 	setId(id){this.id = id;}
 	getId(){return this.id;}
-
-	setHasPhysics(p) {this.physics.hasPhysics = p;}
-	getHasPhysics() { return this.physics.hasPhysics;}
-
-	setPhysicsProperty(prop, value) {
-		if(this.physics[prop]) {
-			this.physics[prop] = value;
-		}
-	}
-	updatePhysics() {
-		if(this.physics.hasPhysics) {
-			this.physics.update();
-		}
-	}
 
 	setDisplayImage(image){this.displayImage = image;} //image needs to already be loaded!
 	getDisplayImage(){return this.displayImage;}
@@ -220,7 +205,8 @@ class DisplayObject extends EventDispatcher{
 				if(lines1[i].intersects(lines2[j])) {
 					if(!this.hitbox.isCollidingWith(otherDO.id)) {
 						this.dispatchEvent(EVENTS.COLLISION, [otherDO.id]);
-						this.hitbox.addCollidingWith(otherDO.id);
+						this.hitbox.addCollidingWith(otherDO.id, lines1[i].normal(otherDO.pivotPoint),
+							lines2[j].normal(this.pivotPoint););
 					}
 					return;
 				}

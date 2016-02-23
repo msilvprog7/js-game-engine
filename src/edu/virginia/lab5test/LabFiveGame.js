@@ -30,10 +30,15 @@ class LabFiveGame extends Game{
 		this.addChild(this.mario);
 		this.addChild(this.mario2);
 
-		// Load music
+		// Sound Manager
 		this.SM = new SoundManager();
 		this.SM.loadMusic('background', 'schwifty.mp3', true);
 		this.SM.playMusic('background');
+
+		// Physics Manager
+		this.PM = new PhysicsManager();
+		this.PM.addBody(new Body(this.mario, BODY.DYNAMIC, {mass: 10}));
+		this.PM.addBody(new Body(this.mario2, BODY.DYNAMIC, {mass: 10}));
 
 		this.mario.addEventListener(EVENTS.COLLISION, this, function(id) {			
 			console.log("COLLISION WITH " + id.toUpperCase());
@@ -64,7 +69,7 @@ class LabFiveGame extends Game{
 
 			if(this.mario2.getScaleX() >= 0) { 
 				this.mario2.setScaleX(-1 * this.mario2.getScaleX()); 
-			}			
+			}
 			this.mario2.setPosition({x: this.mario2.getPosition().x - 8 / (this.mario2.getSpeed()), y: this.mario2.getPosition().y});
 			this.mario2.setCurrentAnimation("run");
 			idle = false;

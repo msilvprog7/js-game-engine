@@ -80,4 +80,9 @@ class Line{
 
 		return (this.ccw(p1, p3, p4) !== this.ccw(p2, p3, p4)) && (this.ccw(p1, p2, p3) !== this.ccw(p1, p2, p4));
 	}
+
+	normal(point) {
+		// Returns a unit vector normal from line to the point
+		return {x: 0.0, y: 0.0};
+	}
 }
