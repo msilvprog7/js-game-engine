@@ -7,28 +7,24 @@
 class LabFiveGame extends Game{
 
 	constructor(canvas){
-		super("Lab Five Game", 1000, 1000, canvas);
+		super("Lab Five Game", 1000, 800, canvas);
 
 		// Mario
 		this.mario = new AnimatedSprite("Mario", "Mario_Idle.png");
 		this.mario.addAnimation("run", {images: ["Mario_Run_0.png", "Mario_Run_1.png", "Mario_Idle.png", "Mario_Run_1.png"], loop: true});
 		this.mario.addAnimation("jump", {images: ["Mario_Jump_0.png", "Mario_Jump_1.png"], loop: false});
-		this.mario.setPosition({x: 100, y: 100});
+		this.mario.setPosition({x: 500, y: 100});
 		this.mario.setPivotPoint({x: 64, y: 64});
 		this.mario.setSpeed(4.0);
+		this.mario.hitbox.setHitbox([new Point(20, 10), new Point(78, 10), new Point(78, 125), new Point(20, 125)]);
+		this.marioBody = new Body(this.mario, BODY.DYNAMIC, {mass: 10});
 
-
-		this.mario2 = new AnimatedSprite("Mario2", "Mario_Idle.png");
-		this.mario2.addAnimation("run", {images: ["Mario_Run_0.png", "Mario_Run_1.png", "Mario_Idle.png", "Mario_Run_1.png"], loop: true});
-		this.mario2.addAnimation("jump", {images: ["Mario_Jump_0.png", "Mario_Jump_1.png"], loop: false});
-		this.mario2.setPosition({x: 400, y: 100});
-		this.mario2.setPivotPoint({x: 64, y: 64});
-		this.mario2.setSpeed(4.0);
-		this.mario2.setScaleX(-1);
+		// Generate platforms
+		this.generatePlatformsForLevel();
 
 		// Add children to game
 		this.addChild(this.mario);
-		this.addChild(this.mario2);
+		this.platforms.forEach((item) => this.addChild(item.sprite));
 
 		// Sound Manager
 		this.SM = new SoundManager();
@@ -37,8 +33,8 @@ class LabFiveGame extends Game{
 
 		// Physics Manager
 		this.PM = new PhysicsManager();
-		this.PM.addBody(new Body(this.mario, BODY.DYNAMIC, {mass: 10}));
-		this.PM.addBody(new Body(this.mario2, BODY.DYNAMIC, {mass: 10}));
+		this.PM.addBody(this.marioBody);
+		this.platforms.forEach((item) => this.PM.addBody(item.body));
 
 		this.mario.addEventListener(EVENTS.COLLISION, this, function(id) {			
 			console.log("COLLISION WITH " + id.toUpperCase());
@@ -48,8 +44,29 @@ class LabFiveGame extends Game{
 		});
 	}
 
-	update(pressedKeys){
-		super.update(pressedKeys);
+	generatePlatformsForLevel() {
+		this.platforms = [];
+		this.generatePlatform({x: 0, y: 700});
+		this.generatePlatform({x: 120, y: 700});
+		this.generatePlatform({x: 240, y: 700});
+		this.generatePlatform({x: 360, y: 700});
+		this.generatePlatform({x: 480, y: 700});
+		this.generatePlatform({x: 600, y: 700});
+	}
+
+	generatePlatform(position) {
+		var platform = new Sprite("Platform" + this.platforms.length, "brick.png");
+		platform.setPosition({x: position.x, y: position.y});
+		platform.hitbox.setHitbox([new Point(0, 0), new Point(120, 0), new Point(120, 120), new Point(0, 120)]);
+		var platformBody = new Body(platform, BODY.STATIC);
+		this.platforms.push({sprite: platform, body: platformBody});
+	}
+
+	update(pressedKeys, timedelta){		
+		super.update(pressedKeys, timedelta);
+
+		// Update the physics bodies
+		this.PM.update(timedelta);
 
 		var idle = true;
 
@@ -60,75 +77,51 @@ class LabFiveGame extends Game{
 		this.mario.setVisible(!pressedKeys.contains(86));
 
 		// Right arrow key
-		if (pressedKeys.contains(39)) {
+		var hasRightForce = this.marioBody.hasForce("run-right");
+		if (pressedKeys.contains(39) && !hasRightForce) {
 			if(this.mario.getScaleX() < 0) { 
 				this.mario.setScaleX(-1 * this.mario.getScaleX()); 
 			}
-			this.mario.setPosition({x: this.mario.getPosition().x + 8 / (this.mario.getSpeed()), y: this.mario.getPosition().y});
+			this.marioBody.addForceX("run-right", 30);
 			this.mario.setCurrentAnimation("run");
-
-			if(this.mario2.getScaleX() >= 0) { 
-				this.mario2.setScaleX(-1 * this.mario2.getScaleX()); 
-			}
-			this.mario2.setPosition({x: this.mario2.getPosition().x - 8 / (this.mario2.getSpeed()), y: this.mario2.getPosition().y});
-			this.mario2.setCurrentAnimation("run");
 			idle = false;
+		} else if (hasRightForce) {
+			this.marioBody.removeForce("run-right");
+		} else if (pressedKeys.contains(39)) {
+			idle = true;
 		}
 
 		// Left arrow key
-		var pressedLeft = false;
-		if (pressedKeys.contains(37)) {
+		var hasLeftForce = this.marioBody.hasForce("run-left");
+		if (pressedKeys.contains(37) && !hasLeftForce) {
 			if(this.mario.getScaleX() >= 0) { 
 				this.mario.setScaleX(-1 * this.mario.getScaleX()); 
-			}			
-			this.mario.setPosition({x: this.mario.getPosition().x - 8 / (this.mario.getSpeed()), y: this.mario.getPosition().y});
+			}
+			this.marioBody.addForceX("run-left", -30);
 			this.mario.setCurrentAnimation("run");
 			idle = false;
-
-			if(this.mario2.getScaleX() < 0) { 
-				this.mario2.setScaleX(-1 * this.mario2.getScaleX()); 
-			}
-			this.mario2.setPosition({x: this.mario2.getPosition().x + 8 / (this.mario2.getSpeed()), y: this.mario2.getPosition().y});
-			this.mario2.setCurrentAnimation("run");
+		} else if (hasLeftForce) {
+			this.marioBody.removeForce("run-left");
+		} else if (pressedKeys.contains(37)) {
+			idle = true;
 		}
 
 		// Up arrow key
-		if (pressedKeys.contains(38)) {
-			this.mario.setPosition({x: this.mario.getPosition().x, y: this.mario.getPosition().y - 4 / (this.mario.getSpeed())});
+		var canJump = Math.abs(this.marioBody.velocity.y) < 0.02;
+		if (pressedKeys.contains(38) && canJump) {
+			this.marioBody.addForceY("jump", -400);
+			setTimeout(() => this.marioBody.removeForce("jump"), timedelta);
 			this.mario.setCurrentAnimation("jump");
 			idle = false;
-		}
-
-		// 1 key
-		var xModifier = 1.0;
-		var yModifier = 1.0;
-		if (pressedKeys.contains(49)) {
-			xModifier = (this.mario.getScaleX() < 0) ? -1 : 1;
-			yModifier = (this.mario.getScaleY() < 0) ? -1 : 1;
-			this.mario.setScaleX(this.mario.getScaleX() + xModifier * 0.01);
-			this.mario.setScaleY(this.mario.getScaleY() + yModifier * 0.01 * this.mario.getAspectRatio());
-		}
-
-		// 2 key
-		if (pressedKeys.contains(50)) {
-			xModifier = (this.mario.getScaleX() < 0) ? -1 : 1;
-			yModifier = (this.mario.getScaleY() < 0) ? -1 : 1;
-			this.mario.setScaleX(this.mario.getScaleX() - xModifier * 0.01);
-			this.mario.setScaleY(this.mario.getScaleY() - yModifier * 0.01 * this.mario.getAspectRatio());
-		}
-
-		// 3 key - rotate
-		if(pressedKeys.contains(51)) {
-			this.mario.setRotation(this.mario.getRotation() + Math.PI/64);
+		} else if(pressedKeys.contains(38)) {
+			this.mario.setCurrentAnimation("jump");
+			idle = false;
 		}
 
 		// Switch back to idle
 		if (idle) {
 			this.mario.setCurrentAnimation("idle");
-			this.mario2.setCurrentAnimation("idle");
 		}
-
-		this.mario.collidesWith(this.mario2);
 	}
 
 	draw(g){

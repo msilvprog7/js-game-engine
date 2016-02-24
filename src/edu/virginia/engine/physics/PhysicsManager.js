@@ -4,7 +4,7 @@ let _physicsManagerInstance = null;
 
 // Physics constants
 var PHYSICS = {
-	GRAVITY: -9.8
+	GRAVITY: 30
 };
 
 /**
@@ -24,9 +24,11 @@ class PhysicsManager{
 		return _physicsManagerInstance;
 	}
 
-	update() {
+	update(timedelta) {
+		// Modify timedelta
+		timedelta = timedelta * 0.005;
 		// Update physics on all bodies
-		this.bodies.filter(b => b.behavior === BODY.DYNAMIC).forEach(b => b.update());
+		this.bodies.filter(b => b.behavior === BODY.DYNAMIC).forEach(b => b.update(timedelta));
 		// Detect collisions
 		this.checkCollisions();
 	}

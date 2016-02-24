@@ -15,6 +15,7 @@ class Game extends DisplayObjectContainer{
 		this.canvas = canvas;
 		this.g = canvas.getContext('2d'); //the graphics object
 		this.playing = false;
+		this.gameClock = new GameClock();
 
 		this.pressedKeys = new ArrayList();
 
@@ -25,11 +26,11 @@ class Game extends DisplayObjectContainer{
 
 	static getInstance(){ return Game.instance; }
 
-	update(pressedKeys){ super.update(pressedKeys); }
+	update(pressedKeys, timedelta){ super.update(pressedKeys); }
 	draw(g){ super.draw(g); }
 
 	nextFrame(){
-		game.update(this.pressedKeys);
+		game.update(this.pressedKeys, this.gameClock.getTimedelta());
 		game.draw(this.g);
 		if(this.playing) window.requestAnimationFrame(tick);
 	}

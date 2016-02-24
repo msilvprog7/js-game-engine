@@ -82,6 +82,10 @@ class Vector{
 		return new Vector(unitV.x * scale, unitV.y * scale);
 	}
 
+	scale(mag) {
+		return new Vector(this.x*mag, this.y*mag);
+	}
+
 	dot(v) {
 		return (this.x * v.x + this.y * v.y);
 	}

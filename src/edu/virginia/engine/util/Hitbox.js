@@ -1,34 +1,53 @@
 "use strict"
 
+var HITBOX = {
+	SIDES: ["top", "right", "bottom", "left"]
+};
+
 class Hitbox {
 	constructor(parent, points) {
-		this.rawHitbox = points || [];
-		this.hitbox = [];
+		if (points !== undefined) {
+			this.rawHitbox = {
+				tl: points[0],
+				tr: points[1],
+				br: points[2],
+				bl: points[3]	
+			};
+		} else {
+			this.rawHitbox = {};
+		}
+		this.hitbox = {};
 		this.parent = parent;
 		this.update();
 		this.collidingWith = [];
 	} 
 
 	isCollidingWith(id) {
-		return this.collidingWith.some(x => x.id === id);
-	}
-	getNormals(id) {
-		var normalToOther = null,
-			normalToMe = null;
-
-		for (let i = 0; i < this.collidingWith.length; i++) {
+		for(let i = 0; i < this.collidingWith.length; i++) {			
 			if (this.collidingWith[i].id === id) {
-				normalToOther = this.collidingWith[i].normalToOther;
-				normalToMe = this.collidingWith[i].normalToMe;
-				break;
+				return this.collidingWith[i].collisions;
 			}
 		}
-
-		return {normalToOther: normalToOther, normalToMe: normalToMe};
+		return false;
 	}
-	addCollidingWith(id, normalToOther, normalToMe) {
+
+	// getNormals(id) {
+	// 	var normalToOther = null,
+	// 		normalToMe = null;
+
+	// 	for (let i = 0; i < this.collidingWith.length; i++) {
+	// 		if (this.collidingWith[i].id === id) {
+	// 			normalToOther = this.collidingWith[i].normalToOther;
+	// 			normalToMe = this.collidingWith[i].normalToMe;
+	// 			break;
+	// 		}
+	// 	}
+
+	// 	return {normalToOther: normalToOther, normalToMe: normalToMe};
+	// }
+	addCollidingWith(id, collisions) {
 		if (!this.collidingWith.some(x => x.id === id)) {
-			this.collidingWith.push({id: id, normalToOther: normalToOther, normalToMe: normalToMe});
+			this.collidingWith.push({id: id, collisions: collisions});
 		}
 	}
 	removeCollidingWith(id) {
@@ -48,22 +67,31 @@ class Hitbox {
 		return this.rawHitbox;
 	}
 
-	setHitbox(pointList) {
-		this.rawHitbox = pointList || this.rawHitbox;
+	setHitbox(points) {
+		if (Object.keys(this.rawHitbox).length > 0 || points.length !== 4) {
+			return;
+		}
+
+		this.rawHitbox = {
+				tl: points[0],
+				tr: points[1],
+				br: points[2],
+				bl: points[3]	
+			};
 		this.update();
 	}
 
 	setHitboxFromImage(image) {
-		this.rawHitbox = [new Point(0, 0), 
-			new Point(image.width, 0), 
-			new Point(image.width, image.height/3),
-			new Point(image.width+image.width/4, image.height/3),
-			new Point(image.width+image.width/4, 2*image.height/3),		
-			new Point(image.width, 2*image.height/3),				
-			new Point(image.width, image.height), 
-			new Point(0, image.height)
-			];
+		if (Object.keys(this.rawHitbox).length > 0) {
+			return;
+		}
 
+		this.rawHitbox = {
+			tl: new Point(0, 0), 
+			tr: new Point(image.width, 0),		
+			br: new Point(image.width, image.height), 
+			bl: new Point(0, image.height)			
+		};
 		this.update();
 	}
 
@@ -81,14 +109,16 @@ class Hitbox {
 	  */
 	drawHitbox(g, raw) {
 		let box = raw ? this.rawHitbox : this.hitbox;
-		if (box.length <= 0) {
+		if (Object.keys(box).length <= 0) {
 			return;
 		}
 		g.save();
 		g.beginPath();
-		g.moveTo(box[0].x, box[0].y);
-		box.slice(1).forEach(point => g.lineTo(point.x, point.y));
-		g.lineTo(box[0].x, box[0].y);
+		g.moveTo(box.tl.x, box.tl.y);
+		g.lineTo(box.tr.x, box.tr.y);
+		g.lineTo(box.br.x, box.br.y);
+		g.lineTo(box.bl.x, box.bl.y);
+		g.lineTo(box.tl.x, box.tl.y);
 		g.stroke();
 		g.restore();
 	}
@@ -141,11 +171,20 @@ class Hitbox {
 
 	computeTransformMatrix() {
 		// Compute transformation matrix
-		this.transformMatrix = this.preRotationPositionMatrix.multiply(this.rotationMatrix).multiply(this.postRotationPositionMatrix).multiply(
+		this.transformMatrix = this.preRotationPositionMatrix.multiply(this.postRotationPositionMatrix).multiply(
 			this.preScaleTranslationMatrix).multiply(this.scaleMatrix);
 
+		if (Object.keys(this.rawHitbox).length !== 4) {
+			return;
+		}
+
 		// Update points in transformed hit box
-		this.hitbox = this.rawHitbox.map(point => this.transformPointWithMatrix(point));
+		this.hitbox = {
+			tl: this.transformPointWithMatrix(this.rawHitbox.tl),
+			tr: this.transformPointWithMatrix(this.rawHitbox.tr),
+			br: this.transformPointWithMatrix(this.rawHitbox.br),
+			bl: this.transformPointWithMatrix(this.rawHitbox.bl)
+		};
 	}
 
 	transformPointWithMatrix(point) {

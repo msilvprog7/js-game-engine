@@ -194,28 +194,32 @@ class DisplayObject extends EventDispatcher{
 		var hitbox1 = this.hitbox.hitbox,
 			hitbox2 = otherDO.hitbox.hitbox;
 
-		if (hitbox1.length === 0 || hitbox2.length === 0) {
+		if (Object.keys(hitbox1).length === 0 || Object.keys(hitbox2).length === 0) {
 			return false;
 		}
 		
-		var lines1 = hitbox1.map((point, i) => new Line(point, hitbox1[(i + 1) % hitbox1.length])),
-			lines2 = hitbox2.map((point, i) => new Line(point, hitbox2[(i + 1) % hitbox2.length]));
+		var lines1 = [new Line(hitbox1.tl, hitbox1.tr),new Line(hitbox1.tr, hitbox1.br),new Line(hitbox1.br, hitbox1.bl),new Line(hitbox1.bl, hitbox1.tl)],
+			lines2 = [new Line(hitbox2.tl, hitbox2.tr),new Line(hitbox2.tr, hitbox2.br),new Line(hitbox2.br, hitbox2.bl),new Line(hitbox2.bl, hitbox2.tl)],
+			collisions = [];
 		for(var i = 0; i < lines1.length; i++) {
 			for(var j = 0; j < lines2.length; j++) {
 				if(lines1[i].intersects(lines2[j])) {
-					if(!this.hitbox.isCollidingWith(otherDO.id)) {
-						this.dispatchEvent(EVENTS.COLLISION, [otherDO.id]);
-						this.hitbox.addCollidingWith(otherDO.id, lines1[i].normal(otherDO.pivotPoint),
-							lines2[j].normal(this.pivotPoint));
-					}
-					return;
+					collisions.push({
+						s1: HITBOX.SIDES[i],
+						s2: HITBOX.SIDES[j]
+					});
 				}
 			}
 		}
-		if(this.hitbox.isCollidingWith(otherDO.id)) {
+
+		if(collisions.length > 0 && !this.hitbox.isCollidingWith(otherDO.id)) {
+			this.hitbox.addCollidingWith(otherDO.id, collisions);
+			this.dispatchEvent(EVENTS.COLLISION, [otherDO.id]);			
+		} else if(collisions.length === 0 && this.hitbox.isCollidingWith(otherDO.id)) {
 			this.dispatchEvent(EVENTS.END_COLLISION, [otherDO.id]);
 			this.hitbox.removeCollidingWith(otherDO.id);
 		}
+		return collisions.length > 0;
 	}
 	
 }

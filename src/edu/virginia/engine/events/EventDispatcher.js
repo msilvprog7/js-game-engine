@@ -50,8 +50,7 @@ class EventDispatcher{
 		// End early
 		if (this.events[eventType] === undefined) {
 			return;
-		}
-
+		}		
 		// Call callbacks
 		this.events[eventType].forEach(e => e.callback(...data));
 	}
