@@ -3,6 +3,10 @@ CS 4730 Game Engine written in JS
 
 Authors: Michael Snider, Kyle Bibler
 
+## Lab 5
+
+Arrow key controls. Move mario up platforms to get coin. Coin will disappear and sound will play.
+Hitboxes are shown for all objects on the screen.
 
 ## Lab 4
 
