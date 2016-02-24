@@ -8,6 +8,12 @@ class LabFiveGame extends Game{
 
 	constructor(canvas){
 		super("Lab Five Game", 1000, 800, canvas);
+		this.background = new AnimatedSprite("background", "mario_clouds.jpg");
+		this.background.setPosition({x: -100, y: -100});
+		// this.background.addAnimation("windy", {images: [
+		// 	], loop: true});
+		this.addChild(this.background);
+
 
 		// Mario
 		this.mario = new AnimatedSprite("Mario", "Mario_Idle.png");
@@ -23,8 +29,8 @@ class LabFiveGame extends Game{
 		this.generatePlatformsForLevel();
 
 		// Add children to game
-		this.addChild(this.mario);
-		this.platforms.forEach((item) => this.addChild(item.sprite));
+		this.background.addChild(this.mario);
+		this.platforms.forEach((item) => this.background.addChild(item.sprite));
 
 		// Sound Manager
 		this.SM = new SoundManager();
@@ -109,7 +115,7 @@ class LabFiveGame extends Game{
 		// Up arrow key
 		var canJump = Math.abs(this.marioBody.velocity.y) < 0.02;
 		if (pressedKeys.contains(38) && canJump) {
-			this.marioBody.addForceY("jump", -400);
+			this.marioBody.addForceY("jump", -500);
 			setTimeout(() => this.marioBody.removeForce("jump"), timedelta);
 			this.mario.setCurrentAnimation("jump");
 			idle = false;
