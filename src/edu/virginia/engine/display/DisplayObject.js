@@ -206,7 +206,8 @@ class DisplayObject extends EventDispatcher{
 				if(lines1[i].intersects(lines2[j])) {
 					collisions.push({
 						s1: HITBOX.SIDES[i],
-						s2: HITBOX.SIDES[j]
+						s2: HITBOX.SIDES[j],
+						intersection: lines1[i].getIntersectionPoint(lines2[j])
 					});
 				}
 			}
@@ -214,10 +215,16 @@ class DisplayObject extends EventDispatcher{
 
 		if(collisions.length > 0 && !this.hitbox.isCollidingWith(otherDO.id)) {
 			this.hitbox.addCollidingWith(otherDO.id, collisions);
-			this.dispatchEvent(EVENTS.COLLISION, [otherDO.id]);			
+			this.dispatchEvent(EVENTS.COLLISION, [otherDO.id]);
+
+			otherDO.hitbox.addCollidingWith(this.id, collisions);
+			otherDO.dispatchEvent(EVENTS.COLLISION, [this.id]);		
 		} else if(collisions.length === 0 && this.hitbox.isCollidingWith(otherDO.id)) {
 			this.dispatchEvent(EVENTS.END_COLLISION, [otherDO.id]);
 			this.hitbox.removeCollidingWith(otherDO.id);
+
+			otherDO.dispatchEvent(EVENTS.END_COLLISION, [this.id]);
+			otherDO.hitbox.removeCollidingWith(this.id);
 		}
 		return collisions.length > 0;
 	}

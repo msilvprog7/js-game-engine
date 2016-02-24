@@ -49,7 +49,7 @@ class Game extends DisplayObjectContainer{
 	 * For dealing with keyCodes
 	 */
 	addKey(keyCode){
-		console.log("Key Code: " + keyCode); //for your convenience, you can see what the keyCode you care about is
+		// console.log("Key Code: " + keyCode); //for your convenience, you can see what the keyCode you care about is
 		if(this.pressedKeys.indexOf(keyCode) == -1) this.pressedKeys.push(keyCode);
 	}
 

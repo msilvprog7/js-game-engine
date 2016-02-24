@@ -17,13 +17,13 @@ class SoundManager{
 		return _soundManagerInstance;
 	}
 
-	loadSoundEffect(id, filename) {
+	loadSound(id, filename) {
 		var sound = new Audio();
 		sound.src = "resources/audio/" + filename;
 		this.sounds[id] = sound;
 	}
 
-	playSoundEffect(id) {
+	playSound(id) {
 		if(this.sounds[id] === undefined) {console.error("Sound does not exist");}
 		this.currentSound = this.sounds[id];
 		this.currentSound.load();

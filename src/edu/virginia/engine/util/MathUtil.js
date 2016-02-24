@@ -114,11 +114,41 @@ class Line{
 		return (this.ccw(p1, p3, p4) !== this.ccw(p2, p3, p4)) && (this.ccw(p1, p2, p3) !== this.ccw(p1, p2, p4));
 	}
 
+	getIntersectionPoint(otherLine) {
+		// Only call on one we know intersects
+
+		// Find parameter of intersection
+		var t = ((otherLine.p2.x - otherLine.p1.x) * (this.p1.y - otherLine.p1.y) - (otherLine.p2.y - otherLine.p1.y) * (this.p1.x - otherLine.p1.x)) / 
+				((otherLine.p2.y - otherLine.p1.y) * (this.p2.x - this.p1.x) - (otherLine.p2.x - otherLine.p1.x) * (this.p2.y - this.p1.y));
+		return new Point(this.p1.x + t * (this.p2.x - this.p1.x), this.p1.y + t * (this.p2.y - this.p1.y));
+	}
+
 	normal(point) {
 		// Returns a unit vector normal from line to the point
 		var undirectedNormal = new Vector(this.p2.y - this.p1.y, -(this.p2.x - this.p1.x)),
 			lineToPoint = new Vector(point.x - this.p1.x, point.y - this.p1.y);
 
 		return undirectedNormal.project(lineToPoint).unit();
+	}
+}
+
+class BoundingRectangle{
+	constructor() {
+		this.width = 0;
+		this.height = 0;
+	}
+
+	addPoint(point) {
+		if (this.point === undefined) {
+			this.point = point;
+			return;
+		}
+
+		// Get leftmost point
+		var leftmost = new Point(Math.min(this.point.x, point.x), Math.min(this.point.y, point.y));
+		
+		// Update width and height
+		this.width = Math.max(this.point.x, point.x) - leftmost.x;
+		this.height = Math.max(this.point.y, point.y) - leftmost.y;
 	}
 }

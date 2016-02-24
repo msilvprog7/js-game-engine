@@ -4,7 +4,10 @@ let _physicsManagerInstance = null;
 
 // Physics constants
 var PHYSICS = {
-	GRAVITY: 30
+	GRAVITY: 30,
+	FRICTION: function(body) {
+		return -body.mass * body.velocity.x * 0.5;
+	}
 };
 
 /**
