@@ -19,7 +19,7 @@ class LabFiveGame extends Game{
 		this.mario = new AnimatedSprite("Mario", "Mario_Idle.png");
 		this.mario.addAnimation("run", {images: ["Mario_Run_0.png", "Mario_Run_1.png", "Mario_Idle.png", "Mario_Run_1.png"], loop: true});
 		this.mario.addAnimation("jump", {images: ["Mario_Jump_0.png", "Mario_Jump_1.png"], loop: false});
-		this.mario.setPosition({x: 500, y: 100});
+		this.mario.setPosition({x: 500, y: 750});
 		this.mario.setPivotPoint({x: 64, y: 64});
 		this.mario.setSpeed(4.0);
 		this.mario.hitbox.setHitbox([new Point(20, 10), new Point(78, 10), new Point(78, 125), new Point(20, 125)]);
@@ -52,17 +52,58 @@ class LabFiveGame extends Game{
 
 	generatePlatformsForLevel() {
 		this.platforms = [];
-		this.generatePlatform({x: 0, y: 700});
-		this.generatePlatform({x: 120, y: 700});
-		this.generatePlatform({x: 240, y: 700});
-		this.generatePlatform({x: 360, y: 700});
-		this.generatePlatform({x: 480, y: 700});
-		this.generatePlatform({x: 600, y: 700});
+		this.generatePlatform({x: 0, y: 800}, 0.5);
+		this.generatePlatform({x: 60, y: 800}, 0.5);
+		this.generatePlatform({x: 120, y: 800}, 0.5);
+		this.generatePlatform({x: 180, y: 800}, 0.5);
+		this.generatePlatform({x: 240, y: 800}, 0.5);
+		this.generatePlatform({x: 300, y: 800}, 0.5);
+		this.generatePlatform({x: 360, y: 800}, 0.5);
+		this.generatePlatform({x: 420, y: 800}, 0.5);
+		this.generatePlatform({x: 480, y: 800}, 0.5);
+		this.generatePlatform({x: 540, y: 800}, 0.5);
+		this.generatePlatform({x: 600, y: 800}, 0.5);
+		this.generatePlatform({x: 660, y: 800}, 0.5);
+		this.generatePlatform({x: 720, y: 800}, 0.5);
+		this.generatePlatform({x: 780, y: 800}, 0.5);
+		this.generatePlatform({x: 840, y: 800}, 0.5);
+		this.generatePlatform({x: 900, y: 800}, 0.5);
+
+		this.generatePlatform({x: 240, y: 600}, 0.5);
+		this.generatePlatform({x: 300, y: 600}, 0.5);
+		this.generatePlatform({x: 360, y: 600}, 0.5);
+		this.generatePlatform({x: 420, y: 600}, 0.5);
+		this.generatePlatform({x: 480, y: 600}, 0.5);
+		this.generatePlatform({x: 540, y: 600}, 0.5);
+		this.generatePlatform({x: 600, y: 600}, 0.5);
+		this.generatePlatform({x: 660, y: 600}, 0.5);
+		this.generatePlatform({x: 720, y: 600}, 0.5);
+		this.generatePlatform({x: 780, y: 600}, 0.5);
+		this.generatePlatform({x: 840, y: 600}, 0.5);
+		this.generatePlatform({x: 900, y: 600}, 0.5);
+		this.generatePlatform({x: 960, y: 600}, 0.5);
+		this.generatePlatform({x: 1020, y: 600}, 0.5);
+		this.generatePlatform({x: 1080, y: 600}, 0.5);
+
+		this.generatePlatform({x: 0, y: 400}, 0.5);
+		this.generatePlatform({x: 60, y: 400}, 0.5);
+		this.generatePlatform({x: 120, y: 400}, 0.5);
+		this.generatePlatform({x: 180, y: 400}, 0.5);
+		this.generatePlatform({x: 240, y: 400}, 0.5);
+		this.generatePlatform({x: 300, y: 400}, 0.5);
+		this.generatePlatform({x: 360, y: 400}, 0.5);
+		this.generatePlatform({x: 420, y: 400}, 0.5);
+		this.generatePlatform({x: 480, y: 400}, 0.5);
+		this.generatePlatform({x: 540, y: 400}, 0.5);
+		this.generatePlatform({x: 600, y: 400}, 0.5);
+		this.generatePlatform({x: 660, y: 400}, 0.5);
 	}
 
-	generatePlatform(position) {
+	generatePlatform(position, sizeRatio) {
 		var platform = new Sprite("Platform" + this.platforms.length, "brick.png");
 		platform.setPosition({x: position.x, y: position.y});
+		platform.setScale(sizeRatio);
+		var size = sizeRatio * 120;
 		platform.hitbox.setHitbox([new Point(0, 0), new Point(120, 0), new Point(120, 120), new Point(0, 120)]);
 		var platformBody = new Body(platform, BODY.STATIC);
 		this.platforms.push({sprite: platform, body: platformBody});
