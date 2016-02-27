@@ -24,7 +24,7 @@ class Tween{
 	}
 
 	isCompleted() {
-		return (this.tweenParams.filter(x => x.elapsed >= x.duration).length === this.tweenParams.length);
+		return (this.tweenParams.every(x => x.isCompleted()));
 	}
 
 	setValue(tweenParamToAnimate, value) {

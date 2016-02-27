@@ -52,6 +52,8 @@ class EventDispatcher{
 			return;
 		}		
 		// Call callbacks
+		if (data === undefined) { data = []; }
+		else if(data.iterator === undefined) { data = [data];}
 		this.events[eventType].forEach(e => { if (typeof(e.callback) === "function") { e.callback(...data); } });
 	}
 

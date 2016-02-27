@@ -13,7 +13,7 @@ class LabSixGame extends Game{
 		// this.background.addAnimation("windy", {images: [
 		// 	], loop: true});
 		this.addChild(this.background);
-
+		var that = this;		
 
 		// Mario
 		this.mario = new AnimatedSprite("Mario", "Mario_Idle.png");
@@ -56,23 +56,41 @@ class LabSixGame extends Game{
 		// Tween Juggler
 		this.TJ = new TweenJuggler();
 		this.marioTween = new Tween(this.mario);
-		this.marioTween.animate(TWEEN_PARAMS.ALPHA, 0, 1, 3000, TWEEN_TRANSITIONS.QUADRATIC);
-		this.marioTween.animate(TWEEN_PARAMS.SCALE_X, 0, 1, 3000, TWEEN_TRANSITIONS.QUADRATIC);
-		this.marioTween.animate(TWEEN_PARAMS.SCALE_Y, 0, 1, 3000, TWEEN_TRANSITIONS.QUADRATIC);
+		this.marioTween.animate(TWEEN_PARAMS.ALPHA, 0, 1, 1500, TWEEN_TRANSITIONS.QUADRATIC);
+		this.marioTween.animate(TWEEN_PARAMS.SCALE_X, 0, 1, 1000, TWEEN_TRANSITIONS.QUADRATIC);
+		this.marioTween.animate(TWEEN_PARAMS.SCALE_Y, 0, 1, 1000, TWEEN_TRANSITIONS.QUADRATIC);
 		this.TJ.add(this.marioTween);
-
-		this.mario.addEventListener(EVENTS.COLLISION, this, function(id) {			
-			// console.log("COLLISION WITH " + id.toUpperCase());
-		});
-		this.mario.addEventListener(EVENTS.END_COLLISION, this, function(id) {			
-			// console.log("END COLLISION WITH " + id.toUpperCase());
-		});
-		var that = this;
 		this.coin.addEventListener(EVENTS.COLLISION, this.mario, function(id) {
-			that.coin.setVisible(false);
+			var coinTween = new Tween(that.coin);
+			coinTween.animate(TWEEN_PARAMS.POSITION_X, that.coin.position.x, 550, 2000, TWEEN_TRANSITIONS.QUADRATIC);
+			coinTween.animate(TWEEN_PARAMS.POSITION_Y, that.coin.position.y, 450, 2000, TWEEN_TRANSITIONS.QUADRATIC);
+			coinTween.animate(TWEEN_PARAMS.SCALE_X, that.coin.scaleX, that.coin.scaleX*3, 2000, TWEEN_TRANSITIONS.QUADRATIC);
+			coinTween.animate(TWEEN_PARAMS.SCALE_Y, that.coin.scaleY, that.coin.scaleY*3, 2000, TWEEN_TRANSITIONS.QUADRATIC);
+			that.TJ.add(coinTween, function() {
+				var coinTween2 = new Tween(that.coin);
+				coinTween2.animate(TWEEN_PARAMS.ALPHA, 1, 0, 1000, TWEEN_TRANSITIONS.QUADRATIC);
+				coinTween2.animate(TWEEN_PARAMS.SCALE_X, that.coin.scaleX, 0, 1000, TWEEN_TRANSITIONS.QUADRATIC);
+				coinTween2.animate(TWEEN_PARAMS.SCALE_Y, that.coin.scaleY, 0, 1000, TWEEN_TRANSITIONS.QUADRATIC);
+				that.TJ.add(coinTween2);
+			});
 			that.SM.playSound('coin');
-			that.coin.removeEventListener(EVENTS.COLLISION, that.mario);
+			that.coin.removeEventListener(EVENTS.COLLISION, that.mario); });
+
+		var platform1Tween = new Tween(this.platforms[0].sprite);
+		platform1Tween.animate(TWEEN_PARAMS.SCALE_X, 8, 0, 12000, TWEEN_TRANSITIONS.LINEAR);
+		this.TJ.add(platform1Tween, function() {
+			var plat2 = that.platforms[1].sprite,
+				platform2Tween = new Tween(plat2);
+			platform2Tween.animate(TWEEN_PARAMS.SCALE_X, 7.5, 0, 12000, TWEEN_TRANSITIONS.LINEAR);
+			platform2Tween.animate(TWEEN_PARAMS.POSITION_X, plat2.position.x, plat2.position.x+1000, 12000, TWEEN_TRANSITIONS.LINEAR);
+			that.TJ.add(platform2Tween, function() {
+				var platform3Tween = new Tween(that.platforms[2].sprite);
+				platform3Tween.animate(TWEEN_PARAMS.SCALE_X, 6.5, 0, 12000, TWEEN_TRANSITIONS.LINEAR);
+				that.TJ.add(platform3Tween);
+			});
 		});
+		
+
 	}
 
 	generatePlatformsForLevel() {
