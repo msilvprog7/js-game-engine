@@ -23,10 +23,18 @@ class SoundManager{
 		this.sounds[id] = sound;
 	}
 
-	playSound(id) {
+	playSound(id, pauseMusic) {
 		if(this.sounds[id] === undefined) {console.error("Sound does not exist");}
 		this.currentSound = this.sounds[id];
 		this.currentSound.load();
+		if(pauseMusic) {
+			let that = this;
+			that.pauseMusic();
+			that.currentSound.addEventListener('ended', function() { 
+				that.unpauseMusic(); 
+				that.currentSound.removeEventListener('ended');
+			}); 
+		}
 		this.currentSound.play();
 	}
 
@@ -48,14 +56,14 @@ class SoundManager{
 	}
 
 	pauseMusic() {
-		if (this.currentMusic !== undefnied) {
+		if (this.currentMusic !== undefined) {
 			this.currentMusic.pause();
 		}
 	}
 
 	unpauseMusic() {
 		if (this.currentMusic !== undefined) {
-			thi.currentMusic.play();
+			this.currentMusic.play();
 		}
 	}
 
