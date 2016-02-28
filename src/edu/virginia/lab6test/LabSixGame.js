@@ -43,9 +43,9 @@ class LabSixGame extends Game{
 
 		// Sound Manager
 		this.SM = new SoundManager();
-		this.SM.loadMusic('background', 'schwifty.mp3', true);
+		this.SM.loadMusic('background', 'mario_background.mp3', true);
 		this.SM.playMusic('background');
-		this.SM.loadSound('coin', 'coin.wav');
+		this.SM.loadSound('coin', 'victory_sound.mp3');
 
 		// Physics Manager
 		this.PM = new PhysicsManager();
@@ -73,7 +73,8 @@ class LabSixGame extends Game{
 				coinTween2.animate(TWEEN_PARAMS.SCALE_Y, that.coin.scaleY, 0, 1000, TWEEN_TRANSITIONS.QUADRATIC);
 				that.TJ.add(coinTween2);
 			});
-			that.SM.playSound('coin');
+			that.SM.playSound('coin', true);
+
 			that.coin.removeEventListener(EVENTS.COLLISION, that.mario); });
 
 		var platform1Tween = new Tween(this.platforms[0].sprite);
