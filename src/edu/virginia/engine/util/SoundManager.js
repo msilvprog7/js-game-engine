@@ -23,17 +23,19 @@ class SoundManager{
 		this.sounds[id] = sound;
 	}
 
-	playSound(id, pauseMusic) {
+	playSound(id, options) {
 		if(this.sounds[id] === undefined) {console.error("Sound does not exist");}
 		this.currentSound = this.sounds[id];
 		this.currentSound.load();
-		if(pauseMusic) {
+		if(options.pauseMusic) {
 			let that = this;
 			that.pauseMusic();
-			that.currentSound.addEventListener('ended', function() { 
-				that.unpauseMusic(); 
-				that.currentSound.removeEventListener('ended');
-			}); 
+				if(options.unpauseMusic !== false) {
+					that.currentSound.addEventListener('ended', function() { 
+					that.unpauseMusic(); 
+					that.currentSound.removeEventListener('ended');
+				}); 
+			}			
 		}
 		this.currentSound.play();
 	}
