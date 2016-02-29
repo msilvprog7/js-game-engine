@@ -228,5 +228,10 @@ class DisplayObject extends EventDispatcher{
 		}
 		return collisions.length > 0;
 	}
+
+	outOfFrame(width, height, epsilon) {
+		return (this.position.x < -epsilon || this.position.x > width+epsilon 
+			|| this.position.y < -epsilon || this.position.y > height+epsilon); 
+	}
 	
 }
