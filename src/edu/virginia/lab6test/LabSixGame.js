@@ -24,6 +24,8 @@ class LabSixGame extends Game{
 		this.mario.setSpeed(4.0);
 		this.mario.hitbox.setHitbox([new Point(20, 10), new Point(78, 10), new Point(78, 125), new Point(20, 125)]);
 		this.marioBody = new Body(this.mario, BODY.DYNAMIC, {mass: 1});
+		this.marioDead = false;
+
 
 		// Generate platforms
 		this.generatePlatformsForLevel();
@@ -46,6 +48,7 @@ class LabSixGame extends Game{
 		this.SM.loadMusic('background', 'mario_background.mp3', true);
 		this.SM.playMusic('background');
 		this.SM.loadSound('coin', 'victory_sound.mp3');
+		this.SM.loadSound('death', 'mario_death.mp3');
 
 		// Physics Manager
 		this.PM = new PhysicsManager();
@@ -73,7 +76,7 @@ class LabSixGame extends Game{
 				coinTween2.animate(TWEEN_PARAMS.SCALE_Y, that.coin.scaleY, 0, 1000, TWEEN_TRANSITIONS.QUADRATIC);
 				that.TJ.add(coinTween2);
 			});
-			that.SM.playSound('coin', true);
+			that.SM.playSound('coin', { pauseMusic: true });
 
 			that.coin.removeEventListener(EVENTS.COLLISION, that.mario); });
 
@@ -181,6 +184,11 @@ class LabSixGame extends Game{
 		// Switch back to idle
 		if (idle) {
 			this.mario.setCurrentAnimation("idle");
+		}
+
+		if(this.mario.outOfFrame(1000, 800, 200) && !this.marioDead) {
+			this.marioDead = true;
+			this.SM.playSound('death', {pauseMusic: true, unpauseMusic: false});
 		}
 	}
 
