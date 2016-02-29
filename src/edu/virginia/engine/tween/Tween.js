@@ -30,7 +30,7 @@ class Tween{
 	setValue(tweenParamToAnimate, value) {
 		switch (tweenParamToAnimate) {
 			case TWEEN_PARAMS.SCALE_X:
-				this.displayObject.setScaleX(value);
+				this.displayObject.setScaleX(Math.sign(this.displayObject.scaleX)*value);
 				break;
 			case TWEEN_PARAMS.SCALE_Y:
 				this.displayObject.setScaleY(value);
