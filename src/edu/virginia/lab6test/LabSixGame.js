@@ -189,6 +189,7 @@ class LabSixGame extends Game{
 		if(this.mario.outOfFrame(1000, 800, 200) && !this.marioDead) {
 			this.marioDead = true;
 			this.SM.playSound('death', {pauseMusic: true, unpauseMusic: false});
+			this.pause();
 		}
 	}
 
