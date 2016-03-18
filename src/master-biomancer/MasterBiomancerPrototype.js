@@ -3,19 +3,18 @@
 /**
  * Main class. Instantiate or extend Game to create a new game of your own
  */
-
 class MasterBiomancerGame extends Game{
 
 	constructor(canvas){
-		super("Master Biomancer Game", 1000, 800, canvas);
+		super("Master Biomancer Game", 1000, 563, canvas);
 		// Sound Manager
 		this.SM = new SoundManager();
 
 		// Tween Juggler
 		this.TJ = new TweenJuggler();
 		
-		
-
+		// Create Levels
+		this.generateLevels();
 	}
 
 	update(pressedKeys, timedelta){		
@@ -31,6 +30,16 @@ class MasterBiomancerGame extends Game{
 		g.clearRect(0, 0, this.width, this.height);
 		super.draw(g);
 	}
+
+	generateLevels() {
+		// Create levels
+		this.levels = [];
+
+
+		// Set intial level
+		this.initialLevel = "level1";
+		this.currentLevel = this.initialLevel;
+	}
 }
 
 
@@ -45,6 +54,6 @@ function tick(){
 /* Get the drawing canvas off of the  */
 var drawingCanvas = document.getElementById('game');
 if(drawingCanvas.getContext) {
-	var game = new LabSixGame(drawingCanvas);
+	var game = new MasterBiomancerGame(drawingCanvas);
 	game.start();
 }
