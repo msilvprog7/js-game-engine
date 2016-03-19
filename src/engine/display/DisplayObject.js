@@ -42,7 +42,7 @@ class DisplayObject extends EventDispatcher{
 	/**
 	 * Invoked every frame, manually for now, but later automatically if this DO is in DisplayTree
 	 */
-	update(){
+	update(pressedKeys){
 		
 	}
 

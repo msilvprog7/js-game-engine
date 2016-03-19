@@ -12,9 +12,6 @@ class MasterBiomancerGame extends Game{
 
 		// Tween Juggler
 		this.TJ = new TweenJuggler();
-		
-		// Create Levels
-		this.generateLevels();
 	}
 
 	update(pressedKeys, timedelta){		
@@ -22,8 +19,6 @@ class MasterBiomancerGame extends Game{
 
 		// Update the tween juggler
 		this.TJ.update(timedelta);
-
-		
 	}
 
 	draw(g){
@@ -31,14 +26,25 @@ class MasterBiomancerGame extends Game{
 		super.draw(g);
 	}
 
-	generateLevels() {
+	initializeLevels() {
+		super.initializeLevels();
+
 		// Create levels
-		this.levels = [];
+		var currentLevel;
 
+		// Level 1
+		currentLevel = new Level("level" + this.currentLevelId);
+		currentLevel.addChild(this.generateBiomancer(440, 211));
+		this.addLevel(currentLevel);
 
-		// Set intial level
-		this.initialLevel = "level1";
-		this.currentLevel = this.initialLevel;
+		// ... More levels later
+	}
+
+	generateBiomancer(x, y) {
+		var biomancer = new Biomancer();
+		biomancer.setPosition({x: x, y: y});
+		biomancer.setPivotPoint({x: 30, y: 35});
+		return biomancer;
 	}
 }
 

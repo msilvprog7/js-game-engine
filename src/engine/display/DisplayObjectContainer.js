@@ -33,9 +33,9 @@ class DisplayObjectContainer extends DisplayObject{
 		this.hitbox.drawHitbox(g);
 	}
 
-	update () {
-		super.update();
-		this.children.forEach(c => c.update());
+	update (pressedKeys) {
+		super.update(pressedKeys);
+		this.children.forEach(c => c.update(pressedKeys));
 	}
 
 	addChild (child, index) {

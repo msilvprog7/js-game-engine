@@ -19,15 +19,67 @@ class Game extends DisplayObjectContainer{
 
 		this.pressedKeys = new ArrayList();
 
+		// Create Levels
+		this.initializeLevels();
+
 		/* Setup a key listener */
 		window.addEventListener("keydown", onKeyDown, true);
 		window.addEventListener("keyup", onKeyUp, true);
 	}
 
-	static getInstance(){ return Game.instance; }
+	static getInstance(){ 
+		return Game.instance; 
+	}
 
-	update(pressedKeys, timedelta){ super.update(pressedKeys); }
-	draw(g){ super.draw(g); }
+	update(pressedKeys, timedelta){ 
+		super.update(pressedKeys);
+	}
+
+	draw(g){ 
+		super.draw(g); 
+	}
+
+	initializeLevels() {
+		// Nothing in Game itself, but in extension
+		this.levels = {};
+		this.levelsList = [];
+		this.currentLevel = -1;
+		this.currentLevelId = 0;
+		this.removeChildren();
+	}
+
+	addLevel(level) {
+		this.levels[level.id] = level;
+		this.levelsList.push(level.id);
+		this.currentLevelId++;
+
+		// Set current level to first
+		if (this.currentLevel === -1) {
+			this.setCurrentLevelIndex(0);
+		}
+	}
+
+	setCurrentLevelIndex(index) {
+		this.currentLevel = index;
+		this.removeChildren();
+		this.addChild(this.getCurrentLevel());
+	}
+
+	getCurrentLevelIndex() {
+		return this.currentLevel;
+	}
+
+	getCurrentLevel() {
+		return this.levels[this.levelsList[this.currentLevel]];
+	}
+
+	getLevelsList() {
+		return this.levelsList;
+	}
+
+	getLevels() {
+		return this.levels;
+	}
 
 	nextFrame(){
 		game.update(this.pressedKeys, this.gameClock.getTimedelta());
@@ -53,7 +105,9 @@ class Game extends DisplayObjectContainer{
 		if(this.pressedKeys.indexOf(keyCode) == -1) this.pressedKeys.push(keyCode);
 	}
 
-	removeKey(keyCode){ this.pressedKeys.remove(keyCode); }
+	removeKey(keyCode){ 
+		this.pressedKeys.remove(keyCode); 
+	}
 }
 
 function onKeyDown(e){ Game.getInstance().addKey(e.keyCode); }

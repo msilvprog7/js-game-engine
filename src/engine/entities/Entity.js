@@ -1,25 +1,36 @@
 "use strict";
 
 class Entity extends AnimatedSprite {
-	constructor(id, health) {
-		super(id, undefined);
+	constructor(id, health, idle) {
+		super(id, idle);
 		this.health = health;
+		this.xMovement = 0;
+		this.yMovement = 0;
 	}
 
 	update(pressedKeys) {
-		// Update aanimated sprite
-		super.update();
-		// Move
-		this.move();
+		// Update animated sprite
+		super.update(pressedKeys);
+	}
+
+	addToMovement(x, y) {
+		this.xMovement += x;
+		this.yMovement += y;
+	}
+
+	resetMovement() {
+		this.xMovement = 0;
+		this.yMovement = 0;
 	}
 
 	move() {
-		// Nothing at this level
+		this.setPosition({x: this.position.x + this.xMovement, y: this.position.y + this.yMovement});
+		this.resetMovement();
 	}
 
-	draw() {
+	draw(g) {
 		// Draw animated sprite
-		super.draw();
+		super.draw(g);
 	}
 
 	isAlive() {

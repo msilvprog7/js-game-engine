@@ -2,7 +2,7 @@
 
 var GUN_VARS = {
 	ID: "gun",
-	FILENAME: "null.png",
+	FILENAME: "biomancer/main-char/gun.png",
 	RECHARGE_RATE: 1
 };
 
