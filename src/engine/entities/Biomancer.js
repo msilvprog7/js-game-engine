@@ -35,8 +35,13 @@ class Biomancer extends Entity {
 		}
 
 		this.gun = new Gun();
+		this.gun.setParent(this);
 		this.gun.setPosition(BIOMANCER_VARS.GUN_POSITION);
 		this.addChild(this.gun);
+	}
+
+	getLevel() {
+		return this.getParent();
 	}
 
 	update(pressedKeys) {
@@ -75,28 +80,28 @@ class Biomancer extends Entity {
 
 		if (pressedKeys.contains(37) && pressedKeys.contains(38)) {
 			// North-west
-			this.rotation = ROTATION.NW;
+			this.setRotation(ROTATION.NW);
 		} else if (pressedKeys.contains(38) && pressedKeys.contains(39)) {
 			// North-east
-			this.rotation = ROTATION.NE;
+			this.setRotation(ROTATION.NE);
 		} else if (pressedKeys.contains(39) && pressedKeys.contains(40)) {
 			// South-east
-			this.rotation = ROTATION.SE;
+			this.setRotation(ROTATION.SE);
 		} else if (pressedKeys.contains(40) && pressedKeys.contains(37)) {
 			// South-west
-			this.rotation = ROTATION.SW;
+			this.setRotation(ROTATION.SW);
 		} else if (pressedKeys.contains(37)) {
 			// West
-			this.rotation = ROTATION.W;
+			this.setRotation(ROTATION.W);
 		} else if (pressedKeys.contains(38)) {
 			// North
-			this.rotation = ROTATION.N;
+			this.setRotation(ROTATION.N);
 		} else if (pressedKeys.contains(39)) {
 			// East
-			this.rotation = ROTATION.E;
+			this.setRotation(ROTATION.E);
 		} else if (pressedKeys.contains(40)) {
 			// South
-			this.rotation = ROTATION.S;
+			this.setRotation(ROTATION.S);
 		}
 	}
 

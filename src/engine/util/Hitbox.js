@@ -82,10 +82,6 @@ class Hitbox {
 	}
 
 	setHitboxFromImage(image) {
-		if (Object.keys(this.rawHitbox).length > 0) {
-			return;
-		}
-
 		this.rawHitbox = {
 			tl: new Point(0, 0), 
 			tr: new Point(image.width, 0),		
@@ -189,5 +185,49 @@ class Hitbox {
 
 	transformPointWithMatrix(point) {
 		return this.transformMatrix.multiply(point.getMatrix()).getPoint();
+	}
+
+	transformPointWithFullMatrix(point) {
+		this.fullMatrix = this.preRotationPositionMatrix.multiply(this.rotationMatrix).multiply(this.postRotationPositionMatrix).multiply(
+			this.preScaleTranslationMatrix).multiply(this.scaleMatrix);
+		return this.fullMatrix.multiply(point.getMatrix()).getPoint();
+	}
+
+	transformPointWithInverseMatrix(point) {
+		this.transformMatrix = this.preRotationPositionMatrix.multiply(this.postRotationPositionMatrix).multiply(
+			this.preScaleTranslationMatrix).multiply(this.scaleMatrix);
+		return this.getInverseTransformMatrix().multiply(point.getMatrix()).getPoint();
+	}
+
+	getInverseTransformMatrix() {
+		var inverse = new Matrix([
+				[0.0, 0.0, 0.0],
+				[0.0, 0.0, 0.0],
+				[0.0, 0.0, 0.0]
+			]),
+			det = this.getTransformMatrixDet();
+
+		inverse.matrix[0][0] = (this.transformMatrix.matrix[1][1] * this.transformMatrix.matrix[2][2] - this.transformMatrix.matrix[1][2] * this.transformMatrix.matrix[2][1]) / det;
+		inverse.matrix[0][1] = (this.transformMatrix.matrix[0][2] * this.transformMatrix.matrix[2][1] - this.transformMatrix.matrix[0][1] * this.transformMatrix.matrix[2][2]) / det;
+		inverse.matrix[0][2] = (this.transformMatrix.matrix[0][1] * this.transformMatrix.matrix[1][2] - this.transformMatrix.matrix[0][2] * this.transformMatrix.matrix[1][1]) / det;
+		inverse.matrix[1][0] = (this.transformMatrix.matrix[1][2] * this.transformMatrix.matrix[2][0] - this.transformMatrix.matrix[1][0] * this.transformMatrix.matrix[2][2]) / det;
+		inverse.matrix[1][1] = (this.transformMatrix.matrix[0][0] * this.transformMatrix.matrix[2][2] - this.transformMatrix.matrix[0][2] * this.transformMatrix.matrix[2][0]) / det;
+		inverse.matrix[1][2] = (this.transformMatrix.matrix[0][2] * this.transformMatrix.matrix[1][0] - this.transformMatrix.matrix[0][0] * this.transformMatrix.matrix[1][2]) / det;
+		inverse.matrix[2][0] = (this.transformMatrix.matrix[1][0] * this.transformMatrix.matrix[2][1] - this.transformMatrix.matrix[1][1] * this.transformMatrix.matrix[2][0]) / det;
+		inverse.matrix[2][1] = (this.transformMatrix.matrix[0][1] * this.transformMatrix.matrix[2][0] - this.transformMatrix.matrix[0][0] * this.transformMatrix.matrix[2][1]) / det;
+		inverse.matrix[2][2] = (this.transformMatrix.matrix[0][0] * this.transformMatrix.matrix[1][1] - this.transformMatrix.matrix[0][1] * this.transformMatrix.matrix[1][0]) / det;
+		
+		return inverse;
+	}
+
+	getTransformMatrixDet() {
+		return (
+			this.transformMatrix.matrix[0][0] * this.transformMatrix.matrix[1][1] * this.transformMatrix.matrix[2][2] +
+			this.transformMatrix.matrix[0][1] * this.transformMatrix.matrix[1][2] * this.transformMatrix.matrix[2][0] +
+			this.transformMatrix.matrix[0][2] * this.transformMatrix.matrix[1][0] * this.transformMatrix.matrix[2][1] -
+			this.transformMatrix.matrix[0][2] * this.transformMatrix.matrix[1][1] * this.transformMatrix.matrix[2][0] -
+			this.transformMatrix.matrix[0][1] * this.transformMatrix.matrix[1][0] * this.transformMatrix.matrix[2][2] -
+			this.transformMatrix.matrix[0][0] * this.transformMatrix.matrix[1][2] * this.transformMatrix.matrix[2][1]
+		);
 	}
 }

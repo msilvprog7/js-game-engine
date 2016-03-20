@@ -3,6 +3,7 @@
 class Entity extends AnimatedSprite {
 	constructor(id, health, idle) {
 		super(id, idle);
+		this.maxHealth = health;
 		this.health = health;
 		this.xMovement = 0;
 		this.yMovement = 0;

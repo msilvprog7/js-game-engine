@@ -13,8 +13,8 @@ class Sprite extends DisplayObjectContainer{
 	/**
 	 * Invoked every frame, manually for now, but later automatically if this DO is in DisplayTree
 	 */
-	update(){
-		super.update();
+	update(pressedKeys){
+		super.update(pressedKeys);
 	}
 
 	/**

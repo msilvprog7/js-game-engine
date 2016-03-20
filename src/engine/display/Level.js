@@ -23,6 +23,24 @@ class Level extends DisplayObjectContainer{
 		super(id, null);
 		this.tilesGenerated = 0;
 		this.focusChild = undefined;
+		this.animals = [];
+	}
+
+	update(pressedKeys) {
+		super.update(pressedKeys);
+
+		// Remove animals that have spawned and died
+		var that = this;
+		this.animals.forEach(function (animal) {
+			if (animal.hasSpawned() && !animal.isAlive()) {
+				that.removeChild(animal);
+			}
+		});
+		this.animals = this.animals.filter((animal) => (!animal.hasSpawned() || animal.isAlive()));
+	}
+
+	draw(g) {
+		super.draw(g);
 	}
 
 	setFocusChild(child) {
@@ -43,18 +61,23 @@ class Level extends DisplayObjectContainer{
 		this.focusChild = undefined;
 	}
 
+	addAnimal(animal) {
+		this.animals.push(animal);
+		this.addChild(animal);
+	}
+
 	generateTileRect(horizontalTiles, verticalTiles, position, scale, tileId) {
 		var tile = (tileId !== undefined) ? TILES[tileId] : TILES[LEVEL_VARS.DEFAULT_TILE],
 			generatedTile = new DisplayObjectContainer(),
 			currentTileId = 0,
-			tileHitbox = [new Point(0, 0), new Point(tile.WIDTH, 0), new Point(tile.WIDTH, tile.HEIGHT), new Point(0, tile.HEIGHT)];
+			tileImage = new Image(tile.FILENAME);
 
 		for (let j = 0; j < verticalTiles; j++) {
 			for (let i = 0; i < horizontalTiles; i++) {
 				var currentTile = new Sprite("tile-" + this.tilesGenerated + "-" + currentTileId, tile.FILENAME);
 				currentTile.setPosition({x: i * tile.WIDTH, y: j * tile.HEIGHT});
 				currentTile.setPivotPoint({x: tile.WIDTH / 2, y: tile.HEIGHT / 2});
-				currentTile.hitbox.setHitbox(tileHitbox);
+				currentTile.hitbox.setHitboxFromImage(tileImage);
 				generatedTile.addChild(currentTile);
 				currentTileId++;
 			}

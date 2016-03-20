@@ -113,8 +113,8 @@ class AnimatedSprite extends Sprite{
 	/**
 	 * Invoked every frame, manually for now, but later automatically if this DO is in DisplayTree
 	 */
-	update(){
-		super.update();
+	update(pressedKeys){
+		super.update(pressedKeys);
 		if(this.paused) { return; }
 		if(this.currentFrameTick >= this.speed) {
 			this.currentFrameTick = 0;
