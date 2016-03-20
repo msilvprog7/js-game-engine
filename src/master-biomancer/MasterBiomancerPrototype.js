@@ -1,5 +1,9 @@
 "use strict";
 
+var MASTERBIOMANCERGAME_VARS = {
+	BACKGROUND_COLOR: "#000000"
+};
+
 /**
  * Main class. Instantiate or extend Game to create a new game of your own
  */
@@ -7,6 +11,9 @@ class MasterBiomancerGame extends Game{
 
 	constructor(canvas){
 		super("Master Biomancer Game", 1000, 563, canvas);
+		// Background color
+		canvas.style.setProperty("background-color", MASTERBIOMANCERGAME_VARS.BACKGROUND_COLOR);
+
 		// Sound Manager
 		this.SM = new SoundManager();
 
@@ -34,7 +41,8 @@ class MasterBiomancerGame extends Game{
 
 		// Level 1
 		currentLevel = new Level("level" + this.currentLevelId);
-		currentLevel.addChild(this.generateBiomancer(440, 211));
+		currentLevel.addChild(currentLevel.generateTileRect(8, 4, {x: 100, y: 100}));
+		currentLevel.setFocusChild(this.generateBiomancer(440, 211));
 		this.addLevel(currentLevel);
 
 		// ... More levels later

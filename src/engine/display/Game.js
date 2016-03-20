@@ -33,10 +33,20 @@ class Game extends DisplayObjectContainer{
 
 	update(pressedKeys, timedelta){ 
 		super.update(pressedKeys);
+
+		// Center on level's focus child
+		var focusChild = this.getCurrentLevel().getFocusChild();
+		if (focusChild !== undefined) {
+			this.centerOn({x: focusChild.position.x + focusChild.pivotPoint.x, y: focusChild.position.y + focusChild.pivotPoint.y});
+		}
 	}
 
 	draw(g){ 
 		super.draw(g); 
+	}
+
+	centerOn(point) {
+		this.setPosition({x: (this.width / 2) - point.x, y: (this.height / 2) - point.y});
 	}
 
 	initializeLevels() {
