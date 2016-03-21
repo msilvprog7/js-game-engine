@@ -58,22 +58,20 @@ class Animal extends Entity {
 	setDirection(direction) {
 		// Assumes clockwise from south in Radians
 		this.direction = direction;
-		this.rotation = direction;
+		this.setRotation(direction);
 	}
 
 	spawn() {
-		//
-		var flipX = this.getRotation() > Math.PI / 2 && this.getRotation() <= 3 * Math.PI / 2,
-			flipY = this.getRotation() > Math.PI / 2 && this.getRotation() <= 3 * Math.PI / 2;
-
 		// Change idle image and reposition to center
 		this.addAnimation("idle", {images: [this.spawnIdle], loop: true});
+
+		// Hey, you in the chair! This code does not work...
 		this.hitbox.setHitboxFromImage({width: 2 * this.spawnIdlePivot.x, height: 2 * this.spawnIdlePivot.y});
-		this.hitbox.update();
 		this.setPosition({
-			x: this.position.x + ((flipX) ? -1 : 1) * (this.launchIdlePivot.x - this.spawnIdlePivot.x),
-			y: this.position.y + ((flipY) ? -1 : 1) * (this.launchIdlePivot.y - this.spawnIdlePivot.y)
+			x: this.position.x + (this.launchIdlePivot.x - this.spawnIdlePivot.x),
+			y: this.position.y + (this.launchIdlePivot.y - this.spawnIdlePivot.y)
 		});
+		// ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! !
 
 		// Time till next decay
 		this.nextDecay = new Date().getTime() + ANIMAL_VARS.NEXT_DECAY;
@@ -94,8 +92,9 @@ class Animal extends Entity {
 	}
 
 	decay() {
+		// Apply decay
 		this.health -= this.decayAmount;
-		console.log("[DECAY] " + this.id + ": " + this.health);
+
 		// Time till next decay
 		this.nextDecay = new Date().getTime() + ANIMAL_VARS.NEXT_DECAY;
 	}

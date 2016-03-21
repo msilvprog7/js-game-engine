@@ -64,19 +64,28 @@ class Gun extends Sprite {
 				return animal;
 		}
 
-		var biomancer = this.getBiomancer(),
-			flipX = biomancer.getRotation() > Math.PI / 2 && biomancer.getRotation() <= 3 * Math.PI / 2,
-			flipY = biomancer.getRotation() > Math.PI / 2 && biomancer.getRotation() <= 3 * Math.PI / 2;
+		var biomancer = this.getBiomancer();
 		
+		// Hey, you in the chair! This code does not work...
+
+		/*
 		animal.setPosition(biomancer.hitbox.transformPointWithFullMatrix(new Point(
 			this.position.x + GUN_VARS.LAUNCH_OFFSET.x - ((flipX) ? -1 : 1) * animal.launchIdlePivot.x,
 			this.position.y + GUN_VARS.LAUNCH_OFFSET.y - ((flipY) ? -1 : 1) * animal.launchIdlePivot.y
 		)));
-		animal.setPivotPoint({x: animal.launchIdlePivot.x, y: animal.launchIdlePivot. y});
+		*/
 
+		animal.setPosition(
+			biomancer.hitbox.transformPointWithFullMatrix(
+				new Point(0, 0)
+			)
+		);
+
+		// animal.setPivotPoint({x: animal.launchIdlePivot.x, y: animal.launchIdlePivot.y });
 
 		// Set direction based on Biomancer 
 		animal.setDirection(biomancer.getRotation());
+		// ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! !
 
 		return animal;
 	}
