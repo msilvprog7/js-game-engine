@@ -6,5 +6,7 @@ var EVENTS = {
 	END_COLLISION: "end-collision",
 	STATE_CHANGE: "state-change",
 	COIN_PICKED_UP: "coin-picked-up",
-	TWEEN_COMPLETE: "tween-complete"
+	TWEEN_COMPLETE: "tween-complete",
+	HEALTH_UPDATED: "health-changed",
+	DIED: "health-zero"
 };

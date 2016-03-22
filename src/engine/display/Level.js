@@ -24,13 +24,22 @@ class Level extends DisplayObjectContainer{
 		this.tilesGenerated = 0;
 		this.focusChild = undefined;
 		this.animals = [];
+		this.healthBars = [];
 	}
 
 	update(pressedKeys) {
 		super.update(pressedKeys);
+		var that = this;
+
+		// Remove unused health bars
+		this.healthBars.forEach(function (healthBar) {
+			if (healthBar.isDead()) {
+				that.removeChild(healthBar);
+			}
+		});
+		this.healthBars = this.healthBars.filter((healthBar) => (!healthBar.isDead()));
 
 		// Remove animals that have spawned and died
-		var that = this;
 		this.animals.forEach(function (animal) {
 			if (animal.hasSpawned() && !animal.isAlive()) {
 				that.removeChild(animal);
@@ -94,6 +103,10 @@ class Level extends DisplayObjectContainer{
 		this.tilesGenerated++;
 
 		return generatedTile;
+	}
+
+	monitorHealth(entity) {
+		this.healthBars.push(new HealthBar(entity));
 	}
 
 }

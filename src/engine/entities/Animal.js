@@ -43,7 +43,7 @@ class Animal extends Entity {
 		}
 
 		// Decay
-		if (this.spawned && currentTime >= this.nextDecay) {
+		if (this.spawned && this.health > 0 && currentTime >= this.nextDecay) {
 			this.decay();
 		}
 	}
@@ -106,7 +106,16 @@ class Animal extends Entity {
 		// Apply decay
 		this.health -= this.decayAmount;
 
-		// Time till next decay
-		this.nextDecay = new Date().getTime() + ANIMAL_VARS.NEXT_DECAY;
+		// Update event
+		if (this.health > 0) {
+			// Dispatch event
+			this.dispatchEvent(EVENTS.HEALTH_UPDATED, {health: this.health});
+
+			// Time till next decay
+			this.nextDecay = new Date().getTime() + ANIMAL_VARS.NEXT_DECAY;
+		} else {
+			// Dispatch event
+			this.dispatchEvent(EVENTS.DIED);
+		}
 	}
 }
