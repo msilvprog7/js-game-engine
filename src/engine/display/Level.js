@@ -109,4 +109,8 @@ class Level extends DisplayObjectContainer{
 		this.healthBars.push(new HealthBar(entity));
 	}
 
+	getFriendlyEntities() {
+		return [];
+	}
+
 }
