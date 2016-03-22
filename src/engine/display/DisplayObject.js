@@ -233,5 +233,9 @@ class DisplayObject extends EventDispatcher{
 		return (this.position.x < -epsilon || this.position.x > width+epsilon 
 			|| this.position.y < -epsilon || this.position.y > height+epsilon); 
 	}
+
+	distanceTo(otherPosition) {
+		return Math.sqrt(Math.pow(otherPosition.x - this.position.x, 2) + Math.pow(otherPosition.y - this.position.y,2));
+	}
 	
 }

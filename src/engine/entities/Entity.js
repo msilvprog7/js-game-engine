@@ -1,5 +1,16 @@
 "use strict";
 
+var ROTATION = {
+	S: 0,
+	SW: Math.PI/4,
+	W: Math.PI/2,
+	NW: 3 * Math.PI/4,
+	N: Math.PI,
+	NE: 5 * Math.PI/4,
+	E: 3 * Math.PI/2,
+	SE: 7 * Math.PI/4
+};
+
 class Entity extends AnimatedSprite {
 	constructor(id, health, idle) {
 		super(id, idle);
@@ -40,5 +51,13 @@ class Entity extends AnimatedSprite {
 
 	isAlive() {
 		return this.health > 0;
+	}
+
+	getLevel() {
+		let l = this.parent;
+		while(typeof this.parent !== "Level") {
+			l = l.parent;
+		}
+		return l;
 	}
 }

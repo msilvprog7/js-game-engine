@@ -8,17 +8,6 @@ var BIOMANCER_VARS = {
 	GUN_POSITION: {x: 45, y: 52},
 	SPEED: 3
 };
-var ROTATION = {
-	S: 0,
-	SW: Math.PI/4,
-	W: Math.PI/2,
-	NW: 3 * Math.PI/4,
-	N: Math.PI,
-	NE: 5 * Math.PI/4,
-	E: 3 * Math.PI/2,
-	SE: 7 * Math.PI/4
-};
-
 
 /**
  * Main character

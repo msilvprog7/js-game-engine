@@ -20,7 +20,7 @@ var LEVEL_VARS = {
 class Level extends DisplayObjectContainer{
 
 	constructor(id) {
-		super(id, null);
+		super(id, undefined);
 		this.tilesGenerated = 0;
 		this.focusChild = undefined;
 		this.animals = [];
@@ -87,11 +87,15 @@ class Level extends DisplayObjectContainer{
 		this.healthBars.push(healthBar);
 	}
 
+	getFriendlyEntities() {
+		return [];
+	}
+
 	generateTileRect(horizontalTiles, verticalTiles, position, scale, tileId) {
 		var tile = (tileId !== undefined) ? TILES[tileId] : TILES[LEVEL_VARS.DEFAULT_TILE],
 			generatedTile = new DisplayObjectContainer(),
 			currentTileId = 0,
-			tileImage = new Image(tile.FILENAME);
+			tileImage = {width: tile.WIDTH, height: tile.HEIGHT};
 
 		for (let j = 0; j < verticalTiles; j++) {
 			for (let i = 0; i < horizontalTiles; i++) {
