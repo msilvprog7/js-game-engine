@@ -11,6 +11,7 @@ class Animal extends Entity {
 
 	constructor(id, health, launchIdle, launchIdlePivot, spawnIdle, spawnIdlePivot, launchSpeed, launchDuration, decayAmount) {
 		super(id, health, launchIdle);
+		this.launchIdle = launchIdle;
 		this.launchIdlePivot = launchIdlePivot;
 		this.spawnIdle = spawnIdle;
 		this.spawnIdlePivot = spawnIdlePivot;
@@ -59,19 +60,29 @@ class Animal extends Entity {
 		// Assumes clockwise from south in Radians
 		this.direction = direction;
 		this.setRotation(direction);
+
+		// Reform hitbox
+		this.hitbox.applyBoundingBox();
 	}
 
 	spawn() {
 		// Change idle image and reposition to center
 		this.addAnimation("idle", {images: [this.spawnIdle], loop: true});
 
-		// Hey, you in the chair! This code does not work...
+		// Reset hitbox
 		this.hitbox.setHitboxFromImage({width: 2 * this.spawnIdlePivot.x, height: 2 * this.spawnIdlePivot.y});
+
+		// Set position
 		this.setPosition({
 			x: this.position.x + (this.launchIdlePivot.x - this.spawnIdlePivot.x),
 			y: this.position.y + (this.launchIdlePivot.y - this.spawnIdlePivot.y)
 		});
-		// ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! !
+
+		// Set pivot point
+		this.setPivotPoint({x: this.spawnIdlePivot.x, y: this.spawnIdlePivot.y });
+
+		// Reapply rotation and reform hitbox
+		this.setRotation(this.rotation);
 
 		// Time till next decay
 		this.nextDecay = new Date().getTime() + ANIMAL_VARS.NEXT_DECAY;

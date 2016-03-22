@@ -64,28 +64,29 @@ class Gun extends Sprite {
 				return animal;
 		}
 
-		var biomancer = this.getBiomancer();
+		var biomancer = this.getBiomancer(),
+			xModifier = (biomancer.getRotation() < 3 * Math.PI / 4) ? 1.0 : -1.0,
+			yModifier = Math.cos(biomancer.getRotation());
 		
-		// Hey, you in the chair! This code does not work...
+		
+		// Set hitbox
+		animal.hitbox.setHitboxFromImage({width: 2 * animal.launchIdlePivot.x, height: 2 * animal.launchIdlePivot.y});
 
-		/*
-		animal.setPosition(biomancer.hitbox.transformPointWithFullMatrix(new Point(
-			this.position.x + GUN_VARS.LAUNCH_OFFSET.x - ((flipX) ? -1 : 1) * animal.launchIdlePivot.x,
-			this.position.y + GUN_VARS.LAUNCH_OFFSET.y - ((flipY) ? -1 : 1) * animal.launchIdlePivot.y
-		)));
-		*/
-
+		// Reposition in terms of the level
 		animal.setPosition(
 			biomancer.hitbox.transformPointWithFullMatrix(
-				new Point(0, 0)
+				new Point(
+					this.position.x + GUN_VARS.LAUNCH_OFFSET.x - xModifier * animal.launchIdlePivot.x, 
+					this.position.y + GUN_VARS.LAUNCH_OFFSET.y - yModifier * animal.launchIdlePivot.y
+				)
 			)
 		);
 
-		// animal.setPivotPoint({x: animal.launchIdlePivot.x, y: animal.launchIdlePivot.y });
+		// Set pivot point
+		animal.setPivotPoint({x: animal.launchIdlePivot.x, y: animal.launchIdlePivot.y });
 
 		// Set direction based on Biomancer 
 		animal.setDirection(biomancer.getRotation());
-		// ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! !
 
 		return animal;
 	}

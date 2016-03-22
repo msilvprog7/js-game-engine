@@ -183,6 +183,62 @@ class Hitbox {
 		};
 	}
 
+	applyBoundingBox() {
+		// Use the points from rotation to set the hitbox as a bounding box around the new points
+		var rotationTransformMatrix = this.preRotationPositionMatrix.multiply(this.rotationMatrix).multiply(this.postRotationPositionMatrix).multiply(
+				this.preScaleTranslationMatrix).multiply(this.scaleMatrix),
+			that = this,
+			previousPointKeys = Object.keys(this.rawHitbox),
+			rotatedPoints = previousPointKeys.map((key) => rotationTransformMatrix.multiply(that.rawHitbox[key].getMatrix()).getPoint());
+		
+		this.hitbox = this.getMinBoundingBox(rotatedPoints);
+	}
+
+	getMinBoundingBox(points) {
+		if (points.length <= 0) {
+			return this.getPointBox(new Point(0, 0));
+		}
+
+		// wrap first point
+		var leftMostPoint = points[0],
+			width = 0,
+			height = 0;
+
+		for (let i = 1; i < points.length; i++) {
+
+			if (points[i].x < leftMostPoint.x) {
+				// New left most x value
+				width += (leftMostPoint.x - points[i].x);
+				leftMostPoint.x = points[i].x;
+			} else {
+				// Potentially larger width
+				width = Math.max(width, (points[i].x - leftMostPoint.x));
+			}
+
+			if (points[i].y < leftMostPoint.y) {
+				// New left most y value
+				height += (leftMostPoint.y - points[i].y);
+				leftMostPoint.y = points[i].y;
+			} else {
+				// Potentially larger height
+				height = Math.max(height, (points[i].y - leftMostPoint.y));
+			}
+		}
+
+		return this.getPointBox(leftMostPoint, width, height);
+	}
+
+	getPointBox(point, width, height) {
+		width = (width !== undefined) ? width : 0.0;
+		height = (height !== undefined) ? height : 0.0;
+		return {
+			tl: point,
+			tr: new Point(point.x + width, point.y),
+			br: new Point(point.x + width, point.y + height),
+			bl: new Point(point.x, point.y + height)
+		};
+	}
+
 	transformPointWithMatrix(point) {
 		return this.transformMatrix.multiply(point.getMatrix()).getPoint();
 	}
