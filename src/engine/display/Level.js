@@ -70,9 +70,21 @@ class Level extends DisplayObjectContainer{
 		this.focusChild = undefined;
 	}
 
+	setFocusChildAndMonitorHealth(child) {
+		this.setFocusChild(child);
+		this.monitorHealth(child);
+	}
+
 	addAnimal(animal) {
-		this.animals.push(animal);
+		animal.setLevel(this);
 		this.addChild(animal);
+		this.animals.push(animal);
+	}
+
+	monitorHealth(entity) {
+		var healthBar = new HealthBar(entity);
+		this.addChild(healthBar);
+		this.healthBars.push(healthBar);
 	}
 
 	generateTileRect(horizontalTiles, verticalTiles, position, scale, tileId) {
@@ -104,9 +116,4 @@ class Level extends DisplayObjectContainer{
 
 		return generatedTile;
 	}
-
-	monitorHealth(entity) {
-		this.healthBars.push(new HealthBar(entity));
-	}
-
 }

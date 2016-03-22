@@ -34,6 +34,10 @@ class Entity extends AnimatedSprite {
 		super.draw(g);
 	}
 
+	getHealthRatio() {
+		return (this.maxHealth <= 0) ? 0 : this.health / this.maxHealth;
+	}
+
 	isAlive() {
 		return this.health > 0;
 	}

@@ -1,7 +1,8 @@
 "use strict";
 
+// A specific animal's duration will equal (HEALTH / DECAY_AMOUNT) * ANIMAL_VARS.NEXT_DECAY
 var ANIMAL_VARS = {
-	NEXT_DECAY: 1000 // ms
+	NEXT_DECAY: 250 // ms
 }
 
 /**
@@ -20,6 +21,7 @@ class Animal extends Entity {
 		this.spawned = false;
 		this.direction = 0;
 		this.decayAmount = decayAmount;
+		this.level = undefined;
 	}
 
 	update(pressedKeys) {
@@ -50,6 +52,14 @@ class Animal extends Entity {
 
 	draw(g) {
 		super.draw(g);
+	}
+
+	setLevel(level) {
+		this.level = level;
+	}
+
+	getLevel() {
+		return this.level;
 	}
 
 	hasSpawned() {
@@ -86,6 +96,9 @@ class Animal extends Entity {
 
 		// Time till next decay
 		this.nextDecay = new Date().getTime() + ANIMAL_VARS.NEXT_DECAY;
+
+		// Tell level to monitor health
+		this.level.monitorHealth(this);
 
 		this.spawned = true;
 	}

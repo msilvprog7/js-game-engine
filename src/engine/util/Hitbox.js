@@ -97,6 +97,9 @@ class Hitbox {
 		this.computeScaleMatrix();
 		this.computePivotPointMatrix();	
 		this.computeTransformMatrix();
+
+		// Notify parent's listener
+		this.parent.dispatchEvent(EVENTS.HITBOX_UPDATED, {hitbox: this});
 	}
 
 

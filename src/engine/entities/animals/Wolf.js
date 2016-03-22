@@ -1,8 +1,9 @@
 "use strict";
 
+// Duration will equal (HEALTH / DECAY_AMOUNT) * ANIMAL_VARS.NEXT_DECAY
 var WOLF_VARS = {
 	count: 0,
-	HEALTH: 5,
+	HEALTH: 40,
 	LAUNCH_IDLE: "biomancer/animals/wolf/wolf-launch.png",
 	LAUNCH_IDLE_PIVOT: {x: 6, y: 6},
 	LAUNCH_SPEED: 4,

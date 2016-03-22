@@ -42,7 +42,7 @@ class MasterBiomancerGame extends Game{
 		// Level 1
 		currentLevel = new Level("level" + this.currentLevelId);
 		currentLevel.addChild(currentLevel.generateTileRect(8, 4, {x: 100, y: 100}));
-		currentLevel.setFocusChild(this.generateBiomancer(440, 211, currentLevel));
+		currentLevel.setFocusChildAndMonitorHealth(this.generateBiomancer(440, 211, currentLevel));
 		this.addLevel(currentLevel);
 
 		// ... More levels later
@@ -53,6 +53,7 @@ class MasterBiomancerGame extends Game{
 		biomancer.setParent(level);
 		biomancer.setPosition({x: x, y: y});
 		biomancer.setPivotPoint({x: 30, y: 35});
+		biomancer.hitbox.setHitboxFromImage(BIOMANCER_VARS.DIMENSIONS);
 		return biomancer;
 	}
 }
