@@ -5,6 +5,7 @@ var BIOMANCER_VARS = {
 	HEALTH: 100,
 	FILENAME: "biomancer/main-char/biomancer.png",
 	DIMENSIONS: {width: 60, height: 70},
+	PIVOT: {x: 30, y: 35},
 	GUN_POSITION: {x: 45, y: 52},
 	SPEED: 3
 };

@@ -95,15 +95,19 @@ class Enemy extends Entity {
 		this.health-=hit;
 	}
 
+	setLevel(level) {
+		this.parent = level;
+	}
+
 	getInSight(sight_range) {
 		//Returns a list of all friendly entities (Biomancer and animals)
 		//Sorted by distance from the enemy
-		let allFriendlies = this.getLevel().getFriendlyEntities(),
+		let allFriendlies = this.parent.getFriendlyEntities(),
 			inRange = [];
 		for(let i = 0; i < allFriendlies.length; i++) {
 			let dist = this.distanceTo(allFriendlies[i].position);
 			if(dist <= sight_range) {
-				inRange.push({o: allFriendlies[i], distance: dist);
+				inRange.push({o: allFriendlies[i], distance: dist});
 			}
 		}
 		inRange.sort((a, b) => a.distance-b.distance)

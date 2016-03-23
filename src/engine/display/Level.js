@@ -25,6 +25,8 @@ class Level extends DisplayObjectContainer{
 		this.focusChild = undefined;
 		this.animals = [];
 		this.healthBars = [];
+		this.friendlies = [];
+		this.enemies = [];
 	}
 
 	update(pressedKeys) {
@@ -43,15 +45,27 @@ class Level extends DisplayObjectContainer{
 		this.animals.forEach(function (animal) {
 			if (animal.hasSpawned() && !animal.isAlive()) {
 				that.removeChild(animal);
+				that.removeFriendly(animal);
 			}
 		});
 		this.animals = this.animals.filter((animal) => (!animal.hasSpawned() || animal.isAlive()));
+
+		// Remove enemies that have died
+		this.enemies.forEach(function (enemy) {
+			if (!enemy.isAlive()) {
+				that.removeChild(enemy);
+			}
+		});
+		this.enemies = this.enemies.filter((enemy) => (enemy.isAlive()));
 	}
 
 	draw(g) {
 		super.draw(g);
 	}
 
+	/**
+	  * Focus child
+	 */
 	setFocusChild(child) {
 		if (this.focusChild !== undefined) {
 			this.removeFocusChild();
@@ -79,22 +93,53 @@ class Level extends DisplayObjectContainer{
 		this.addChild(child, this.getChildIndex(this.focusChild));
 	}
 
+	/**
+	  * Animals
+	 */
 	addAnimal(animal) {
 		animal.setLevel(this);
 		this.addChildBeforeFocus(animal);
 		this.animals.push(animal);
+		this.addFriendly(animal);
 	}
 
+	/**
+	  * Health
+	 */
 	monitorHealth(entity) {
 		var healthBar = new HealthBar(entity);
 		this.addChild(healthBar, this.getChildIndex(entity) + 1);
 		this.healthBars.push(healthBar);
 	}
 
-	getFriendlyEntities() {
-		return [];
+	/**
+	  * Friendlies
+	 */
+	addFriendly(entity) {
+		this.friendlies.push(entity);
 	}
 
+	removeFriendly(entity) {
+		this.friendlies.splice(this.friendlies.indexOf(entity), 1);
+	}
+
+	getFriendlyEntities() {
+		return this.friendlies;
+	}
+
+	/**
+	  * Enemies
+	 */
+	addEnemy(enemy) {
+		enemy.setLevel(this);
+		this.addChildBeforeFocus(enemy);
+		this.enemies.push(enemy);
+		this.monitorHealth(enemy);
+	}
+
+	/**
+	  * Tiles
+	 */
 	generateTileRect(horizontalTiles, verticalTiles, position, scale, tileId) {
 		var tile = (tileId !== undefined) ? TILES[tileId] : TILES[LEVEL_VARS.DEFAULT_TILE],
 			generatedTile = new DisplayObjectContainer(),

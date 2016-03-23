@@ -47,12 +47,8 @@ class Wolf extends Animal {
 		}
 
 		// Change direction
-		if (Math.random() < WOLF_VARS.TURN_PROBABILITY) {
-			var r = MathUtil.modRadians(this.rotation + MathUtil.randomInt(-1, 1) * (MathUtil.PI4));
-			this.setDirection(r);
-		} else if (forceTurn) {
-			var r = MathUtil.modRadians(this.rotation + MathUtil.either(-1, 1) * (MathUtil.PI4));
-			this.setDirection(r);
+		if (Math.random() < WOLF_VARS.TURN_PROBABILITY || forceTurn) {
+			this.setDirection(MathUtil.modRadians(this.rotation + MathUtil.either(-1, 1) * (MathUtil.PI4)));
 		}
 	}
 	
