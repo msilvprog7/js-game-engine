@@ -98,9 +98,22 @@ class Level extends DisplayObjectContainer{
 	 */
 	addAnimal(animal) {
 		animal.setLevel(this);
-		this.addChildBeforeFocus(animal);
+		this.addChildBeforeEnemies(animal);
 		this.animals.push(animal);
 		this.addFriendly(animal);
+	}
+
+	getLastAnimalIndex() {
+		return this.getLastIndexOfChildType(Animal);
+	}
+
+	addChildAfterAnimals(child) {
+		let i = this.getLastAnimalIndex();
+		if (i === -1) {
+			this.addChildBeforeFocus(child);
+		} else {
+			this.addChild(child, i + 1);
+		}
 	}
 
 	/**
@@ -132,9 +145,22 @@ class Level extends DisplayObjectContainer{
 	 */
 	addEnemy(enemy) {
 		enemy.setLevel(this);
-		this.addChildBeforeFocus(enemy);
+		this.addChildAfterAnimals(enemy);
 		this.enemies.push(enemy);
 		this.monitorHealth(enemy);
+	}
+
+	getFirstEnemyIndex() {
+		return this.getIndexOfChildType(Enemy);
+	}
+
+	addChildBeforeEnemies(child) {
+		let i = this.getFirstEnemyIndex();
+		if (i === -1) {
+			this.addChildBeforeFocus(child);
+		} else {
+			this.addChild(child, i);
+		}
 	}
 
 	/**

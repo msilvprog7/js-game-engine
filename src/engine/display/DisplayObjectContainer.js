@@ -86,6 +86,26 @@ class DisplayObjectContainer extends DisplayObject{
 		return this.children[index];
 	}
 
+	getIndexOfChildType(type) {
+		for (let i = 0; i < this.children.length; i++) {
+			if (this.children[i] instanceof type) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
+	getLastIndexOfChildType(type) {
+		for (let i = this.children.length - 1; i >= 0; i--) {
+			if (this.children[i] instanceof type) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
 	getChildren() {
 		return this.children;
 	}
