@@ -154,6 +154,8 @@ class BoundingRectangle{
 }
 
 class MathUtil {
+
+
 	static randomInt(min, max) {
 		return Math.floor((Math.random() * (max - min + 1)) + min);
 	}
@@ -178,3 +180,23 @@ class MathUtil {
 		return radians % (2 * Math.PI);
 	}
 }
+
+var init_pi = function() {
+	let pi_vars = [
+		{n: 'PI4', v: Math.PI/4},
+		{n: 'PI2', v: Math.PI/2},
+		{n: '3PI4', v: 3*Math.PI/4},
+		{n: 'PI', v: Math.PI},
+		{n: '5PI4', v: 5*Math.PI/4},
+		{n: '3PI2', v: 3*Math.PI/2},
+		{n: '7PI4', v: 7*Math.PI/4}
+	];
+	pi_vars.forEach(function(pi_var) {
+		Object.defineProperty(MathUtil, pi_var.n, {
+		    value: pi_var.v,
+		    writable : false,
+		    enumerable : true,
+		    configurable : false
+		});
+	});
+}();

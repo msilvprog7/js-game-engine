@@ -11,7 +11,7 @@ var WOLF_VARS = {
 	SPAWN_IDLE: "biomancer/animals/wolf/wolf-spawn.png",
 	SPAWN_IDLE_PIVOT: {x: 25, y: 25},
 	DECAY_AMOUNT: 1,
-	RADIUS: 50,
+	RADIUS: 70,
 	TURN_PROBABILITY: 0.01,
 	WALK_PROBABILITY: 0.75,
 	WALK_AMOUNT: 1
@@ -48,10 +48,10 @@ class Wolf extends Animal {
 
 		// Change direction
 		if (Math.random() < WOLF_VARS.TURN_PROBABILITY) {
-			var r = MathUtil.modRadians(this.rotation + MathUtil.randomInt(-1, 1) * (Math.PI / 4));
+			var r = MathUtil.modRadians(this.rotation + MathUtil.randomInt(-1, 1) * (MathUtil.PI4));
 			this.setDirection(r);
 		} else if (forceTurn) {
-			var r = MathUtil.modRadians(this.rotation + MathUtil.either(-1, 1) * (Math.PI / 4));
+			var r = MathUtil.modRadians(this.rotation + MathUtil.either(-1, 1) * (MathUtil.PI4));
 			this.setDirection(r);
 		}
 	}
