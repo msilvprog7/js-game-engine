@@ -54,9 +54,11 @@ class Entity extends AnimatedSprite {
 	}
 
 	getLevel() {
-		let l = this.parent;
+		let l = this.parent, iters = 0;
 		while(typeof this.parent !== "Level") {
 			l = l.parent;
+			iters++;
+			if(iters > 10) { return undefined; }
 		}
 		return l;
 	}
