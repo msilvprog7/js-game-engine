@@ -10,7 +10,11 @@ var WOLF_VARS = {
 	LAUNCH_DURATION: 1000,
 	SPAWN_IDLE: "biomancer/animals/wolf/wolf-spawn.png",
 	SPAWN_IDLE_PIVOT: {x: 25, y: 25},
-	DECAY_AMOUNT: 1
+	DECAY_AMOUNT: 1,
+	RADIUS: 70,
+	TURN_PROBABILITY: 0.01,
+	WALK_PROBABILITY: 0.75,
+	WALK_AMOUNT: 1
 };
 
 /**
@@ -21,9 +25,31 @@ class Wolf extends Animal {
 	constructor() {
 		super("wolf-" + WOLF_VARS.count, WOLF_VARS.HEALTH, WOLF_VARS.LAUNCH_IDLE, WOLF_VARS.LAUNCH_IDLE_PIVOT, 
 			WOLF_VARS.SPAWN_IDLE, WOLF_VARS.SPAWN_IDLE_PIVOT,
-			WOLF_VARS.LAUNCH_SPEED, WOLF_VARS.LAUNCH_DURATION, WOLF_VARS.DECAY_AMOUNT);
+			WOLF_VARS.LAUNCH_SPEED, WOLF_VARS.LAUNCH_DURATION, WOLF_VARS.DECAY_AMOUNT, WOLF_VARS.RADIUS);
 
 		WOLF_VARS.count++;
+	}
+
+	move() {
+		// Random movement in radius
+		var forceTurn = false;
+
+		// Try to move forward
+		if (Math.random() < WOLF_VARS.WALK_PROBABILITY) {
+			var movement = this.movementForward(WOLF_VARS.WALK_AMOUNT);
+
+			if (this.positionInRadius(movement)) {
+				this.addToMovement(movement.x, movement.y);
+				super.move();
+			} else {
+				forceTurn = true;
+			}
+		}
+
+		// Change direction
+		if (Math.random() < WOLF_VARS.TURN_PROBABILITY || forceTurn) {
+			this.setDirection(MathUtil.modRadians(this.rotation + MathUtil.either(-1, 1) * (MathUtil.PI4)));
+		}
 	}
 	
 }

@@ -10,7 +10,7 @@ var ANIMAL_VARS = {
  */
 class Animal extends Entity {
 
-	constructor(id, health, launchIdle, launchIdlePivot, spawnIdle, spawnIdlePivot, launchSpeed, launchDuration, decayAmount) {
+	constructor(id, health, launchIdle, launchIdlePivot, spawnIdle, spawnIdlePivot, launchSpeed, launchDuration, decayAmount, radius) {
 		super(id, health, launchIdle);
 		this.launchIdle = launchIdle;
 		this.launchIdlePivot = launchIdlePivot;
@@ -22,6 +22,7 @@ class Animal extends Entity {
 		this.direction = 0;
 		this.decayAmount = decayAmount;
 		this.level = undefined;
+		this.radius = radius;
 	}
 
 	update(pressedKeys) {
@@ -40,7 +41,7 @@ class Animal extends Entity {
 		}
 
 		// Move
-		if (this.spawned) {
+		if (this.spawned && this.health > 0) {
 			this.move();
 		}
 
@@ -51,6 +52,11 @@ class Animal extends Entity {
 	}
 
 	draw(g) {
+		// DEBUG: radius
+		if (this.spawned && this.health > 0) {
+			this.drawRadius(g);
+		}
+
 		super.draw(g);
 	}
 
@@ -64,6 +70,38 @@ class Animal extends Entity {
 
 	hasSpawned() {
 		return this.spawned;
+	}
+
+	getRadius() {
+		return this.radius;
+	}
+
+	drawRadius(g) {
+		// Save state
+		g.save();
+
+		// Colors and styles
+		g.strokeStyle = "#4472C1";
+		g.fillStyle = "#5381C6";
+		g.lineWidth = 2;
+		g.globalAlpha = 0.8;
+
+		// Draw circle
+		g.beginPath();
+		g.arc(this.radiusPosition.x, this.radiusPosition.y, this.radius, 0, 2 * Math.PI, false);
+		g.fill();
+		g.stroke();
+
+		// Cleanup
+		g.restore();
+	}
+
+	positionInRadius(position) {
+		var afterMove = {
+			x: this.position.x + this.spawnIdlePivot.x + position.x, 
+			y: this.position.y + this.spawnIdlePivot.y + position.y
+		};
+		return (MathUtil.euclidianDist(afterMove, this.radiusPosition) <= this.radius);
 	}
 
 	setDirection(direction) {
@@ -89,10 +127,13 @@ class Animal extends Entity {
 		});
 
 		// Set pivot point
-		this.setPivotPoint({x: this.spawnIdlePivot.x, y: this.spawnIdlePivot.y });
+		this.setPivotPoint({x: this.spawnIdlePivot.x, y: this.spawnIdlePivot.y});
 
 		// Reapply rotation and reform hitbox
 		this.setRotation(this.rotation);
+
+		// Set radius location
+		this.radiusPosition = {x: this.position.x + this.spawnIdlePivot.x, y: this.position.y + this.spawnIdlePivot.y};
 
 		// Time till next decay
 		this.nextDecay = new Date().getTime() + ANIMAL_VARS.NEXT_DECAY;
@@ -113,6 +154,7 @@ class Animal extends Entity {
 
 	move() {
 		// Nothing here, override in subclasses for AI when spawned
+		super.move();
 	}
 
 	decay() {
