@@ -1,6 +1,7 @@
 "use strict";
 
-var ENEMY_VARS = {	
+var ENEMY_VARS = {
+	MOVE_EPSILON: 10	
 };
 
 /**
@@ -8,11 +9,15 @@ var ENEMY_VARS = {
  */
 class Enemy extends Entity {
 
-	constructor(id, health, spawnIdle, spawnIdlePivot) {
+	constructor(id, health, spawnIdle, spawnIdlePivot, attackRate, attackRange) {
 		super(id, health, spawnIdle);
 		this.spawnIdle = spawnIdle;
 		this.spawnIdlePivot = spawnIdlePivot;
 		this.direction = 0;
+		this.attackRate = attackRate;
+		this.attackRange = attackRange;
+		this.nextAttackTime = new Date().getTime();
+		this.closestFriendlyInSight = undefined;		
 	}
 
 	update(pressedKeys) {
@@ -23,7 +28,7 @@ class Enemy extends Entity {
 		this.move();
 
 		// Attack	
-		if(this.canAttack) {
+		if(this.canAttack()) {
 			this.attack();
 		}
 
@@ -47,12 +52,15 @@ class Enemy extends Entity {
 	}
 
 	canAttack() {
-		// Nothing here, override in subclasses for AI when spawned
-		return false;
+		// override in subclasses for AI when spawned
+		// CALL SUPER - ENFORCES ATTACK RATE
+		return new Date().getTime() > this.nextAttackTime && this.closestFriendlyInSight.distance <= this.attackRange;
 	}
 
 	attack() {
-		// Nothing here, override in subclasses for AI when spawned
+		// override in subclasses for AI when spawned
+		// CALL SUPER - ENFORCES ATTACK RATE
+		this.nextAttackTime = new Date().getTime() + this.attackRate;
 	}
 
 	move() {
@@ -64,28 +72,28 @@ class Enemy extends Entity {
 			return;
 		}
 
-		if (x < 0 && y > 0) {
+		if (x < 0 && y < 0) {
 			// North-west
 			this.setRotation(ROTATION.NW);
-		} else if (x > 0 && y > 0) {
+		} else if (x > 0 && y < 0) {
 			// North-east
 			this.setRotation(ROTATION.NE);
-		} else if (x > 0 && y < 0) {
+		} else if (x > 0 && y > 0) {
 			// South-east
 			this.setRotation(ROTATION.SE);
-		} else if (x < 0 && y < 0) {
+		} else if (x < 0 && y > 0) {
 			// South-west
 			this.setRotation(ROTATION.SW);
 		} else if (x < 0 && y === 0) {
 			// West
 			this.setRotation(ROTATION.W);
-		} else if (x === 0 && y > 0) {
+		} else if (x === 0 && y < 0) {
 			// North
 			this.setRotation(ROTATION.N);
 		} else if (x > 0 && y === 0) {
 			// East
 			this.setRotation(ROTATION.E);
-		} else if (x === 0 && y < 0) {
+		} else if (x === 0 && y > 0) {
 			// South
 			this.setRotation(ROTATION.S);
 		}
