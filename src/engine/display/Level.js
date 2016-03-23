@@ -75,15 +75,19 @@ class Level extends DisplayObjectContainer{
 		this.monitorHealth(child);
 	}
 
+	addChildBeforeFocus(child) {
+		this.addChild(child, this.getChildIndex(this.focusChild));
+	}
+
 	addAnimal(animal) {
 		animal.setLevel(this);
-		this.addChild(animal);
+		this.addChildBeforeFocus(animal);
 		this.animals.push(animal);
 	}
 
 	monitorHealth(entity) {
 		var healthBar = new HealthBar(entity);
-		this.addChild(healthBar);
+		this.addChild(healthBar, this.getChildIndex(entity) + 1);
 		this.healthBars.push(healthBar);
 	}
 

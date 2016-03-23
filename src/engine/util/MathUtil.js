@@ -152,3 +152,29 @@ class BoundingRectangle{
 		this.height = Math.max(this.point.y, point.y) - leftmost.y;
 	}
 }
+
+class MathUtil {
+	static randomInt(min, max) {
+		return Math.floor((Math.random() * (max - min + 1)) + min);
+	}
+
+	static either() {
+		if (arguments.length === 0) {
+			return undefined;
+		}
+
+		return arguments[MathUtil.randomInt(0, arguments.length - 1)];
+	}
+
+	static euclidianDist(pos1, pos2) {
+		return Math.sqrt((pos1.x - pos2.x) * (pos1.x - pos2.x) + (pos1.y - pos2.y) * (pos1.y - pos2.y));
+	}
+
+	static modRadians(radians) {
+		while (radians < 0) {
+			radians += 2 * Math.PI;
+		}
+
+		return radians % (2 * Math.PI);
+	}
+}

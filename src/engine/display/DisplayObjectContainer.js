@@ -39,11 +39,16 @@ class DisplayObjectContainer extends DisplayObject{
 	}
 
 	addChild (child, index) {
-		if(index === undefined) { 
+		if(index === undefined || index < 0) { 
 			this.children.push(child);
 		} else {
 			this.children.splice(index, 0, child);
 		}
+		child.setParent(this);
+	}
+
+	unshiftChild(child) {
+		this.children.unshift(child);
 		child.setParent(this);
 	}
 
@@ -67,6 +72,10 @@ class DisplayObjectContainer extends DisplayObject{
 
 	contains (child) {
 		return (this.children.indexOf(child) !== -1);
+	}
+
+	getChildIndex (child) {
+		return this.children.indexOf(child);
 	}
 
 	getChildById (id) {

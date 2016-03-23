@@ -30,6 +30,13 @@ class Entity extends AnimatedSprite {
 		this.yMovement += y;
 	}
 
+	movementForward(amount) {
+		return {
+			x: -Math.sin(this.rotation) * amount,
+			y: Math.cos(this.rotation) * amount
+		};
+	}
+
 	resetMovement() {
 		this.xMovement = 0;
 		this.yMovement = 0;

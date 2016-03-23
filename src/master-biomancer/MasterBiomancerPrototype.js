@@ -41,7 +41,7 @@ class MasterBiomancerGame extends Game{
 
 		// Level 1
 		currentLevel = new Level("level" + this.currentLevelId);
-		currentLevel.addChild(currentLevel.generateTileRect(8, 4, {x: 100, y: 100}));
+		currentLevel.addChild(currentLevel.generateTileRect(8, 4, {x: 100, y: 100})); // Tiles first!
 		currentLevel.setFocusChildAndMonitorHealth(this.generateBiomancer(440, 211, currentLevel));
 		this.addLevel(currentLevel);
 
