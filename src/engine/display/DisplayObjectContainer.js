@@ -30,7 +30,7 @@ class DisplayObjectContainer extends DisplayObject{
 		this.reverseTransformations(g);
 
 		// Test drawing transformed hitbox
-		this.hitbox.drawHitbox(g);
+		//this.hitbox.drawHitbox(g);
 	}
 
 	update (pressedKeys) {

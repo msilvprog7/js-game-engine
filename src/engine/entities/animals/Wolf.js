@@ -11,7 +11,7 @@ var WOLF_VARS = {
 	SPAWN_IDLE: "biomancer/animals/wolf/wolf-spawn.png",
 	SPAWN_IDLE_PIVOT: {x: 25, y: 25},
 	DECAY_AMOUNT: 1,
-	TURN_PROBABILITY: 0.01,
+	TURN_PROBABILITY: 0.1,
 	WALK_PROBABILITY: 0.75,
 	WALK_SPEED: 1,
 	RUN_SPEED: 8,	
