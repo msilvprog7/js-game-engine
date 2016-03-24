@@ -51,9 +51,11 @@ class Wolf extends Animal {
 				return; 
 			}	
 			if(xMove === 0 && yMove === 0) { this.resetMovement(); return; }
-			this.addToMovement(xMove*WOLF_VARS.RUN_SPEED, yMove*WOLF_VARS.RUN_SPEED);
+			// this.addToMovement(xMove*WOLF_VARS.RUN_SPEED, yMove*WOLF_VARS.RUN_SPEED);
+			this.vX = xMove*WOLF_VARS.RUN_SPEED;
+			this.vY = yMove*WOLF_VARS.RUN_SPEED;
 			this.orient(xMove, yMove);			
-			super.move();
+			// super.move();
 		} else {
 			let enemies = this.getInSightRange();
 			if(enemies.length > 0) {
@@ -75,10 +77,15 @@ class Wolf extends Animal {
 
 		// Try to move forward
 		if (Math.random() < WOLF_VARS.WALK_PROBABILITY) {
-			var movement = this.movementForward(WOLF_VARS.WALK_SPEED);			
+
+			var movement = this.movementForward(WOLF_VARS.WALK_SPEED);
+
 			if (this.positionInWalkRange(movement)) {
-				this.addToMovement(movement.x, movement.y);
-				super.move();
+				// this.addToMovement(movement.x, movement.y);
+				this.vX = movement.x;
+				this.vY = movement.y;
+				// super.move();
+
 			} else {
 				forceTurn = true;
 			}

@@ -21,6 +21,18 @@ class DisplayObject extends EventDispatcher{
 
 		this.loadImage(filename);
 		this.parent = undefined;
+		this.hasPhysics = false;
+		this.vX = 0;
+		this.vY = 0;
+		this.aX = 0;
+		this.aY = 0;
+		// this.gravity = 1;
+		// this.terminalV = 15;
+		// this.grounded = false;
+		this.mass = 0;
+		this.friction = 0;
+
+
 	}
 
 	/**
@@ -43,7 +55,40 @@ class DisplayObject extends EventDispatcher{
 	 * Invoked every frame, manually for now, but later automatically if this DO is in DisplayTree
 	 */
 	update(pressedKeys){
-		
+		if (this.hasPhysics) {
+			// update velocity
+			var pos = this.getPosition();
+			this.vX += this.aX;
+			this.vY += this.aY;
+			if (this.vX > 0) {
+				this.vX -= this.friction;
+				this.vX = this.vX < 0 ? 0 : this.vX;
+			} else if (this.vX < 0) {
+				this.vX += this.friction;
+				this.vx = this.vX > 0 ? 0 : this.vX;
+			}
+			// if (!this.grounded && this.vY < this.terminalV) {
+			// 	this.vY += this.gravity;
+			// }
+
+			// if (this.grounded) {
+			// 	this.vY = this.vY > 0 ? 0 : this.vY;
+			// 	this.aY = this.aY > 0 ? 0 : this.aY;
+			// }
+
+			if (this.vY > 0) {
+				this.vY -= this.friction;
+				this.vY = this.vY < 0 ? 0 : this.vY;
+			} else if (this.vY < 0) {
+				this.vY += this.friction;
+				this.vY = this.vY > 0 ? 0 : this.vY;
+			}
+
+			this.setPosition({
+				x: pos.x + this.vX,
+				y: pos.y + this.vY
+			});
+		}
 	}
 
 	/**
@@ -101,10 +146,12 @@ class DisplayObject extends EventDispatcher{
 	 *
 	 */
 
-	setId(id){this.id = id;}
+	setId(id){this.id = id;
+		return this;}
 	getId(){return this.id;}
 
-	setDisplayImage(image){this.displayImage = image;} //image needs to already be loaded!
+	setDisplayImage(image){this.displayImage = image;
+		return this;} //image needs to already be loaded!
 	getDisplayImage(){return this.displayImage;}
 
 	getUnscaledHeight(){return this.displayImage.height;}
@@ -114,16 +161,19 @@ class DisplayObject extends EventDispatcher{
 	 * Getters and setters
 	 */
 	getLoaded () { return this.loaded; }
-	setLoaded (loaded) { this.loaded = loaded; }
+	setLoaded (loaded) { this.loaded = loaded;
+		return this; }
 
 	getVisible () { return this.visible; }
-	setVisible (visible) { this.visible = visible; }
+	setVisible (visible) { this.visible = visible;
+		return this; }
 
 	getPosition () { return {x: this.position.x, y: this.position.y}; }
 	setPosition (position) { 
-		this.position.x = position.x; 
-		this.position.y = position.y;
+		this.position.x = typeof position.x !== 'undefined' ? position.x : this.position.x; 
+		this.position.y = typeof position.y !== 'undefined' ? position.y : this.position.y;
 		this.hitbox.update();
+		return this;
 	}
 
 	getPivotPoint () { return {x: this.pivotPoint.x, y: this.pivotPoint.y}; }
@@ -131,6 +181,7 @@ class DisplayObject extends EventDispatcher{
 		this.pivotPoint.x = pivotPoint.x; 
 		this.pivotPoint.y = pivotPoint.y;
 		this.hitbox.update();
+		return this;
 	}
 	getNormalizedPivotPoint() {
 		return {
@@ -144,6 +195,7 @@ class DisplayObject extends EventDispatcher{
 		this.pivotPoint.x *= Math.abs(scaleX / this.scaleX);
 		this.scaleX = scaleX;
 		this.hitbox.update();
+		return this;
 	}
 
 	getScaleY () { return this.scaleY; }
@@ -151,25 +203,29 @@ class DisplayObject extends EventDispatcher{
 		this.pivotPoint.y *= Math.abs(scaleY / this.scaleY);
 		this.scaleY = scaleY;
 		this.hitbox.update();
-
+		return this;
 	}
 
 	setScale (scale) {
 		this.setScaleX(scale);
 		this.setScaleY(scale);
+		return this;
 	}
 
 	getRotation () { return this.rotation; }
 	setRotation (rotation) { 
 		this.rotation = rotation;
 		this.hitbox.update();
+		return this;
 	}
 
 	getAlpha () { return this.alpha; }
-	setAlpha (alpha) { this.alpha = alpha; }
+	setAlpha (alpha) { this.alpha = alpha;
+		return this; }
 
 	getParent () { return this.parent; }
-	setParent (parent) { this.parent = parent; }
+	setParent (parent) { this.parent = parent;
+		return this; }
 
 	getAspectRatio () {
 		return this.getUnscaledWidth() / this.getUnscaledHeight();
@@ -198,41 +254,65 @@ class DisplayObject extends EventDispatcher{
 	collidesWith(otherDO) {
 		//Does no consider collision with child to be a hit
 		var hitbox1 = this.hitbox.hitbox,
-			hitbox2 = otherDO.hitbox.hitbox;
+			hitbox2 = otherDO.hitbox.hitbox,
+			collided;
 
 		if (Object.keys(hitbox1).length === 0 || Object.keys(hitbox2).length === 0) {
 			return false;
 		}
-		
-		var lines1 = [new Line(hitbox1.tl, hitbox1.tr),new Line(hitbox1.tr, hitbox1.br),new Line(hitbox1.br, hitbox1.bl),new Line(hitbox1.bl, hitbox1.tl)],
-			lines2 = [new Line(hitbox2.tl, hitbox2.tr),new Line(hitbox2.tr, hitbox2.br),new Line(hitbox2.br, hitbox2.bl),new Line(hitbox2.bl, hitbox2.tl)],
-			collisions = [];
-		for(var i = 0; i < lines1.length; i++) {
-			for(var j = 0; j < lines2.length; j++) {
-				if(lines1[i].intersects(lines2[j])) {
-					collisions.push({
-						s1: HITBOX.SIDES[i],
-						s2: HITBOX.SIDES[j],
-						intersection: lines1[i].getIntersectionPoint(lines2[j])
-					});
-				}
+
+		collided = this.doOverlap(hitbox1.tl, hitbox2.tl, hitbox1.br, hitbox2.br);
+
+		if (collided)
+			this.dispatchEvent(EVENTS.COLLISION);
+
+		// maybe should be for all
+		if (this.hasPhysics && collided) {
+			if (MathUtil.approxEq(hitbox1.br.y, hitbox2.tl.y, 20)) {
+				this.dispatchEvent(EVENTS.COLLISION_TOP);
+			}
+			if (MathUtil.approxEq(hitbox1.tl.y, hitbox2.br.y, 20)) {
+				this.dispatchEvent(EVENTS.COLLISION_BOTTOM);
+			}
+			if (MathUtil.approxEq(hitbox1.tl.x, hitbox2.tr.x, 20)) {
+				this.dispatchEvent(EVENTS.COLLISION_RIGHT);
+			}
+			if (MathUtil.approxEq(hitbox1.tr.x, hitbox2.tl.x, 20)) {
+				this.dispatchEvent(EVENTS.COLLISION_LEFT);
 			}
 		}
+		
+		return collided;
+		
+		// var lines1 = [new Line(hitbox1.tl, hitbox1.tr),new Line(hitbox1.tr, hitbox1.br),new Line(hitbox1.br, hitbox1.bl),new Line(hitbox1.bl, hitbox1.tl)],
+		// 	lines2 = [new Line(hitbox2.tl, hitbox2.tr),new Line(hitbox2.tr, hitbox2.br),new Line(hitbox2.br, hitbox2.bl),new Line(hitbox2.bl, hitbox2.tl)],
+		// 	collisions = [];
+		// for(var i = 0; i < lines1.length; i++) {
+		// 	for(var j = 0; j < lines2.length; j++) {
+		// 		if(lines1[i].intersects(lines2[j])) {
+		// 			collisions.push({
+		// 				s1: HITBOX.SIDES[i],
+		// 				s2: HITBOX.SIDES[j],
+		// 				intersection: lines1[i].getIntersectionPoint(lines2[j])
+		// 			});
+		// 		}
+		// 	}
+		// }
 
-		if(collisions.length > 0 && !this.hitbox.isCollidingWith(otherDO.id)) {
-			this.hitbox.addCollidingWith(otherDO.id, collisions);
-			this.dispatchEvent(EVENTS.COLLISION, [otherDO.id]);
+		// if(collisions.length > 0 && !this.hitbox.isCollidingWith(otherDO.id)) {
+		// 	this.hitbox.addCollidingWith(otherDO.id, collisions);
+		// 	this.dispatchEvent(EVENTS.COLLISION, [otherDO.id]);
 
-			otherDO.hitbox.addCollidingWith(this.id, collisions);
-			otherDO.dispatchEvent(EVENTS.COLLISION, [this.id]);		
-		} else if(collisions.length === 0 && this.hitbox.isCollidingWith(otherDO.id)) {
-			this.dispatchEvent(EVENTS.END_COLLISION, [otherDO.id]);
-			this.hitbox.removeCollidingWith(otherDO.id);
+		// 	otherDO.hitbox.addCollidingWith(this.id, collisions);
+		// 	otherDO.dispatchEvent(EVENTS.COLLISION, [this.id]);		
+		// } else if(collisions.length === 0 && this.hitbox.isCollidingWith(otherDO.id)) {
+		// 	this.dispatchEvent(EVENTS.END_COLLISION, [otherDO.id]);
+		// 	this.hitbox.removeCollidingWith(otherDO.id);
 
-			otherDO.dispatchEvent(EVENTS.END_COLLISION, [this.id]);
-			otherDO.hitbox.removeCollidingWith(this.id);
-		}
-		return collisions.length > 0;
+		// 	otherDO.dispatchEvent(EVENTS.END_COLLISION, [this.id]);
+		// 	otherDO.hitbox.removeCollidingWith(this.id);
+		// }
+		// return collisions.length > 0;
 	}
 
 	outOfFrame(width, height, epsilon) {
@@ -243,6 +323,50 @@ class DisplayObject extends EventDispatcher{
 	distanceTo(otherPoint) {
 		let myPoint = this.getNormalizedPivotPoint();
 		return Math.sqrt(Math.pow(otherPoint.x - myPoint.x, 2) + Math.pow(otherPoint.y - myPoint.y,2));
+	}
+
+	/**
+	 * Detect overlap between two axis-aligned rectangles
+	 * */
+	doOverlap(l1, r1, l2, r2) {
+		// left, right, up, down
+		return !(l2.x < r1.x || l1.x > r2.x || l2.y < r1.y || l1.y > r2.y);
+	}
+
+	setHasPhysics(bool) {
+		this.hasPhysics = bool;
+		return this;
+	}
+	getHasPhysics() { return this.hasPhysics; }
+
+	// setCollideables(c) {
+	// 	this.collideables = c;
+	// 	return this;
+	// }
+
+	initCollisions() {
+		var that = this;
+		this.addEventListener(EVENTS.COLLISION_TOP, this, function () {
+				that.vY = that.vY > 0 ? 0 : that.vY;
+				that.aY = that.aY > 0 ? 0 : that.aY;
+				console.log(that.id + ": collision top");
+			})
+			.addEventListener(EVENTS.COLLISION_BOTTOM, this, function () {
+				that.vY = that.vY < 0 ? 0 : that.vY;
+				that.aY = that.aY < 0 ? 0 : that.aY;
+				console.log(that.id + ": collision btm");
+			})
+			.addEventListener(EVENTS.COLLISION_LEFT, this, function () {
+				that.vX = that.vX > 0 ? 0 : that.vX;
+				that.aX = that.aX > 0 ? 0 : that.aX;
+				console.log(that.id + ": collision left");
+			})
+			.addEventListener(EVENTS.COLLISION_RIGHT, this, function () {
+				that.vX = that.vX < 0 ? 0 : that.vX;
+				that.aX = that.aX < 0 ? 0 : that.aX;
+				console.log(that.id + ": collision right");
+			});
+
 	}
 	
 }

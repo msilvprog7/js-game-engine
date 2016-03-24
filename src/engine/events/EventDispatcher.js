@@ -19,6 +19,8 @@ class EventDispatcher{
 		if (listener !== undefined && callback !== undefined && typeof(callback) === "function") {
 			this.events[eventType].push({"listener": listener, "callback": callback});
 		}
+
+		return this;
 	}
 
 	removeEventListener(eventType, listener) {

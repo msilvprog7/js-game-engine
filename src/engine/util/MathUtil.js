@@ -179,6 +179,15 @@ class MathUtil {
 
 		return radians % (2 * Math.PI);
 	}
+
+	/**
+	 * Test if two numbers are approximately equal (within eps tolerance)
+	 * */
+	static approxEq(v1, v2, eps) {
+		eps = eps || .001;
+
+		return Math.abs(v1 - v2) < eps;
+	}
 }
 
 var init_pi = function() {

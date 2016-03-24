@@ -27,7 +27,9 @@ class BasicEnemy extends Enemy {
 		let friendlies = this.getInSight(BASIC_ENEMY_VARS.SIGHT_RANGE);
 		if(friendlies.length === 0) {//No animals or biomancer in range, move randomly
 			this.closestFriendlyInSight = undefined;
-			this.setMovement(0, 0);
+			// this.setMovement(0, 0);
+			this.vX = 0;
+			this.vY = 0;
 		} else {
 			this.closestFriendlyInSight = friendlies[0]; //MOVE TOWARDS CLOSEST FRIENDLY
 			let posToMove = friendlies[0].obj.getPosition(),
@@ -35,9 +37,15 @@ class BasicEnemy extends Enemy {
 				yMove = (this.position.y-ENEMY_VARS.MOVE_EPSILON > posToMove.y) ? -1 : (this.position.y+ENEMY_VARS.MOVE_EPSILON < posToMove.y) ? 1 : 0;
 			if(this.closestFriendlyInSight.distance <= this.attackRange) { 
 				this.orient(xMove, yMove);	
+				// this.vX = xMove*BASIC_ENEMY_VARS.SPEED;
+				// this.vY = yMove*BASIC_ENEMY_VARS.SPEED;
 				return; 
 			}			
-			this.setMovement(xMove, yMove);
+			// this.setMovement(xMove, yMove);
+			this.vX = xMove*BASIC_ENEMY_VARS.SPEED;
+			this.vY = yMove*BASIC_ENEMY_VARS.SPEED;
+			// this.addToMovement(xMove*BASIC_ENEMY_VARS.SPEED, yMove*BASIC_ENEMY_VARS.SPEED);
+			this.orient(xMove, yMove);	
 		}
 	}
 

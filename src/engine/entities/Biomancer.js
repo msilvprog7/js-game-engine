@@ -7,7 +7,10 @@ var BIOMANCER_VARS = {
 	DIMENSIONS: {width: 60, height: 70},
 	PIVOT: {x: 30, y: 35},
 	GUN_POSITION: {x: 45, y: 52},
-	SPEED: 3
+	SPEED: 3,
+	V_MAX: 4,
+	RUN_ACC: 1,
+
 };
 
 /**
@@ -18,6 +21,9 @@ class Biomancer extends Entity {
 	constructor() {
 		super(BIOMANCER_VARS.ID, BIOMANCER_VARS.HEALTH, BIOMANCER_VARS.FILENAME);
 		this.setGun(new Gun());
+
+		this.hasPhysics = true;
+		this.initCollisions();
 	}
 
 	setGun() {
@@ -40,28 +46,48 @@ class Biomancer extends Entity {
 
 		// Left
 		if (pressedKeys.contains(37)) {
-			this.addToMovement(-BIOMANCER_VARS.SPEED, 0);
+			// this.addToMovement(-BIOMANCER_VARS.SPEED, 0);
+			// if (this.vX > -BIOMANCER_VARS.V_MAX) {
+			// 	this.aX = -BIOMANCER_VARS.RUN_ACC;
+			// } else {
+			// 	this.aX = 0;
+			// }
+			this.aX = (this.vX > -BIOMANCER_VARS.V_MAX) ? -BIOMANCER_VARS.RUN_ACC : 0;
 		}
 
 		// Up
 		if (pressedKeys.contains(38)) {
-			this.addToMovement(0, -BIOMANCER_VARS.SPEED);
+			// this.addToMovement(0, -BIOMANCER_VARS.SPEED);
+			// if (this.vY > -BIOMANCER_VARS.V_MAX)
+			this.aY = (this.vY > -BIOMANCER_VARS.V_MAX) ? -BIOMANCER_VARS.RUN_ACC : 0;
 		}
 
 		// Right
 		if (pressedKeys.contains(39)) {
-			this.addToMovement(BIOMANCER_VARS.SPEED, 0);
+			// this.addToMovement(BIOMANCER_VARS.SPEED, 0);
+			// if (this.vX < BIOMANCER_VARS.V_MAX)
+			this.aX = (this.vX < BIOMANCER_VARS.V_MAX) ? BIOMANCER_VARS.RUN_ACC : 0;
 		}
 
 		// Down
 		if (pressedKeys.contains(40)) {
-			this.addToMovement(0, BIOMANCER_VARS.SPEED);
+			// this.addToMovement(0, BIOMANCER_VARS.SPEED);
+			// if (this.vY < BIOMANCER_VARS.V_MAX)
+			this.aY = (this.vY < BIOMANCER_VARS.V_MAX) ? BIOMANCER_VARS.RUN_ACC : 0;
 		}
 
 		// Set Rotation
 		this.orient(pressedKeys);
 
-		this.move();
+		if (pressedKeys.indexOf(37) == -1 && pressedKeys.indexOf(39) == -1) {
+			this.aX = 0;
+		}
+
+		if (pressedKeys.indexOf(38) == -1 && pressedKeys.indexOf(40) == -1) {
+			this.aY = 0;
+		}
+
+		// this.move();
 	}
 
 	orient(pressedKeys) {
