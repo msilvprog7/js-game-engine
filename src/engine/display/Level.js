@@ -153,6 +153,10 @@ class Level extends DisplayObjectContainer{
 		return this.friendlies;
 	}
 
+	getEnemyEntities() {
+		return this.enemies;
+	}
+
 	/**
 	  * Enemies
 	 */

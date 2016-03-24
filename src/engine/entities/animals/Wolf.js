@@ -3,7 +3,7 @@
 // Duration will equal (HEALTH / DECAY_AMOUNT) * ANIMAL_VARS.NEXT_DECAY
 var WOLF_VARS = {
 	count: 0,
-	HEALTH: 40,
+	HEALTH: 140,
 	LAUNCH_IDLE: "biomancer/animals/wolf/wolf-launch.png",
 	LAUNCH_IDLE_PIVOT: {x: 6, y: 6},
 	LAUNCH_SPEED: 4,
@@ -11,10 +11,15 @@ var WOLF_VARS = {
 	SPAWN_IDLE: "biomancer/animals/wolf/wolf-spawn.png",
 	SPAWN_IDLE_PIVOT: {x: 25, y: 25},
 	DECAY_AMOUNT: 1,
-	RADIUS: 70,
 	TURN_PROBABILITY: 0.01,
 	WALK_PROBABILITY: 0.75,
-	WALK_AMOUNT: 1
+	WALK_SPEED: 1,
+	RUN_SPEED: 8,	
+	WALK_RANGE: 100,
+	SIGHT_RANGE: 350,
+	ATTACK_RATE: 1000,
+	ATTACK_RANGE: 70,
+	ATTACK_DAMAGE: 10
 };
 
 /**
@@ -25,20 +30,53 @@ class Wolf extends Animal {
 	constructor() {
 		super("wolf-" + WOLF_VARS.count, WOLF_VARS.HEALTH, WOLF_VARS.LAUNCH_IDLE, WOLF_VARS.LAUNCH_IDLE_PIVOT, 
 			WOLF_VARS.SPAWN_IDLE, WOLF_VARS.SPAWN_IDLE_PIVOT,
-			WOLF_VARS.LAUNCH_SPEED, WOLF_VARS.LAUNCH_DURATION, WOLF_VARS.DECAY_AMOUNT, WOLF_VARS.RADIUS);
+			WOLF_VARS.LAUNCH_SPEED, WOLF_VARS.LAUNCH_DURATION, 
+			WOLF_VARS.DECAY_AMOUNT, WOLF_VARS.WALK_RANGE, WOLF_VARS.SIGHT_RANGE,
+			WOLF_VARS.ATTACK_RATE, WOLF_VARS.ATTACK_RANGE);
 
 		WOLF_VARS.count++;
 	}
 
 	move() {
 		// Random movement in radius
+		if(this.enemyFocus !== undefined && this.enemyFocus.obj.isAlive()) {
+			//Move towards enemy
+			
+			let posToMove = this.enemyFocus.obj.getNormalizedPivotPoint(),
+				myPos = this.getNormalizedPivotPoint(),
+				xMove = (myPos.x-ENEMY_VARS.MOVE_EPSILON > posToMove.x) ? -1 : (myPos.x+ENEMY_VARS.MOVE_EPSILON < posToMove.x) ? 1 : 0, 
+				yMove = (myPos.y-ENEMY_VARS.MOVE_EPSILON > posToMove.y) ? -1 : (myPos.y+ENEMY_VARS.MOVE_EPSILON < posToMove.y) ? 1 : 0;
+			if(this.enemyFocus.distance <= this.attackRange) { 
+				this.orient(xMove, yMove);	
+				return; 
+			}	
+			if(xMove === 0 && yMove === 0) { this.resetMovement(); return; }
+			this.addToMovement(xMove*WOLF_VARS.RUN_SPEED, yMove*WOLF_VARS.RUN_SPEED);
+			this.orient(xMove, yMove);			
+			super.move();
+		} else {
+			let enemies = this.getInSightRange();
+			if(enemies.length > 0) {
+				this.enemyFocus = enemies[0];
+			} else {
+				if(this.enemyFocus !== undefined) {
+					//reset search radius
+					this.walkRangePosition = {x: this.position.x + this.spawnIdlePivot.x, y: this.position.y + this.spawnIdlePivot.y};
+
+				}
+				this.enemyFocus = undefined;
+				this.randomMove();
+			}
+		}		
+	}
+
+	randomMove() {
 		var forceTurn = false;
 
 		// Try to move forward
 		if (Math.random() < WOLF_VARS.WALK_PROBABILITY) {
-			var movement = this.movementForward(WOLF_VARS.WALK_AMOUNT);
-
-			if (this.positionInRadius(movement)) {
+			var movement = this.movementForward(WOLF_VARS.WALK_SPEED);			
+			if (this.positionInWalkRange(movement)) {
 				this.addToMovement(movement.x, movement.y);
 				super.move();
 			} else {
@@ -50,6 +88,12 @@ class Wolf extends Animal {
 		if (Math.random() < WOLF_VARS.TURN_PROBABILITY || forceTurn) {
 			this.setDirection(MathUtil.modRadians(this.rotation + MathUtil.either(-1, 1) * (MathUtil.PI4)));
 		}
+	}
+
+	attack() {
+		super.attack();
+		//ATTACK CLOSEST FRIENDLY TARGET		
+ 		this.enemyFocus.obj.removeHealth(WOLF_VARS.ATTACK_DAMAGE);
 	}
 	
 }

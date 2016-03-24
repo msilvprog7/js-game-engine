@@ -44,9 +44,8 @@ class BasicEnemy extends Enemy {
 	setMovement(xMove, yMove) { //xMove and yMove are just directions
 		if(xMove === 0 && yMove === 0) { this.resetMovement(); return; }
 		this.addToMovement(xMove*BASIC_ENEMY_VARS.SPEED, yMove*BASIC_ENEMY_VARS.SPEED);
-		this.setPosition({x: this.position.x + this.xMovement, y: this.position.y + this.yMovement});
 		this.orient(xMove, yMove);			
-		this.resetMovement();
+		super.move();
 	}
 
 	attack() {

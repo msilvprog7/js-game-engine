@@ -240,8 +240,9 @@ class DisplayObject extends EventDispatcher{
 			|| this.position.y < -epsilon || this.position.y > height+epsilon); 
 	}
 
-	distanceTo(otherPosition) {
-		return Math.sqrt(Math.pow(otherPosition.x - this.position.x, 2) + Math.pow(otherPosition.y - this.position.y,2));
+	distanceTo(otherPoint) {
+		let myPoint = this.getNormalizedPivotPoint();
+		return Math.sqrt(Math.pow(otherPoint.x - myPoint.x, 2) + Math.pow(otherPoint.y - myPoint.y,2));
 	}
 	
 }

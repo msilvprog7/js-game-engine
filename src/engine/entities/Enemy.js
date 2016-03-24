@@ -42,15 +42,6 @@ class Enemy extends Entity {
 		super.draw(g);
 	}
 
-	setDirection(direction) {
-		// Assumes clockwise from south in Radians
-		this.direction = direction;
-		this.setRotation(direction);
-
-		// Reform hitbox
-		this.hitbox.applyBoundingBox();
-	}
-
 	canAttack() {
 		// override in subclasses for AI when spawned
 		// CALL SUPER - ENFORCES ATTACK RATE
@@ -66,39 +57,8 @@ class Enemy extends Entity {
 	}
 
 	move() {
-		// Nothing here, override in subclasses for AI when spawned			
-	}
-
-	orient(x, y) {
-		if (x === 0 && y === 0) {
-			return;
-		}
-
-		if (x < 0 && y < 0) {
-			// North-west
-			this.setDirection(ROTATION.NW);
-		} else if (x > 0 && y < 0) {
-			// North-east
-			this.setDirection(ROTATION.NE);
-		} else if (x > 0 && y > 0) {
-			// South-east
-			this.setDirection(ROTATION.SE);
-		} else if (x < 0 && y > 0) {
-			// South-west
-			this.setDirection(ROTATION.SW);
-		} else if (x < 0 && y === 0) {
-			// West
-			this.setDirection(ROTATION.W);
-		} else if (x === 0 && y < 0) {
-			// North
-			this.setDirection(ROTATION.N);
-		} else if (x > 0 && y === 0) {
-			// East
-			this.setDirection(ROTATION.E);
-		} else if (x === 0 && y > 0) {
-			// South
-			this.setDirection(ROTATION.S);
-		}
+		// Nothing here, override in subclasses for AI when spawned	
+		super.move();		
 	}	
 
 	setLevel(level) {
@@ -108,7 +68,7 @@ class Enemy extends Entity {
 	getInSight(sight_range) {
 		//Returns a list of all friendly entities (Biomancer and animals)
 		//Sorted by distance from the enemy
-		let allFriendlies = this.parent.getFriendlyEntities(),
+		let allFriendlies = this.getLevel().getFriendlyEntities(),
 			inRange = [];
 		for(let i = 0; i < allFriendlies.length; i++) {
 			let dist = this.distanceTo(allFriendlies[i].position);
