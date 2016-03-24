@@ -65,7 +65,7 @@ class Gun extends Sprite {
 		}
 
 		var biomancer = this.getBiomancer(),
-			xModifier = (biomancer.getRotation() < 3 * Math.PI / 4) ? 1.0 : -1.0,
+			xModifier = (biomancer.getRotation() < MathUtil['3PI4']) ? 1.0 : -1.0,
 			yModifier = Math.cos(biomancer.getRotation());
 		
 		

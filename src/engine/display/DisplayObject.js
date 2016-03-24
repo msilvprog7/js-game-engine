@@ -132,6 +132,12 @@ class DisplayObject extends EventDispatcher{
 		this.pivotPoint.y = pivotPoint.y;
 		this.hitbox.update();
 	}
+	getNormalizedPivotPoint() {
+		return {
+			x: this.pivotPoint.x + this.position.x, 
+			y: this.pivotPoint.y + this.position.y
+		};
+	}
 
 	getScaleX () { return this.scaleX; }
 	setScaleX (scaleX) {

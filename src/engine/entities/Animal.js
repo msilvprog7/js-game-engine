@@ -60,14 +60,6 @@ class Animal extends Entity {
 		super.draw(g);
 	}
 
-	setLevel(level) {
-		this.level = level;
-	}
-
-	getLevel() {
-		return this.level;
-	}
-
 	hasSpawned() {
 		return this.spawned;
 	}
@@ -136,10 +128,9 @@ class Animal extends Entity {
 		this.radiusPosition = {x: this.position.x + this.spawnIdlePivot.x, y: this.position.y + this.spawnIdlePivot.y};
 
 		// Time till next decay
-		this.nextDecay = new Date().getTime() + ANIMAL_VARS.NEXT_DECAY;
-
+		this.nextDecay = new Date().getTime() + ANIMAL_VARS.NEXT_DECAY;	
 		// Tell level to monitor health
-		this.level.monitorHealth(this);
+		this.getLevel().monitorHealth(this);
 
 		this.spawned = true;
 	}
@@ -159,18 +150,10 @@ class Animal extends Entity {
 
 	decay() {
 		// Apply decay
-		this.health -= this.decayAmount;
-
-		// Update event
-		if (this.health > 0) {
-			// Dispatch event
-			this.dispatchEvent(EVENTS.HEALTH_UPDATED, {health: this.health});
-
-			// Time till next decay
-			this.nextDecay = new Date().getTime() + ANIMAL_VARS.NEXT_DECAY;
-		} else {
-			// Dispatch event
-			this.dispatchEvent(EVENTS.DIED);
+		this.removeHealth(this.decayAmount);
+		// Time till next decay
+		if(this.health > 0) {
+			this.nextDecay = new Date().getTime() + ANIMAL_VARS.NEXT_DECAY;			
 		}
 	}
 }

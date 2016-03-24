@@ -56,13 +56,25 @@ class Entity extends AnimatedSprite {
 		return (this.maxHealth <= 0) ? 0 : this.health / this.maxHealth;
 	}
 
+	removeHealth(hit) {
+		this.health-=hit;
+		if (this.health > 0) {
+			// Dispatch event
+			this.dispatchEvent(EVENTS.HEALTH_UPDATED, {health: this.health});
+			
+		} else {
+			// Dispatch event
+			this.dispatchEvent(EVENTS.DIED);
+		}
+	}
+
 	isAlive() {
 		return this.health > 0;
 	}
 
 	getLevel() {
 		let l = this.parent, iters = 0;
-		while(typeof this.parent !== "Level") {
+		while(!(l instanceof Level)) {
 			l = l.parent;
 			iters++;
 			if(iters > 10) { return undefined; }

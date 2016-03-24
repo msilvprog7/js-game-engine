@@ -189,7 +189,8 @@ var init_pi = function() {
 		{n: 'PI', v: Math.PI},
 		{n: '5PI4', v: 5*Math.PI/4},
 		{n: '3PI2', v: 3*Math.PI/2},
-		{n: '7PI4', v: 7*Math.PI/4}
+		{n: '7PI4', v: 7*Math.PI/4},
+		{n: '2PI', v: 2*Math.PI}		
 	];
 	pi_vars.forEach(function(pi_var) {
 		Object.defineProperty(MathUtil, pi_var.n, {

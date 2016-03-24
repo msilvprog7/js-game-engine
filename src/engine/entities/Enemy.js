@@ -54,7 +54,9 @@ class Enemy extends Entity {
 	canAttack() {
 		// override in subclasses for AI when spawned
 		// CALL SUPER - ENFORCES ATTACK RATE
-		return new Date().getTime() > this.nextAttackTime && this.closestFriendlyInSight.distance <= this.attackRange;
+		return this.closestFriendlyInSight !== undefined && 
+			new Date().getTime() > this.nextAttackTime && 
+			this.closestFriendlyInSight.distance <= this.attackRange;
 	}
 
 	attack() {
@@ -74,34 +76,30 @@ class Enemy extends Entity {
 
 		if (x < 0 && y < 0) {
 			// North-west
-			this.setRotation(ROTATION.NW);
+			this.setDirection(ROTATION.NW);
 		} else if (x > 0 && y < 0) {
 			// North-east
-			this.setRotation(ROTATION.NE);
+			this.setDirection(ROTATION.NE);
 		} else if (x > 0 && y > 0) {
 			// South-east
-			this.setRotation(ROTATION.SE);
+			this.setDirection(ROTATION.SE);
 		} else if (x < 0 && y > 0) {
 			// South-west
-			this.setRotation(ROTATION.SW);
+			this.setDirection(ROTATION.SW);
 		} else if (x < 0 && y === 0) {
 			// West
-			this.setRotation(ROTATION.W);
+			this.setDirection(ROTATION.W);
 		} else if (x === 0 && y < 0) {
 			// North
-			this.setRotation(ROTATION.N);
+			this.setDirection(ROTATION.N);
 		} else if (x > 0 && y === 0) {
 			// East
-			this.setRotation(ROTATION.E);
+			this.setDirection(ROTATION.E);
 		} else if (x === 0 && y > 0) {
 			// South
-			this.setRotation(ROTATION.S);
+			this.setDirection(ROTATION.S);
 		}
-	}
-
-	removeHealth(hit) {
-		this.health-=hit;
-	}
+	}	
 
 	setLevel(level) {
 		this.parent = level;
@@ -115,7 +113,7 @@ class Enemy extends Entity {
 		for(let i = 0; i < allFriendlies.length; i++) {
 			let dist = this.distanceTo(allFriendlies[i].position);
 			if(dist <= sight_range) {
-				inRange.push({o: allFriendlies[i], distance: dist});
+				inRange.push({obj: allFriendlies[i], distance: dist});
 			}
 		}
 		inRange.sort((a, b) => a.distance-b.distance)
