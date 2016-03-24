@@ -26,10 +26,16 @@ class Animal extends Entity {
 		this.enemyFocus = undefined;
 		this.decayAmount = decayAmount;
 		this.level = undefined;
+
 		this.walkRange = walkRange;
 		this.sightRange = sightRange;
 		this.attackRate = attackRate;
 		this.attackRange = attackRange;
+
+
+		this.hasPhysics = true;
+		this.initCollisions();
+
 	}
 
 	update(pressedKeys) {
@@ -144,10 +150,12 @@ class Animal extends Entity {
 
 	launch() {
 		// Launch further, based on direction in Radians, clockwise from south
-		this.setPosition({
-			x: this.position.x - this.launchSpeed * Math.sin(this.direction), 
-			y: this.position.y + this.launchSpeed * Math.cos(this.direction)
-		});
+		// this.setPosition({
+		// 	x: this.position.x - this.launchSpeed * Math.sin(this.direction), 
+		// 	y: this.position.y + this.launchSpeed * Math.cos(this.direction)
+		// });
+		this.vX = -this.launchSpeed * Math.sin(this.direction);
+		this.vY = this.launchSpeed * Math.cos(this.direction);
 	}
 
 	move() {

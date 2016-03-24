@@ -9,5 +9,9 @@ var EVENTS = {
 	TWEEN_COMPLETE: "tween-complete",
 	HEALTH_UPDATED: "health-changed",
 	DIED: "health-zero",
-	HITBOX_UPDATED: "hitbox-updated"
+	HITBOX_UPDATED: "hitbox-updated",
+	COLLISION_LEFT: "collision-left",
+	COLLISION_RIGHT: "collision-right",
+	COLLISION_TOP: "collision-top",
+	COLLISION_BOTTOM: "collision-bottom"
 };

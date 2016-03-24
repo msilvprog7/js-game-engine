@@ -16,8 +16,9 @@ class Entity extends AnimatedSprite {
 		super(id, idle);
 		this.maxHealth = health;
 		this.health = health;
-		this.xMovement = 0;
-		this.yMovement = 0;
+		// this.xMovement = 0;
+		// this.yMovement = 0;
+		this.friction = 0.3;
 	}
 
 	update(pressedKeys) {
@@ -26,8 +27,10 @@ class Entity extends AnimatedSprite {
 	}
 
 	addToMovement(x, y) {
-		this.xMovement += x;
-		this.yMovement += y;
+		// this.xMovement += x;
+		// this.yMovement += y;
+		this.vX += x;
+		this.vY += y;
 	}
 
 	movementForward(amount) {
@@ -38,8 +41,10 @@ class Entity extends AnimatedSprite {
 	}
 
 	resetMovement() {
-		this.xMovement = 0;
-		this.yMovement = 0;
+		// this.xMovement = 0;
+		// this.yMovement = 0;
+		this.vX = 0;
+		this.vY = 0;
 	}
 
 	setDirection(direction) {
@@ -84,7 +89,9 @@ class Entity extends AnimatedSprite {
 	}	
 
 	move() {
-		this.setPosition({x: this.position.x + this.xMovement, y: this.position.y + this.yMovement});
+		// this.setPosition({x: this.position.x + this.xMovement, y: this.position.y + this.yMovement});
+		// this.setPosition({x: this.position.x + this.vX, y: this.position.y + this.vY});
+
 		this.resetMovement();
 	}
 

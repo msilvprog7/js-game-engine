@@ -27,6 +27,8 @@ class Level extends DisplayObjectContainer{
 		this.healthBars = [];
 		this.friendlies = [];
 		this.enemies = [];
+		this.colliders = [];
+		this.movers = [];
 	}
 
 	update(pressedKeys) {
@@ -46,6 +48,8 @@ class Level extends DisplayObjectContainer{
 			if (animal.hasSpawned() && !animal.isAlive()) {
 				that.removeChild(animal);
 				that.removeFriendly(animal);
+				that.removeCollider(animal);
+				that.removeMover(animal);
 			}
 		});
 		this.animals = this.animals.filter((animal) => (!animal.hasSpawned() || animal.isAlive()));
@@ -54,9 +58,42 @@ class Level extends DisplayObjectContainer{
 		this.enemies.forEach(function (enemy) {
 			if (!enemy.isAlive()) {
 				that.removeChild(enemy);
+				that.removeCollider(enemy);
+				that.removeMover(enemy);
 			}
 		});
 		this.enemies = this.enemies.filter((enemy) => (enemy.isAlive()));
+
+		// Check collisions
+		this.movers.forEach(mover => {
+			this.colliders.forEach(collider => {
+				if (mover !== collider) 
+					if (mover.collidesWith(collider)) {
+						// let mHitbox = mover.hitbox.hitbox,
+						// 	cHitbox = collider.hitbox.hitbox,
+						// 	xAdj = 0,
+						// 	yAdj = 0,
+						// 	mPos = mover.getPosition();
+						// //move out left or right
+						// if (mHitbox.tr.x > cHitbox.tl.x) {
+						// 	xAdj = cHitbox.tl.x - mHitbox.tr.x;
+						// } else if (mHitbox.tl.x < cHitbox.tr.x) {
+						// 	xAdj = cHitbox.tr.x - mHitbox.tl.x;
+						// }
+						// //move out top or bottom
+						// if (mHitbox.bl.y > cHitbox.tl.y) {
+						// 	yAdj = cHitbox.tl.y - mHitbox.bl.y;
+						// } else if (mHitbox.tl.y < cHitbox.bl.y) {
+						// 	yAdj = cHitbox.bl.y - mHitbox.tl.y;
+						// }
+
+						// mover.setPosition({
+						// 	x: mPos.x + xAdj,
+						// 	y: mPos.y + yAdj
+						// });
+					}
+			});
+		});
 	}
 
 	draw(g) {
@@ -220,5 +257,28 @@ class Level extends DisplayObjectContainer{
 		this.tilesGenerated++;
 
 		return generatedTile;
+	}
+
+	addCollider(collider) {
+		this.colliders.push(collider);
+		return this;
+	}
+
+	addMover(mover) {
+		this.movers.push(mover);
+		return this;
+	}
+
+	removeCollider(entity) {
+		this.colliders.splice(this.colliders.indexOf(entity), 1);
+	}
+	removeMover(entity) {
+		this.movers.splice(this.movers.indexOf(entity), 1);
+	}
+
+	addWall(wall) {
+		this.addChild(wall);
+		this.addCollider(wall);
+		return this;
 	}
 }
