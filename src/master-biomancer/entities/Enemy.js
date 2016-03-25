@@ -17,9 +17,7 @@ class Enemy extends Entity {
 		this.attackRate = attackRate;
 		this.attackRange = attackRange;
 		this.nextAttackTime = new Date().getTime();
-		this.closestFriendlyInSight = undefined;
-		this.hasPhysics = true;
-		this.initCollisions();		
+		this.closestFriendlyInSight = undefined;	
 	}
 
 	update(pressedKeys) {

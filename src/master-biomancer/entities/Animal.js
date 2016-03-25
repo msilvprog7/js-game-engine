@@ -32,10 +32,6 @@ class Animal extends Entity {
 		this.attackRate = attackRate;
 		this.attackRange = attackRange;
 
-
-		this.hasPhysics = true;
-		this.initCollisions();
-
 	}
 
 	update(pressedKeys) {

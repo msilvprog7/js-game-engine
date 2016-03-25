@@ -67,15 +67,6 @@ class DisplayObject extends EventDispatcher{
 				this.vX += this.friction;
 				this.vx = this.vX > 0 ? 0 : this.vX;
 			}
-			// if (!this.grounded && this.vY < this.terminalV) {
-			// 	this.vY += this.gravity;
-			// }
-
-			// if (this.grounded) {
-			// 	this.vY = this.vY > 0 ? 0 : this.vY;
-			// 	this.aY = this.aY > 0 ? 0 : this.aY;
-			// }
-
 			if (this.vY > 0) {
 				this.vY -= this.friction;
 				this.vY = this.vY < 0 ? 0 : this.vY;
@@ -283,36 +274,6 @@ class DisplayObject extends EventDispatcher{
 		}
 		
 		return collided;
-		
-		// var lines1 = [new Line(hitbox1.tl, hitbox1.tr),new Line(hitbox1.tr, hitbox1.br),new Line(hitbox1.br, hitbox1.bl),new Line(hitbox1.bl, hitbox1.tl)],
-		// 	lines2 = [new Line(hitbox2.tl, hitbox2.tr),new Line(hitbox2.tr, hitbox2.br),new Line(hitbox2.br, hitbox2.bl),new Line(hitbox2.bl, hitbox2.tl)],
-		// 	collisions = [];
-		// for(var i = 0; i < lines1.length; i++) {
-		// 	for(var j = 0; j < lines2.length; j++) {
-		// 		if(lines1[i].intersects(lines2[j])) {
-		// 			collisions.push({
-		// 				s1: HITBOX.SIDES[i],
-		// 				s2: HITBOX.SIDES[j],
-		// 				intersection: lines1[i].getIntersectionPoint(lines2[j])
-		// 			});
-		// 		}
-		// 	}
-		// }
-
-		// if(collisions.length > 0 && !this.hitbox.isCollidingWith(otherDO.id)) {
-		// 	this.hitbox.addCollidingWith(otherDO.id, collisions);
-		// 	this.dispatchEvent(EVENTS.COLLISION, [otherDO.id]);
-
-		// 	otherDO.hitbox.addCollidingWith(this.id, collisions);
-		// 	otherDO.dispatchEvent(EVENTS.COLLISION, [this.id]);		
-		// } else if(collisions.length === 0 && this.hitbox.isCollidingWith(otherDO.id)) {
-		// 	this.dispatchEvent(EVENTS.END_COLLISION, [otherDO.id]);
-		// 	this.hitbox.removeCollidingWith(otherDO.id);
-
-		// 	otherDO.dispatchEvent(EVENTS.END_COLLISION, [this.id]);
-		// 	otherDO.hitbox.removeCollidingWith(this.id);
-		// }
-		// return collisions.length > 0;
 	}
 
 	outOfFrame(width, height, epsilon) {
@@ -338,11 +299,6 @@ class DisplayObject extends EventDispatcher{
 		return this;
 	}
 	getHasPhysics() { return this.hasPhysics; }
-
-	// setCollideables(c) {
-	// 	this.collideables = c;
-	// 	return this;
-	// }
 
 	initCollisions() {
 		var that = this;

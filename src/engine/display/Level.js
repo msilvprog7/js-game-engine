@@ -180,6 +180,8 @@ class Level extends DisplayObjectContainer{
 	 */
 	addFriendly(entity) {
 		this.friendlies.push(entity);
+		this.addMover(entity)
+			.addCollider(entity);
 	}
 
 	removeFriendly(entity) {
@@ -202,6 +204,9 @@ class Level extends DisplayObjectContainer{
 		this.addChildAfterAnimals(enemy);
 		this.enemies.push(enemy);
 		this.monitorHealth(enemy);
+		
+		this.addCollider(enemy)
+			.addMover(enemy);
 	}
 
 	getFirstEnemyIndex() {
