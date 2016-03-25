@@ -2,7 +2,13 @@
 
 // A specific animal's duration will equal (HEALTH / DECAY_AMOUNT) * ANIMAL_VARS.NEXT_DECAY
 var ANIMAL_VARS = {
-	NEXT_DECAY: 250 // ms
+	NEXT_DECAY: 250, // ms
+	ADD_DEFAULTS: {
+		parentIsLevel: true,
+		indexReferenceEntity: undefined, //Leave undefined for focusChild
+		indexReferencePlacing: true, //True is before, false is after
+		monitorHealth: false //True only if monitor health from start
+	}
 }
 
 /**
@@ -147,7 +153,7 @@ class Animal extends Character {
 		// Launch further, based on direction in Radians, clockwise from south
 		this.vX = -Math.sin(this.direction) * this.launchSpeed;
 		this.vY = Math.cos(this.direction) * this.launchSpeed;
-		this.move();
+		super.move();
 	}
 
 	move() {

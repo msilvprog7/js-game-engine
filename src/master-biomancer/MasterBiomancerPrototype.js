@@ -45,15 +45,15 @@ class MasterBiomancerGame extends Game{
 
 		// ... Biomancer
 		currentBiomancer = this.generateBiomancer(440, 211, currentLevel);
-		currentLevel.setFocusChildAndMonitorHealth(currentBiomancer);
-		currentLevel.addFriendly(currentBiomancer);
+		currentLevel.addEntityToLevel(currentBiomancer, BIOMANCER_VARS.ADD_DEFAULTS);
+
+		// currentLevel.setFocusChildAndMonitorHealth(currentBiomancer);
+		// currentLevel.addFriendly(currentBiomancer);
 		// may abstract into level
-		currentLevel.addCollider(currentBiomancer).addMover(currentBiomancer);
 
 		// ... Enemies
 		currentEnemy = this.generateBasicEnemy(740, 110, currentLevel);
-		currentLevel.addEnemy(currentEnemy);
-		currentLevel.addCollider(currentEnemy).addMover(currentEnemy);
+		currentLevel.addEntityToLevel(currentEnemy, ENEMY_VARS.ADD_DEFAULTS);
 
 		/// ... Walls
 		currentLevel.addWall(new Wall('wall1').setScaleY(4))

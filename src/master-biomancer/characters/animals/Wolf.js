@@ -53,7 +53,10 @@ class Wolf extends Animal {
 			}	
 
 			if(xMove === 0 && yMove === 0) { 
-				this.resetMovement(); return; 
+				this.vX = 0;
+				this.vY = 0;
+				super.move();
+				return; 
 			}
 
 			this.vX = xMove*WOLF_VARS.RUN_SPEED;

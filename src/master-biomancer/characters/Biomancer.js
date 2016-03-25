@@ -9,7 +9,13 @@ var BIOMANCER_VARS = {
 	GUN_POSITION: {x: 45, y: 52},
 	SPEED: 3,
 	V_MAX: 4,
-	RUN_ACC: 1
+	RUN_ACC: 1,
+	ADD_DEFAULTS: {
+		parentIsLevel: true,
+		indexReferenceEntity: undefined, //Leave undefined for before focus child, or if no child exists appending to end
+		indexReferencePlacing: true, //True or undefined is before, false is after
+		monitorHealth: true //True only if monitor health from start
+	}
 };
 
 

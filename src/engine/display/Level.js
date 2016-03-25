@@ -103,13 +103,12 @@ class Level extends DisplayObjectContainer{
 	/**
 	  * Focus child
 	 */
-	setFocusChild(child) {
+	setFocusChild(child, options) {
 		if (this.focusChild !== undefined) {
 			this.removeFocusChild();
 		}
 
-		this.focusChild = child;
-		this.addChild(child);
+		this.focusChild = child;	
 	}
 
 	getFocusChild() {
@@ -121,51 +120,39 @@ class Level extends DisplayObjectContainer{
 		this.focusChild = undefined;
 	}
 
-	setFocusChildAndMonitorHealth(child) {
-		this.setFocusChild(child);
-		this.monitorHealth(child);
-	}
-
-	addChildBeforeFocus(child) {
-		this.addChild(child, this.getChildIndex(this.focusChild));
-	}
-
-	/**
-	  * Animals
-	 */
-	addAnimal(animal) {
-		animal.parent = this;
-		this.addChildBeforeEnemies(animal);
-		this.animals.push(animal);
-		this.addFriendly(animal);
-	}
-
-	getFirstAnimalIndex() {
-		return this.getIndexOfChildType(Animal);
-	}
-
-	getLastAnimalIndex() {
-		return this.getLastIndexOfChildType(Animal);
-	}
-
-	addChildAfterAnimals(child) {
-		let i = this.getLastAnimalIndex();
-		if (i === -1) {
-			this.addChildBeforeFocus(child);
+	addEntityToLevel(entity, options) {
+		if(options === undefined) { return; }
+		if(options["parentIsLevel"] !== undefined && options["parentIsLevel"]) {
+			entity.parent = this;
+		}
+		if(options["indexReferenceEntity"] !== undefined) {
+			//Different Entity Types to add before or after
+			let index = this.getIndexOfChildType(options["indexReferenceEntity"], options["indexReferencePlacing"]);
+			if(index === -1) {
+				index = (this.focusChild !== undefined) ? this.getChildIndex(this.focusChild) : -1;
+			} 
+			this.addChild(entity, index);			
 		} else {
-			this.addChild(child, i + 1);
+			this.addChild(entity, this.getChildIndex(this.focusChild));
+		}
+		if(entity instanceof Enemy) {
+			this.enemies.push(entity);
+		} else if(entity instanceof Animal){
+			this.addFriendly(entity);
+			this.animals.push(entity);
+		} else if(entity instanceof Biomancer) {
+			this.addFriendly(entity);
+			this.setFocusChild(entity);
+		}
+		if(options["monitorHealth"] !== undefined && options["monitorHealth"]) {
+			this.monitorHealth(entity);
 		}
 	}
-
-	addChildBeforeAnimals(child) {
-		let i = this.getFirstAnimalIndex();
-		if (i === -1) {
-			this.addChildBeforeFocus(child);
-		} else {
-			this.addChild(child, i);
-		}
+	
+	removeEntity(entity) {
+		this.removeChild(entity);
 	}
-
+	
 	/**
 	  * Health
 	 */
@@ -180,6 +167,8 @@ class Level extends DisplayObjectContainer{
 	 */
 	addFriendly(entity) {
 		this.friendlies.push(entity);
+		this.addMover(entity)
+			.addCollider(entity);
 	}
 
 	removeFriendly(entity) {
@@ -192,38 +181,6 @@ class Level extends DisplayObjectContainer{
 
 	getEnemyEntities() {
 		return this.enemies;
-	}
-
-	/**
-	  * Enemies
-	 */
-	addEnemy(enemy) {
-		enemy.parent = this;
-		this.addChildAfterAnimals(enemy);
-		this.enemies.push(enemy);
-		this.monitorHealth(enemy);
-	}
-
-	getFirstEnemyIndex() {
-		return this.getIndexOfChildType(Enemy);
-	}
-
-	addChildBeforeEnemies(child) {
-		let i = this.getFirstEnemyIndex();
-		if (i === -1) {
-			this.addChildBeforeFocus(child);
-		} else {
-			this.addChild(child, i);
-		}
-	}
-
-	addBullet(bullet) {
-		bullet.parent = this;
-		this.addChildBeforeAnimals(bullet);
-	}
-
-	removeBullet(bullet) {
-		this.removeChild(bullet);
 	}
 
 	/**
@@ -267,6 +224,14 @@ class Level extends DisplayObjectContainer{
 	addMover(mover) {
 		this.movers.push(mover);
 		return this;
+	}
+
+	getColliders(filter) {
+		if(filter !== undefined) {
+			return this.colliders.filter(x => !(x instanceof filter))
+		} else {
+			return this.colliders;
+		}
 	}
 
 	removeCollider(entity) {
