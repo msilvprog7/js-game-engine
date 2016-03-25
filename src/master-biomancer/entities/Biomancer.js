@@ -21,9 +21,6 @@ class Biomancer extends Entity {
 	constructor() {
 		super(BIOMANCER_VARS.ID, BIOMANCER_VARS.HEALTH, BIOMANCER_VARS.FILENAME);
 		this.setGun(new Gun());
-
-		this.hasPhysics = true;
-		this.initCollisions();
 	}
 
 	setGun() {
