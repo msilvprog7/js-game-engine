@@ -167,6 +167,8 @@ class Level extends DisplayObjectContainer{
 	 */
 	addFriendly(entity) {
 		this.friendlies.push(entity);
+		this.addMover(entity)
+			.addCollider(entity);
 	}
 
 	removeFriendly(entity) {

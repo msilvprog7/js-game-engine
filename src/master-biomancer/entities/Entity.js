@@ -19,6 +19,8 @@ class Entity extends AnimatedSprite {
 		// this.xMovement = 0;
 		// this.yMovement = 0;
 		this.friction = 0.3;
+		this.hasPhysics = true;
+		this.initCollisions();
 	}
 
 	update(pressedKeys) {
