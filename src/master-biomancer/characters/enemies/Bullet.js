@@ -12,13 +12,20 @@ var BULLET_VARS = {
 class Bullet extends Sprite {
 	constructor(speed, damage, direction, parentPos, level) {
 		super('bullet-'+BULLET_VARS.count, BULLET_VARS.IMG);
+
+		// Bullet qualities
 		this.launchSpeed = speed;
 		this.damage = damage;
 		this.direction = direction;
 		this.parentPos = parentPos;
+
+		// Set level
 		this.level = level;
-		this.spawn();
+
+		// Spawn
 		this.nextCollisionCheck = new Date().getTime();
+		this.spawn();
+		
 		BULLET_VARS.count++;
 	}
 

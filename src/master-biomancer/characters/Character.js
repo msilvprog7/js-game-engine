@@ -2,23 +2,33 @@
 
 var ROTATION = {
 	S: 0,
-	SW: Math.PI/4,
-	W: Math.PI/2,
-	NW: 3 * Math.PI/4,
-	N: Math.PI,
-	NE: 5 * Math.PI/4,
-	E: 3 * Math.PI/2,
-	SE: 7 * Math.PI/4
+	SW: MathUtil['PI4'],
+	W: MathUtil['PI2'],
+	NW: MathUtil['3PI4'],
+	N: MathUtil['PI'],
+	NE: MathUtil['5PI4'],
+	E: MathUtil['3PI2'],
+	SE: MathUtil['7PI4']
 };
 
-class Entity extends AnimatedSprite {
-	constructor(id, health, idle) {
+class Character extends AnimatedSprite {
+	constructor(id, health, idle, maxSpeed) {
 		super(id, idle);
+
+		// Initialize direction
+		this.direction = 0;
+
+		// Set health
 		this.maxHealth = health;
 		this.health = health;
-		// this.xMovement = 0;
-		// this.yMovement = 0;
+
+		// Set physics
+		this.hasPhysics = true;
 		this.friction = 0.3;
+		this.initCollisions();
+
+		// Set max speed
+		this.maxSpeed = maxSpeed;
 	}
 
 	update(pressedKeys) {
@@ -26,25 +36,11 @@ class Entity extends AnimatedSprite {
 		super.update(pressedKeys);
 	}
 
-	addToMovement(x, y) {
-		// this.xMovement += x;
-		// this.yMovement += y;
-		this.vX += x;
-		this.vY += y;
-	}
-
 	movementForward(amount) {
 		return {
 			x: -Math.sin(this.rotation) * amount,
 			y: Math.cos(this.rotation) * amount
 		};
-	}
-
-	resetMovement() {
-		// this.xMovement = 0;
-		// this.yMovement = 0;
-		this.vX = 0;
-		this.vY = 0;
 	}
 
 	setDirection(direction) {
@@ -89,35 +85,13 @@ class Entity extends AnimatedSprite {
 	}	
 
 	move() {
-		// this.setPosition({x: this.position.x + this.xMovement, y: this.position.y + this.yMovement});
-		// this.setPosition({x: this.position.x + this.vX, y: this.position.y + this.vY});
-
-		this.resetMovement();
+		this.aX = (Math.abs(this.vX) >= Math.abs(-Math.sin(this.rotation) * this.maxSpeed)) ? 0 : this.aX;
+		this.aY = (Math.abs(this.vY) >= Math.abs(Math.cos(this.rotation) * this.maxSpeed)) ? 0 : this.aY;
 	}
 
 	draw(g) {
 		// Draw animated sprite
 		super.draw(g);
-	}
-
-	getHealthRatio() {
-		return (this.maxHealth <= 0) ? 0 : this.health / this.maxHealth;
-	}
-
-	removeHealth(hit) {
-		this.health-=hit;
-		if (this.health > 0) {
-			// Dispatch event
-			this.dispatchEvent(EVENTS.HEALTH_UPDATED, {health: this.health});
-			
-		} else {
-			// Dispatch event
-			this.dispatchEvent(EVENTS.DIED);
-		}
-	}
-
-	isAlive() {
-		return this.health > 0;
 	}
 
 	getLevel() {
@@ -128,5 +102,34 @@ class Entity extends AnimatedSprite {
 			if(iters > 10) { return undefined; }
 		}
 		return l;
+	}
+
+	setLevel(level) {
+		this.parent = level;
+	}
+
+	getHealthRatio() {
+		return (this.maxHealth <= 0) ? 0 : this.health / this.maxHealth;
+	}
+
+	removeHealth(hit) {
+		// Take damage
+		this.health -= hit;
+
+		// Dispatch event
+		if (this.health > 0) {
+			this.dispatchEvent(EVENTS.HEALTH_UPDATED, {health: this.health});
+		} else {
+			this.dispatchEvent(EVENTS.DIED);
+			this.die();
+		}
+	}
+
+	isAlive() {
+		return this.health > 0;
+	}
+
+	die() {
+		// Override in subclasses
 	}
 }

@@ -8,34 +8,35 @@ var ANIMAL_VARS = {
 /**
  * Abstract Animals for shared qualities for the different animals
  */
-class Animal extends Entity {
+class Animal extends Character {
 
 	constructor(id, health, launchIdle, launchIdlePivot, spawnIdle, spawnIdlePivot, 
 		launchSpeed, launchDuration, decayAmount, walkRange, sightRange,
-		attackRate, attackRange) {
-		super(id, health, launchIdle);
+		attackRate, attackRange, maxSpeed) {
+
+		super(id, health, launchIdle, maxSpeed);
+
+		// Idle images and pivots
 		this.launchIdle = launchIdle;
 		this.launchIdlePivot = launchIdlePivot;
 		this.spawnIdle = spawnIdle;
 		this.spawnIdlePivot = spawnIdlePivot;
+
+		// Launch/Spawn times
 		this.launchSpeed = launchSpeed;
 		this.spawnTime = new Date().getTime() + launchDuration;
 		this.spawned = false;
-		this.direction = 0;
+
+		// Attacks
 		this.nextAttackTime = new Date().getTime();
 		this.enemyFocus = undefined;
 		this.decayAmount = decayAmount;
-		this.level = undefined;
 
+		// Ranges
 		this.walkRange = walkRange;
 		this.sightRange = sightRange;
 		this.attackRate = attackRate;
 		this.attackRange = attackRange;
-
-
-		this.hasPhysics = true;
-		this.initCollisions();
-
 	}
 
 	update(pressedKeys) {
@@ -70,9 +71,11 @@ class Animal extends Entity {
 
 	draw(g) {
 		// DEBUG: radius
+		/*
 		if (this.spawned && this.health > 0) {
 			this.drawWalkRange(g);
 		}
+		*/
 
 		super.draw(g);
 	}
@@ -109,15 +112,6 @@ class Animal extends Entity {
 		return (MathUtil.euclidianDist(afterMove, this.walkRangePosition) <= this.walkRange);
 	}
 
-	setDirection(direction) {
-		// Assumes clockwise from south in Radians
-		this.direction = direction;
-		this.setRotation(direction);
-
-		// Reform hitbox
-		this.hitbox.applyBoundingBox();
-	}
-
 	spawn() {
 		// Change idle image and reposition to center
 		this.addAnimation("idle", {images: [this.spawnIdle], loop: true});
@@ -142,6 +136,7 @@ class Animal extends Entity {
 
 		// Time till next decay
 		this.nextDecay = new Date().getTime() + ANIMAL_VARS.NEXT_DECAY;	
+
 		// Tell level to monitor health
 		this.getLevel().monitorHealth(this);
 
@@ -150,12 +145,9 @@ class Animal extends Entity {
 
 	launch() {
 		// Launch further, based on direction in Radians, clockwise from south
-		// this.setPosition({
-		// 	x: this.position.x - this.launchSpeed * Math.sin(this.direction), 
-		// 	y: this.position.y + this.launchSpeed * Math.cos(this.direction)
-		// });
-		this.vX = -this.launchSpeed * Math.sin(this.direction);
-		this.vY = this.launchSpeed * Math.cos(this.direction);
+		this.vX = -Math.sin(this.direction) * this.launchSpeed;
+		this.vY = Math.cos(this.direction) * this.launchSpeed;
+		this.move();
 	}
 
 	move() {
@@ -171,29 +163,30 @@ class Animal extends Entity {
 		for(let i = 0; i < allEnemies.length; i++) {
 			let dist = this.distanceTo(allEnemies[i].getNormalizedPivotPoint());
 			if(dist <= this.sightRange) {
+				// In range format: obj, distance
 				inRange.push({obj: allEnemies[i], distance: dist});
 			}
 		}
-		inRange.sort((a, b) => a.distance-b.distance)
-		//return inRange.map(x => x.o);
+		inRange.sort((a, b) => a.distance - b.distance);
 		return inRange;
 	}	
 
 	canAttack() {
+		// Call super in subclasses to enforce attack rate
 		return this.enemyFocus !== undefined && 
 			new Date().getTime() > this.nextAttackTime && 
 			this.distanceTo(this.enemyFocus.obj.getNormalizedPivotPoint()) <= this.attackRange;
 	}
 
 	attack() {
-		// override in subclasses for AI when spawned
-		// CALL SUPER - ENFORCES ATTACK RATE
+		// Calll super in subclasses to enforce attack rate
 		this.nextAttackTime = new Date().getTime() + this.attackRate;
 	}
 
 	decay() {
 		// Apply decay
 		this.removeHealth(this.decayAmount);
+
 		// Time till next decay
 		if(this.health > 0) {
 			this.nextDecay = new Date().getTime() + ANIMAL_VARS.NEXT_DECAY;			

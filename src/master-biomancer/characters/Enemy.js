@@ -7,24 +7,22 @@ var ENEMY_VARS = {
 /**
  * Abstract Animals for shared qualities for the different animals
  */
-class Enemy extends Entity {
+class Enemy extends Character {
 
-	constructor(id, health, spawnIdle, spawnIdlePivot, attackRate, attackRange) {
-		super(id, health, spawnIdle);
+	constructor(id, health, spawnIdle, spawnIdlePivot, attackRate, attackRange, maxSpeed) {
+		super(id, health, spawnIdle, maxSpeed);
+
 		this.spawnIdle = spawnIdle;
 		this.spawnIdlePivot = spawnIdlePivot;
 		this.direction = 0;
 		this.attackRate = attackRate;
 		this.attackRange = attackRange;
 		this.nextAttackTime = new Date().getTime();
-		this.closestFriendlyInSight = undefined;
-		this.hasPhysics = true;
-		this.initCollisions();		
+		this.closestFriendlyInSight = undefined;	
 	}
 
 	update(pressedKeys) {
 		super.update(pressedKeys);
-		var currentTime = new Date().getTime();
 
 		// Move
 		this.move();
@@ -41,20 +39,19 @@ class Enemy extends Entity {
 	}
 
 	draw(g) {
+		// Call Character's draw
 		super.draw(g);
 	}
 
 	canAttack() {
-		// override in subclasses for AI when spawned
-		// CALL SUPER - ENFORCES ATTACK RATE
+		// Call super in subclasses to enforce attack rate and range
 		return this.closestFriendlyInSight !== undefined && 
 			new Date().getTime() > this.nextAttackTime && 
 			this.closestFriendlyInSight.distance <= this.attackRange;
 	}
 
 	attack() {
-		// override in subclasses for AI when spawned
-		// CALL SUPER - ENFORCES ATTACK RATE
+		// Call super in subclasses to enforce attack rate
 		this.nextAttackTime = new Date().getTime() + this.attackRate;
 	}
 
@@ -68,18 +65,18 @@ class Enemy extends Entity {
 	}
 
 	getInSight(sight_range) {
-		//Returns a list of all friendly entities (Biomancer and animals)
-		//Sorted by distance from the enemy
+		// Returns a list of all friendly entities (Biomancer and animals) 
+		// sorted by distance from the enemy
 		let allFriendlies = this.getLevel().getFriendlyEntities(),
 			inRange = [];
 		for(let i = 0; i < allFriendlies.length; i++) {
 			let dist = this.distanceTo(allFriendlies[i].position);
 			if(dist <= sight_range) {
+				// In range format: obj, distance
 				inRange.push({obj: allFriendlies[i], distance: dist});
 			}
 		}
-		inRange.sort((a, b) => a.distance-b.distance)
-		//return inRange.map(x => x.o);
+		inRange.sort((a, b) => a.distance-b.distance);
 		return inRange;
 	}	
 }

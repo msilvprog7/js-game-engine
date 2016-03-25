@@ -41,21 +41,25 @@ class Wolf extends Animal {
 		// Random movement in radius
 		if(this.enemyFocus !== undefined && this.enemyFocus.obj.isAlive()) {
 			//Move towards enemy
-			
 			let posToMove = this.enemyFocus.obj.getNormalizedPivotPoint(),
 				myPos = this.getNormalizedPivotPoint(),
 				xMove = (myPos.x-ENEMY_VARS.MOVE_EPSILON > posToMove.x) ? -1 : (myPos.x+ENEMY_VARS.MOVE_EPSILON < posToMove.x) ? 1 : 0, 
 				yMove = (myPos.y-ENEMY_VARS.MOVE_EPSILON > posToMove.y) ? -1 : (myPos.y+ENEMY_VARS.MOVE_EPSILON < posToMove.y) ? 1 : 0;
+
 			if(this.enemyFocus.distance <= this.attackRange) { 
-				this.orient(xMove, yMove);	
+				this.orient(xMove, yMove);
+				super.move();
 				return; 
 			}	
-			if(xMove === 0 && yMove === 0) { this.resetMovement(); return; }
-			// this.addToMovement(xMove*WOLF_VARS.RUN_SPEED, yMove*WOLF_VARS.RUN_SPEED);
+
+			if(xMove === 0 && yMove === 0) { 
+				this.resetMovement(); return; 
+			}
+
 			this.vX = xMove*WOLF_VARS.RUN_SPEED;
 			this.vY = yMove*WOLF_VARS.RUN_SPEED;
-			this.orient(xMove, yMove);			
-			// super.move();
+
+			this.orient(xMove, yMove);
 		} else {
 			let enemies = this.getInSightRange();
 			if(enemies.length > 0) {
@@ -64,12 +68,13 @@ class Wolf extends Animal {
 				if(this.enemyFocus !== undefined) {
 					//reset search radius
 					this.walkRangePosition = {x: this.position.x + this.spawnIdlePivot.x, y: this.position.y + this.spawnIdlePivot.y};
-
 				}
 				this.enemyFocus = undefined;
 				this.randomMove();
 			}
-		}		
+		}	
+
+		super.move();	
 	}
 
 	randomMove() {
@@ -77,15 +82,11 @@ class Wolf extends Animal {
 
 		// Try to move forward
 		if (Math.random() < WOLF_VARS.WALK_PROBABILITY) {
-
 			var movement = this.movementForward(WOLF_VARS.WALK_SPEED);
 
 			if (this.positionInWalkRange(movement)) {
-				// this.addToMovement(movement.x, movement.y);
 				this.vX = movement.x;
 				this.vY = movement.y;
-				// super.move();
-
 			} else {
 				forceTurn = true;
 			}
@@ -99,6 +100,7 @@ class Wolf extends Animal {
 
 	attack() {
 		super.attack();
+		
 		//ATTACK CLOSEST FRIENDLY TARGET		
  		this.enemyFocus.obj.removeHealth(WOLF_VARS.ATTACK_DAMAGE);
 	}
