@@ -6,7 +6,13 @@ var BULLET_VARS = {
 	WIDTH: 10,	
 	HEIGHT: 21,
 	PIVOT: {x: 5, y: 10.5},
-	COLLISION_CHECK: 50 // this many ms between expensive collision checks
+	COLLISION_CHECK: 50, // this many ms between expensive collision checks
+	ADD_DEFAULTS: {
+		parentIsLevel: true,
+		indexReferenceEntity: undefined, //Leave undefined for focusChild
+		indexReferencePlacing: true, //True is before, false is after
+		monitorHealth: false //True only if monitor health from start
+	}
 }
 
 class Bullet extends Sprite {
@@ -31,7 +37,7 @@ class Bullet extends Sprite {
 		this.setPivotPoint({x: BULLET_VARS.PIVOT.x, y:  BULLET_VARS.PIVOT.y});
 		this.setRotation(this.direction);
 		this.hitbox.applyBoundingBox();		
-		this.level.addBullet(this);
+		this.level.addEntityToLevel(this, BULLET_VARS.ADD_DEFAULTS);
 	}
 
 	update() {
@@ -41,18 +47,20 @@ class Bullet extends Sprite {
 		});
 		if(this.nextCollisionCheck < new Date().getTime()) {
 			//Do a collision check
-			let bullet = this, friendlies = this.level.friendlies
-			for(let i = 0; i < friendlies.length; i++) {
-				let f = friendlies[i];
+			let bullet = this, collders = this.level.getColliders(Enemy)
+			for(let i = 0; i < collders.length; i++) {
+				let f = collders[i];
 				if(bullet.collidesWith(f)) {
-					f.removeHealth(bullet.damage);
-					bullet.level.removeBullet(this);
+					if(f.removeHealth) {
+						f.removeHealth(bullet.damage);
+					}
+					bullet.level.removeEntity(this);
 					return;
 				}
 			}
 		}
 		if(this.position.x < -1000 || this.position.x > 2000 || this.position.y < -1000 || this.position.y > 2000) {
-			this.level.removeBullet(this);
+			this.level.removeEntity(this);
 		}
 	}
 }

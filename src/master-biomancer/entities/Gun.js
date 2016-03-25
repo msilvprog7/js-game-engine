@@ -45,7 +45,7 @@ class Gun extends Sprite {
 
 		// Fire!
 		var animal = this.generateCurrentAnimal();
-		this.getBiomancer().getLevel().addAnimal(animal);
+		this.getBiomancer().getLevel().addEntityToLevel(animal, ANIMAL_VARS.ADD_DEFAULTS);
 		// add animal to colliders, may abstract
 		this.getBiomancer().getLevel().addCollider(animal)
 			.addMover(animal);
@@ -105,7 +105,7 @@ class Gun extends Sprite {
 		return this.currentAnimal;
 	}
 
-	addAnimal(animal) {
+	addAnimalToGun(animal) {
 		this.availableAnimals.push(animal);
 
 		if (this.currentAnimalIndex === undefined) {
@@ -117,6 +117,6 @@ class Gun extends Sprite {
 		// Create animals
 		this.availableAnimals = [];
 		this.currentAnimal = undefined;
-		GUN_VARS.ANIMALS.map((x) => this.addAnimal(x)); // Call like this to set default to first
+		GUN_VARS.ANIMALS.map((x) => this.addAnimalToGun(x)); // Call like this to set default to first
 	}
 }

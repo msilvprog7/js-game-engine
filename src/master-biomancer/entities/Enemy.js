@@ -1,7 +1,13 @@
 "use strict";
 
 var ENEMY_VARS = {
-	MOVE_EPSILON: 10	
+	MOVE_EPSILON: 10,
+	ADD_DEFAULTS: {
+		parentIsLevel: true,
+		indexReferenceEntity: undefined, //Leave undefined for focusChild
+		indexReferencePlacing: false, //True is before, false is after
+		monitorHealth: true //True only if monitor health from start
+	}
 };
 
 /**
