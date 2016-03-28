@@ -9,7 +9,7 @@ class EventDispatcher{
 		this.events = {};
 	}
 
-	addEventListener(eventType, listener, callback) {
+	addEventListener(eventType, listener, callback, context) {
 		// Create list if necessary
 		if (this.events[eventType] === undefined) {
 			this.events[eventType] = [];
@@ -17,7 +17,7 @@ class EventDispatcher{
 
 		// Add listener and callback
 		if (listener !== undefined && callback !== undefined && typeof(callback) === "function") {
-			this.events[eventType].push({"listener": listener, "callback": callback});
+			this.events[eventType].push({"listener": listener, "callback": callback, "context": context});
 		}
 
 		return this;
@@ -56,7 +56,7 @@ class EventDispatcher{
 		// Call callbacks
 		if (data === undefined) { data = []; }
 		else if(data.iterator === undefined) { data = [data];}
-		this.events[eventType].forEach(e => { if (typeof(e.callback) === "function") { e.callback(...data); } });
+		this.events[eventType].forEach(e => { if (typeof(e.callback) === "function") { e.callback.call(e.context, ...data); } });
 	}
 
 }

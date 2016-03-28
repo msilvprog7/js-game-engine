@@ -3,6 +3,10 @@ CS 4730 Game Engine written in JS
 
 Authors: Michael Snider, Kyle Bibler, John Reagan
 
+## Lab 8
+
+We decide a alpha
+
 ## Lab 7
 
 John storms in! We prepare for the prototype...

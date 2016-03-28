@@ -19,7 +19,7 @@ var LEVEL_VARS = {
  * */
 class Level extends DisplayObjectContainer{
 
-	constructor(id) {
+	constructor(id, game) {
 		super(id, undefined);
 		this.tilesGenerated = 0;
 		this.focusChild = undefined;
@@ -29,6 +29,7 @@ class Level extends DisplayObjectContainer{
 		this.enemies = [];
 		this.colliders = [];
 		this.movers = [];
+		this.game = game;
 	}
 
 	update(pressedKeys) {
@@ -121,6 +122,8 @@ class Level extends DisplayObjectContainer{
 	}
 
 	addEntityToLevel(entity, options) {
+		var that = this;
+
 		if(options === undefined) { return; }
 		if(options["parentIsLevel"] !== undefined && options["parentIsLevel"]) {
 			entity.parent = this;
@@ -143,10 +146,17 @@ class Level extends DisplayObjectContainer{
 		} else if(entity instanceof Biomancer) {
 			this.addFriendly(entity);
 			this.setFocusChild(entity);
+			entity.addEventListener(EVENTS.DIED, this, function () {
+				that.reload();
+			});
 		}
 		if(options["monitorHealth"] !== undefined && options["monitorHealth"]) {
 			this.monitorHealth(entity);
 		}
+	}
+
+	reload() {
+		this.game.reloadLevel();
 	}
 	
 	removeEntity(entity) {

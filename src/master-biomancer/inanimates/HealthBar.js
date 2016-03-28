@@ -28,9 +28,9 @@ class HealthBar extends DisplayObjectContainer {
 		this.create();
 
 		// listeners
-		this.entity.addEventListener(EVENTS.HEALTH_UPDATED, this, this.updateHealth);
-		this.entity.addEventListener(EVENTS.HITBOX_UPDATED, this, this.updatePosition);
-		this.entity.addEventListener(EVENTS.DIED, this, this.died);
+		this.entity.addEventListener(EVENTS.HEALTH_UPDATED, this, this.updateHealth, this);
+		this.entity.addEventListener(EVENTS.HITBOX_UPDATED, this, this.updatePosition, this);
+		this.entity.addEventListener(EVENTS.DIED, this, this.died, this);
 	}
 
 	create() {
@@ -103,21 +103,21 @@ class HealthBar extends DisplayObjectContainer {
 
 	updatePosition(data) {
 		// Background bar
-		this.listener.backgroundBar.setPosition(this.listener.getBackgroundBarPosition());
-		this.listener.backgroundBar.setDimensions(this.listener.getBackgroundBarDimensions());
+		this.backgroundBar.setPosition(this.getBackgroundBarPosition());
+		this.backgroundBar.setDimensions(this.getBackgroundBarDimensions());
 
 		// Health bar
-		this.listener.healthBar.setPosition(this.listener.getHealthBarPosition());
-		this.listener.healthBar.setDimensions(this.listener.getHealthBarDimensions());
+		this.healthBar.setPosition(this.getHealthBarPosition());
+		this.healthBar.setDimensions(this.getHealthBarDimensions());
 	}
 
 	updateHealth(data) {
-		this.listener.setHealthColor();
-		this.listener.resize();
+		this.setHealthColor();
+		this.resize();
 	}
 
 	died() {
-		this.listener.setVisible(false);
+		this.setVisible(false);
 	}
 
 	isDead() {

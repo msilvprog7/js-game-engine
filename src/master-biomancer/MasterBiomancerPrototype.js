@@ -34,53 +34,13 @@ class MasterBiomancerGame extends Game{
 	}
 
 	initializeLevels() {
-		super.initializeLevels();
+		super.initializeLevels(CLASS_REFERENCES);
 
-		// Create levels
-		var currentLevel, currentBiomancer, currentEnemy;
+		// Add levels
+		LEVEL_LIST.forEach(l => this.addLevel(l.id, l.level));
 
-		// Level 1
-		currentLevel = new Level("level" + this.currentLevelId);
-		currentLevel.addChild(currentLevel.generateTileRect(8, 4, {x: 100, y: 100})); // Tiles first!
-
-		// ... Biomancer
-		currentBiomancer = this.generateBiomancer(440, 211, currentLevel);
-		currentLevel.addEntityToLevel(currentBiomancer, BIOMANCER_VARS.ADD_DEFAULTS);
-
-		// currentLevel.setFocusChildAndMonitorHealth(currentBiomancer);
-		// currentLevel.addFriendly(currentBiomancer);
-		// may abstract into level
-
-		// ... Enemies
-		currentEnemy = this.generateBasicEnemy(740, 110, currentLevel);
-		currentLevel.addEntityToLevel(currentEnemy, ENEMY_VARS.ADD_DEFAULTS);
-
-		/// ... Walls
-		currentLevel.addWall(new Wall('wall1').setScaleY(4))
-			.addWall(new Wall('wallBottom').setPosition({y: 500}).setScaleX(8));
-
-		// ... Add level
-		this.addLevel(currentLevel);
-
-		// ... More levels later
-	}
-
-	generateBiomancer(x, y, level) {
-		var biomancer = new Biomancer();
-		biomancer.setParent(level);
-		biomancer.setPosition({x: x, y: y});
-		biomancer.setPivotPoint(BIOMANCER_VARS.PIVOT);
-		biomancer.hitbox.setHitboxFromImage(BIOMANCER_VARS.DIMENSIONS);
-		return biomancer;
-	}
-
-	generateBasicEnemy(x, y, level) {
-		var enemy = new BasicEnemy();
-		enemy.setParent(level);
-		enemy.setPosition({x: x, y: y});
-		enemy.setPivotPoint(BASIC_ENEMY_VARS.SPAWN_IDLE_PIVOT);
-		enemy.hitbox.setHitboxFromImage(BASIC_ENEMY_VARS.SPAWN_DIMENSIONS);
-		return enemy;
+		// Load
+		this.reloadLevel();
 	}
 }
 

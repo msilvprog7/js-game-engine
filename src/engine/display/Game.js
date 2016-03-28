@@ -49,46 +49,58 @@ class Game extends DisplayObjectContainer{
 		this.setPosition({x: (this.width / 2) - point.x, y: (this.height / 2) - point.y});
 	}
 
-	initializeLevels() {
+	initializeLevels(classReferences) {
 		// Nothing in Game itself, but in extension
-		this.levels = {};
 		this.levelsList = [];
-		this.currentLevel = -1;
-		this.currentLevelId = 0;
+		this.currentLevel = undefined;
+		this.currentLevelIndex = -1;
 		this.removeChildren();
+		this.levelParser = new LevelParser(classReferences);
 	}
 
-	addLevel(level) {
-		this.levels[level.id] = level;
-		this.levelsList.push(level.id);
-		this.currentLevelId++;
+	addLevel(levelId, levelStr) {
+		this.levelParser.store(levelId, levelStr);
+		this.levelsList.push(levelId);
 
 		// Set current level to first
-		if (this.currentLevel === -1) {
-			this.setCurrentLevelIndex(0);
+		if (this.levelsList.length === 1) {
+			this.currentLevelIndex = 0;
 		}
 	}
 
-	setCurrentLevelIndex(index) {
-		this.currentLevel = index;
+	reloadLevel() {
 		this.removeChildren();
-		this.addChild(this.getCurrentLevel());
+		this.addChild(this.createCurrentLevel());
 	}
 
-	getCurrentLevelIndex() {
-		return this.currentLevel;
+	nextLevel() {
+		// Returns whether or not the levels list have been iterated through once
+		this.currentLevelIndex++;
+		if (this.currentLevelIndex >= this.levelsList.length) {
+			this.currentLevelIndex = 0;
+			this.removeChildren();
+			return true;
+		}
+
+		reloadLevel();
+		return false;
 	}
 
 	getCurrentLevel() {
-		return this.levels[this.levelsList[this.currentLevel]];
+		return this.currentLevel;
+	}
+
+	getCurrentLevelIndex() {
+		return this.currentLevelIndex;
+	}
+
+	createCurrentLevel() {
+		this.currentLevel = this.levelParser.get(this.levelsList[this.currentLevelIndex], this);
+		return this.currentLevel;
 	}
 
 	getLevelsList() {
 		return this.levelsList;
-	}
-
-	getLevels() {
-		return this.levels;
 	}
 
 	nextFrame(){
