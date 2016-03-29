@@ -2,15 +2,21 @@
 
 
 var TILES = {
-	"tile_0": {
-		FILENAME: "biomancer/levels/tiles/tile_0.png",
-		WIDTH: 100,
-		HEIGHT: 100
+	"tile-0": {
+		FILENAME: "biomancer/levels/tiles/tile_0_400x400.png",
+		WIDTH: 400,
+		HEIGHT: 400
 	}
 };
 
 var LEVEL_VARS = {
-	DEFAULT_TILE: "tile_0"
+	DEFAULT_TILE: "tile-0",
+	TILE_ADD_DEFAULTS: {
+		parentIsLevel: true,
+		indexReferenceEntity: undefined, //Leave undefined for before focus child, or if no child exists appending to end
+		indexReferencePlacing: true, //True or undefined is before, false is after
+		monitorHealth: false //True only if monitor health from start
+	}
 };
 
 /**
@@ -21,7 +27,6 @@ class Level extends DisplayObjectContainer{
 
 	constructor(id, game) {
 		super(id, undefined);
-		this.tilesGenerated = 0;
 		this.focusChild = undefined;
 		this.animals = [];
 		this.healthBars = [];
@@ -193,39 +198,6 @@ class Level extends DisplayObjectContainer{
 		return this.enemies;
 	}
 
-	/**
-	  * Tiles
-	 */
-	generateTileRect(horizontalTiles, verticalTiles, position, scale, tileId) {
-		var tile = (tileId !== undefined) ? TILES[tileId] : TILES[LEVEL_VARS.DEFAULT_TILE],
-			generatedTile = new DisplayObjectContainer(),
-			currentTileId = 0,
-			tileImage = {width: tile.WIDTH, height: tile.HEIGHT};
-
-		for (let j = 0; j < verticalTiles; j++) {
-			for (let i = 0; i < horizontalTiles; i++) {
-				var currentTile = new Sprite("tile-" + this.tilesGenerated + "-" + currentTileId, tile.FILENAME);
-				currentTile.setPosition({x: i * tile.WIDTH, y: j * tile.HEIGHT});
-				currentTile.setPivotPoint({x: tile.WIDTH / 2, y: tile.HEIGHT / 2});
-				currentTile.hitbox.setHitboxFromImage(tileImage);
-				generatedTile.addChild(currentTile);
-				currentTileId++;
-			}
-		}
-
-		generatedTile.setPosition({
-			x: (position !== undefined && position.x !== undefined) ? position.x : 0.0,
-			y: (position !== undefined && position.y !== undefined) ? position.y : 0.0
-		});
-		generatedTile.setPivotPoint({x: horizontalTiles * tile.WIDTH / 2, y: verticalTiles * tile.HEIGHT / 2});
-		generatedTile.setScaleX((scale !== undefined && scale.x !== undefined) ? scale.x : 1.0);
-		generatedTile.setScaleY((scale !== undefined && scale.y !== undefined) ? scale.y : 1.0);
-
-		this.tilesGenerated++;
-
-		return generatedTile;
-	}
-
 	addCollider(collider) {
 		this.colliders.push(collider);
 		return this;
@@ -255,5 +227,35 @@ class Level extends DisplayObjectContainer{
 		this.addChild(wall);
 		this.addCollider(wall);
 		return this;
+	}
+
+	/**
+	  * Tiles
+	 */
+	static generateTileRect(tileId, cols, rows) {
+		var tile = (tileId !== undefined) ? TILES[tileId] : TILES[LEVEL_VARS.DEFAULT_TILE],
+			generatedTile = new DisplayObjectContainer("generated-tile-" + Math.floor(Math.random() * 100000)),
+			currentTileId = 0,
+			tileImage = {width: tile.WIDTH, height: tile.HEIGHT};
+
+		// Layout tiles
+		for (let i = 0; i < rows; i++) {
+			for (let j = 0; j < cols; j++) {
+				var currentTile = new Sprite("tile" + "-" + currentTileId, tile.FILENAME);
+				currentTile.setPosition({x: j * tile.WIDTH, y: i * tile.HEIGHT});
+				currentTile.setPivotPoint({x: tile.WIDTH / 2, y: tile.HEIGHT / 2});
+				currentTile.hitbox.setHitboxFromImage(tileImage);
+				generatedTile.addChild(currentTile);
+				currentTileId++;
+			}
+		}
+
+		// Central pivot point on the display object container
+		generatedTile.setPivotPoint({x: cols * tile.WIDTH / 2, y: rows * tile.HEIGHT / 2});
+
+		// Set hitbox
+		generatedTile.hitbox.setHitboxFromImage({width: cols * tile.WIDTH, height: rows * tile.HEIGHT});
+
+		return generatedTile;
 	}
 }

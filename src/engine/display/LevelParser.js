@@ -47,7 +47,7 @@ class LevelParser {
 		// Item by item through level definition
 		for (let i = 0; i < items.length; i++) {
 			// Parse each item defined
-			var words = items[i].match(/\w+/g);
+			var words = items[i].match(/[\w-.]+/g);
 
 			// Empty line
 			if (words === undefined || words === null || words.length === 0) {
@@ -57,36 +57,95 @@ class LevelParser {
 			// Check type with class references (e.g. Biomancer)
 			var type = words[0],
 				reference = this.classReferences[type];
-
-			if (reference === undefined  || 
-				reference.constructor === undefined || 
-				reference.constructor === null || 
-				reference.addToLevel === undefined || 
-				reference.addToLevel === null) {
-				console.error("Type[" + type + "] not properly defined in Class References (project/levels/LevelList.js), must have 'constructor' and 'addToLevel'");
+			
+			if (reference === undefined  || reference.addToLevel === undefined || reference.addToLevel === null) {
+				console.error("Type[" + type + "] not properly defined in Class References (project/levels/LevelList.js), must have 'addToLevel'");
 				continue;
 			}
 
 			// Create object
-			var obj = reference.constructor();
+			var obj,
+				wordIndex = 1;
+
+			// Generate or create
+			if (reference.generate !== undefined && typeof(reference.generate) === "function" && 
+				reference.generateParams >= 0 && wordIndex + reference.generateParams <= words.length) {
+				// Generate
+				obj = reference.generate(...words.slice(wordIndex, wordIndex + reference.generateParams));
+				wordIndex += reference.generateParams;
+			} else if (reference.constructor !== undefined && typeof(reference.constructor) === 'function') {
+				// Construct
+				obj = reference.constructor();
+			} else {
+				console.error("Parsing level item[" + i + "] of Type[" + type + "] not properly defined in Class References (project/levels/LevelList.js), " + 
+							  "must have 'constructor' or 'generate' with number of 'generateParams'");
+				continue;
+			}
+
+			// Set parent to level
 			obj.setParent(level);
 
 			// Parse properties on object
-			for (let wordIndex = 1; wordIndex < words.length; wordIndex++) {
+			for (; wordIndex < words.length; wordIndex++) {
 				// Properties
-				switch (words[wordIndex]) {
+				switch (words[wordIndex].toLowerCase()) {
 					case "loc":
 					case "location":
 					case "pos":
 					case "position":
 						// Conditions not met
 						if (wordIndex + 2 >= words.length || isNaN(parseFloat(words[wordIndex + 1])) || isNaN(parseFloat(words[wordIndex + 1]))) {
-							console.error("Parsing level item[" + i + "] word[" + wordIndex + "] - position x y without proper formatting");
+							console.error("Parsing level item[" + i + "] word[" + wordIndex + "] - position x y  - without proper formatting");
 							continue;
 						}
 
 						// Set position
 						obj.setPosition({x: parseFloat(words[wordIndex + 1]), y: parseFloat(words[wordIndex + 2])});
+
+						// Skip params
+						wordIndex += 2;
+						break;
+					case "scale":
+						// Conditions not met
+						if (wordIndex + 1 >= words.length || isNaN(parseFloat(words[wordIndex + 1]))) {
+							console.error("Parsing level item[" + i + "] word[" + wordIndex + "] - scale amount  - without proper formatting");
+							continue;
+						}
+
+						// Set scale
+						console.log("set scale " + parseFloat(words[wordIndex + 1]));
+						obj.setScale(parseFloat(words[wordIndex + 1]));
+
+						// Skip params
+						wordIndex += 1;
+						break;
+					case "scale_x":
+					case "scalex":
+						// Conditions not met
+						if (wordIndex + 1 >= words.length || isNaN(parseFloat(words[wordIndex + 1]))) {
+							console.error("Parsing level item[" + i + "] word[" + wordIndex + "] - scalex amount  - without proper formatting");
+							continue;
+						}
+
+						// Set scale
+						obj.setScaleX(parseFloat(words[wordIndex + 1]));
+
+						// Skip params
+						wordIndex += 1;
+						break;
+					case "scale_y":
+					case "scaley":
+						// Conditions not met
+						if (wordIndex + 1 >= words.length || isNaN(parseFloat(words[wordIndex + 1]))) {
+							console.error("Parsing level item[" + i + "] word[" + wordIndex + "] - scaley amount  - without proper formatting");
+							continue;
+						}
+
+						// Set scale
+						obj.setScaleY(parseFloat(words[wordIndex + 1]));
+
+						// Skip params
+						wordIndex += 1;
 						break;
 				}
 			}
@@ -104,12 +163,7 @@ class LevelParser {
 			// Add object to level
 			reference.addToLevel(level, obj, reference.options);
 		}
-
-
-		// /// ... Walls
-		// currentLevel.addWall(new Wall('wall1').setScaleY(4))
-		// 	.addWall(new Wall('wallBottom').setPosition({y: 500}).setScaleX(8));
-
+		
 		return level;
 	}
 
