@@ -47,7 +47,7 @@ class Game extends DisplayObjectContainer{
 
 	centerOn(point) {
 		this.setPosition({x: (this.width / 2) - point.x, y: (this.height / 2) - point.y});
-		this.UI.setPosition({x: (this.width / 2) - point.x, y: (this.height / 2) - point.y});
+		this.UI.setPosition({x: point.x - (this.width / 2), y: point.y - (this.height / 2)});
 	}
 
 	initializeLevels(classReferences) {
