@@ -32,7 +32,7 @@ class MasterBiomancerGame extends Game{
 
 		if(pressedKeys.contains(49) && this.UI.dialog === undefined) {
 			let options = {wordTime: 100, pauseOnPeriods: true}
-			this.UI.showDialog("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", options)
+			this.UI.showDialog("This is a test message. Hopefully this will work perfectly. Test Test Test Test Test Test Test Test Test Test Test Test Test.", options)
 		}
 	}
 

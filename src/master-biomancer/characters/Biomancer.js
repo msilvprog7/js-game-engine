@@ -8,7 +8,7 @@ var BIOMANCER_VARS = {
 	PIVOT: {x: 30, y: 35},
 	GUN_POSITION: {x: 45, y: 52},
 	SPEED: 3,
-	V_MAX: 8,
+	V_MAX: 4,
 	RUN_ACC: 1,
 	ADD_DEFAULTS: {
 		parentIsLevel: true,

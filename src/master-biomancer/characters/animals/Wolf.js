@@ -3,11 +3,11 @@
 // Duration will equal (HEALTH / DECAY_AMOUNT) * ANIMAL_VARS.NEXT_DECAY
 var WOLF_VARS = {
 	count: 0,
-	HEALTH: 140,
+	HEALTH: 40,
 	LAUNCH_IDLE: "biomancer/animals/wolf/wolf-launch.png",
 	LAUNCH_IDLE_PIVOT: {x: 6, y: 6},
-	LAUNCH_SPEED: 4,
-	LAUNCH_DURATION: 1000,
+	LAUNCH_SPEED: 8,
+	LAUNCH_DURATION: 750,
 	SPAWN_IDLE: "biomancer/animals/wolf/wolf-spawn.png",
 	SPAWN_IDLE_PIVOT: {x: 25, y: 25},
 	DECAY_AMOUNT: 1,
@@ -18,8 +18,8 @@ var WOLF_VARS = {
 	WALK_RANGE: 100,
 	SIGHT_RANGE: 350,
 	ATTACK_RATE: 1000,
-	ATTACK_RANGE: 70,
-	ATTACK_DAMAGE: 10
+	ATTACK_RANGE: 100,
+	ATTACK_DAMAGE: 5
 };
 
 /**
