@@ -56,14 +56,31 @@ class DisplayObjectContainer extends DisplayObject{
 		var index = this.children.indexOf(child);
 
 		if (index !== -1) {
-			this.children.splice(index, 1);
+			return this.children.splice(index, 1)[0];
 		}
+		return undefined;
+	}
+
+	removeChildById(id) {
+		var index = -1, i = 0;
+		for(i; i < this.children.length; i++) {
+			if(this.children[i].id === id) {
+				index = i;
+				break;
+			}
+		}
+
+		if (index !== -1) {
+			return this.children.splice(index, 1)[0];			
+		}
+		return undefined;
 	}
 
 	removeChildAtIndex (index) {
 		if (index !== undefined && (index >= 0 && index < this.children.length)) {
-			this.children.splice(index, 1);
+			return this.children.splice(index, 1)[0];
 		}
+		return undefined;
 	}
 
 	removeChildren () {

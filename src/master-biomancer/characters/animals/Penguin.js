@@ -1,40 +1,48 @@
 "use strict";
 
 // Duration will equal (HEALTH / DECAY_AMOUNT) * ANIMAL_VARS.NEXT_DECAY
-var WOLF_VARS = {
+var PENGUIN_VARS = {
 	count: 0,
-	HEALTH: 140,
-	LAUNCH_IDLE: "biomancer/animals/wolf/wolf-launch.png",
+	HEALTH: 30,
+	LAUNCH_IDLE: "biomancer/animals/penguin/penguin-launch.png",
 	LAUNCH_IDLE_PIVOT: {x: 6, y: 6},
-	LAUNCH_SPEED: 4,
+	LAUNCH_SPEED: 6,
 	LAUNCH_DURATION: 1000,
-	SPAWN_IDLE: "biomancer/animals/wolf/wolf-spawn.png",
-	SPAWN_IDLE_PIVOT: {x: 25, y: 25},
+	SPAWN_IDLE: "biomancer/animals/penguin/penguin-spawn.png",
+	SPAWN_IDLE_PIVOT: {x: 30, y: 30},
 	DECAY_AMOUNT: 1,
 	TURN_PROBABILITY: 0.1,
 	WALK_PROBABILITY: 0.75,
 	WALK_SPEED: 1,
-	RUN_SPEED: 8,	
-	WALK_RANGE: 100,
-	SIGHT_RANGE: 350,
-	ATTACK_RATE: 1000,
-	ATTACK_RANGE: 70,
-	ATTACK_DAMAGE: 10
+	RUN_SPEED: 2,	
+	WALK_RANGE: 400,
+	SIGHT_RANGE: 700,
+	ATTACK_RATE: 1500,
+	ATTACK_RANGE: 500,
+	ATTACK_DMG: 20,
+	BULLET_SPEED: 10,
+	BULLET_IMG: "biomancer/misc/snowball.png",
+	BULLET_FUNCTION: function(collider, dmg) {
+		if(collider instanceof Enemy) {
+			collider.removeHealth(dmg);
+			collider.addStatus("move-slow", 3000, 0.6);
+		}
+	}
 };
 
 /**
  * Our first animal, a friendly wolf
  */
-class Wolf extends Animal {
+class Penguin extends Animal {
 	
 	constructor() {
-		super("wolf-" + WOLF_VARS.count, WOLF_VARS.HEALTH, WOLF_VARS.LAUNCH_IDLE, WOLF_VARS.LAUNCH_IDLE_PIVOT, 
-			WOLF_VARS.SPAWN_IDLE, WOLF_VARS.SPAWN_IDLE_PIVOT,
-			WOLF_VARS.LAUNCH_SPEED, WOLF_VARS.LAUNCH_DURATION, 
-			WOLF_VARS.DECAY_AMOUNT, WOLF_VARS.WALK_RANGE, WOLF_VARS.SIGHT_RANGE,
-			WOLF_VARS.ATTACK_RATE, WOLF_VARS.ATTACK_RANGE);
+		super("spider-" + PENGUIN_VARS.count, PENGUIN_VARS.HEALTH, PENGUIN_VARS.LAUNCH_IDLE, PENGUIN_VARS.LAUNCH_IDLE_PIVOT, 
+			PENGUIN_VARS.SPAWN_IDLE, PENGUIN_VARS.SPAWN_IDLE_PIVOT,
+			PENGUIN_VARS.LAUNCH_SPEED, PENGUIN_VARS.LAUNCH_DURATION, 
+			PENGUIN_VARS.DECAY_AMOUNT, PENGUIN_VARS.WALK_RANGE, PENGUIN_VARS.SIGHT_RANGE,
+			PENGUIN_VARS.ATTACK_RATE, PENGUIN_VARS.ATTACK_RANGE);
 
-		WOLF_VARS.count++;
+		PENGUIN_VARS.count++;
 	}
 
 	move() {
@@ -48,9 +56,11 @@ class Wolf extends Animal {
 
 			if(this.enemyFocus.distance <= this.attackRange) { 
 				this.orient(xMove, yMove);
+				this.vX = 0;
+				this.vY = 0;
 				super.move();
 				return; 
-			}	
+			} 
 
 			if(xMove === 0 && yMove === 0) { 
 				this.vX = 0;
@@ -59,8 +69,8 @@ class Wolf extends Animal {
 				return; 
 			}
 
-			this.vX = xMove*WOLF_VARS.RUN_SPEED;
-			this.vY = yMove*WOLF_VARS.RUN_SPEED;
+			this.vX = xMove*PENGUIN_VARS.RUN_SPEED;
+			this.vY = yMove*PENGUIN_VARS.RUN_SPEED;
 
 			this.orient(xMove, yMove);
 		} else {
@@ -84,8 +94,8 @@ class Wolf extends Animal {
 		var forceTurn = false;
 
 		// Try to move forward
-		if (Math.random() < WOLF_VARS.WALK_PROBABILITY) {
-			var movement = this.movementForward(WOLF_VARS.WALK_SPEED);
+		if (Math.random() < PENGUIN_VARS.WALK_PROBABILITY) {
+			var movement = this.movementForward(PENGUIN_VARS.WALK_SPEED);
 
 			if (this.positionInWalkRange(movement)) {
 				this.vX = movement.x;
@@ -96,7 +106,7 @@ class Wolf extends Animal {
 		}
 
 		// Change direction
-		if (Math.random() < WOLF_VARS.TURN_PROBABILITY || forceTurn) {
+		if (Math.random() < PENGUIN_VARS.TURN_PROBABILITY || forceTurn) {
 			this.setDirection(MathUtil.modRadians(this.rotation + MathUtil.either(-1, 1) * (MathUtil.PI4)));
 		}
 	}
@@ -104,8 +114,16 @@ class Wolf extends Animal {
 	attack() {
 		super.attack();
 		
-		//ATTACK CLOSEST FRIENDLY TARGET		
- 		this.enemyFocus.obj.removeHealth(WOLF_VARS.ATTACK_DAMAGE);
+		//ATTACK CLOSEST ENEMY TARGET
+		let enemyPivot = this.enemyFocus.obj.getNormalizedPivotPoint(),
+			myPivot = this.getNormalizedPivotPoint(),
+			direction = MathUtil['3PI2']-Math.atan2((myPivot.y - enemyPivot.y), (enemyPivot.x - myPivot.x));
+
+		if(direction >= MathUtil['2PI']) { 
+			direction -= MathUtil['2PI'];
+		}
+		
+ 		new Bullet(PENGUIN_VARS.BULLET_IMG, PENGUIN_VARS.BULLET_SPEED, PENGUIN_VARS.ATTACK_DMG, direction, myPivot, this.getLevel(), PENGUIN_VARS.BULLET_FUNCTION);
 	}
 	
 }

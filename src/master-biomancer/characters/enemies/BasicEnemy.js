@@ -12,7 +12,13 @@ var BASIC_ENEMY_VARS = {
 	MOVE_BEHAVIOR: 'NONE',
 	SPAWN_IDLE: "biomancer/enemies/basic-enemy/basic-enemy.png",
 	SPAWN_IDLE_PIVOT: {x: 35, y: 15},
-	SPAWN_DIMENSIONS: {width: 70, height: 70}
+	SPAWN_DIMENSIONS: {width: 70, height: 70},
+	BULLET_IMG: "biomancer/misc/bullet.png",
+	BULLET_FUNCTION: function(collider, dmg) {
+		if(collider instanceof Animal || collider instanceof Biomancer) {
+			collider.removeHealth(dmg);
+		}
+	}
 };
 
 class BasicEnemy extends Enemy {
@@ -35,8 +41,8 @@ class BasicEnemy extends Enemy {
 			//MOVE TOWARDS CLOSEST FRIENDLY
 			this.closestFriendlyInSight = friendlies[0];
 			let posToMove = friendlies[0].obj.getPosition(),
-				xMove = (this.position.x-ENEMY_VARS.MOVE_EPSILON > posToMove.x) ? -1 : (this.position.x+ENEMY_VARS.MOVE_EPSILON < posToMove.x) ? 1 : 0, 
-				yMove = (this.position.y-ENEMY_VARS.MOVE_EPSILON > posToMove.y) ? -1 : (this.position.y+ENEMY_VARS.MOVE_EPSILON < posToMove.y) ? 1 : 0;
+				xMove = (this.position.x-CHARACTER_VARS.MOVE_EPSILON > posToMove.x) ? -1 : (this.position.x+CHARACTER_VARS.MOVE_EPSILON < posToMove.x) ? 1 : 0, 
+				yMove = (this.position.y-CHARACTER_VARS.MOVE_EPSILON > posToMove.y) ? -1 : (this.position.y+CHARACTER_VARS.MOVE_EPSILON < posToMove.y) ? 1 : 0;
 
 			if(this.closestFriendlyInSight.distance <= this.attackRange) { 
 				this.orient(xMove, yMove);
@@ -63,6 +69,7 @@ class BasicEnemy extends Enemy {
 			direction -= MathUtil['2PI'];
 		}
 		
- 		new Bullet(BASIC_ENEMY_VARS.BULLET_SPEED, BASIC_ENEMY_VARS.ATTACK_DMG, direction, myPivot, this.getLevel());
+ 		new Bullet(BASIC_ENEMY_VARS.BULLET_IMG, BASIC_ENEMY_VARS.BULLET_SPEED, BASIC_ENEMY_VARS.ATTACK_DMG, 
+ 			direction, myPivot, this.getLevel(), BASIC_ENEMY_VARS.BULLET_FUNCTION);
 	}
 }

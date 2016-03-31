@@ -1,7 +1,6 @@
 "use strict";
 
 var ENEMY_VARS = {
-	MOVE_EPSILON: 10,
 	ADD_DEFAULTS: {
 		parentIsLevel: true,
 		indexReferenceEntity: undefined, //Leave undefined for focusChild
