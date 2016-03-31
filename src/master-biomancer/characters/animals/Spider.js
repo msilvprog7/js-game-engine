@@ -1,40 +1,40 @@
 "use strict";
 
 // Duration will equal (HEALTH / DECAY_AMOUNT) * ANIMAL_VARS.NEXT_DECAY
-var WOLF_VARS = {
+var SPIDER_VARS = {
 	count: 0,
-	HEALTH: 140,
-	LAUNCH_IDLE: "biomancer/animals/wolf/wolf-launch.png",
+	HEALTH: 30,
+	LAUNCH_IDLE: "biomancer/animals/spider/spider-launch.png",
 	LAUNCH_IDLE_PIVOT: {x: 6, y: 6},
-	LAUNCH_SPEED: 4,
-	LAUNCH_DURATION: 1000,
-	SPAWN_IDLE: "biomancer/animals/wolf/wolf-spawn.png",
+	LAUNCH_SPEED: 20,
+	LAUNCH_DURATION: 100,
+	SPAWN_IDLE: "biomancer/animals/spider/spider-spawn.png",
 	SPAWN_IDLE_PIVOT: {x: 25, y: 25},
 	DECAY_AMOUNT: 1,
 	TURN_PROBABILITY: 0.1,
 	WALK_PROBABILITY: 0.75,
 	WALK_SPEED: 1,
-	RUN_SPEED: 8,	
-	WALK_RANGE: 100,
-	SIGHT_RANGE: 350,
-	ATTACK_RATE: 1000,
-	ATTACK_RANGE: 70,
-	ATTACK_DAMAGE: 10
+	RUN_SPEED: 7,	
+	WALK_RANGE: 200,
+	SIGHT_RANGE: 600,
+	ATTACK_RATE: 3000,
+	ATTACK_RANGE: 500,
+	ATTACK_DAMAGE: 0
 };
 
 /**
  * Our first animal, a friendly wolf
  */
-class Wolf extends Animal {
+class Spider extends Animal {
 	
 	constructor() {
-		super("wolf-" + WOLF_VARS.count, WOLF_VARS.HEALTH, WOLF_VARS.LAUNCH_IDLE, WOLF_VARS.LAUNCH_IDLE_PIVOT, 
-			WOLF_VARS.SPAWN_IDLE, WOLF_VARS.SPAWN_IDLE_PIVOT,
-			WOLF_VARS.LAUNCH_SPEED, WOLF_VARS.LAUNCH_DURATION, 
-			WOLF_VARS.DECAY_AMOUNT, WOLF_VARS.WALK_RANGE, WOLF_VARS.SIGHT_RANGE,
-			WOLF_VARS.ATTACK_RATE, WOLF_VARS.ATTACK_RANGE);
+		super("spider-" + SPIDER_VARS.count, SPIDER_VARS.HEALTH, SPIDER_VARS.LAUNCH_IDLE, SPIDER_VARS.LAUNCH_IDLE_PIVOT, 
+			SPIDER_VARS.SPAWN_IDLE, SPIDER_VARS.SPAWN_IDLE_PIVOT,
+			SPIDER_VARS.LAUNCH_SPEED, SPIDER_VARS.LAUNCH_DURATION, 
+			SPIDER_VARS.DECAY_AMOUNT, SPIDER_VARS.WALK_RANGE, SPIDER_VARS.SIGHT_RANGE,
+			SPIDER_VARS.ATTACK_RATE, SPIDER_VARS.ATTACK_RANGE);
 
-		WOLF_VARS.count++;
+		SPIDER_VARS.count++;
 	}
 
 	move() {
@@ -59,8 +59,8 @@ class Wolf extends Animal {
 				return; 
 			}
 
-			this.vX = xMove*WOLF_VARS.RUN_SPEED;
-			this.vY = yMove*WOLF_VARS.RUN_SPEED;
+			this.vX = xMove*SPIDER_VARS.RUN_SPEED;
+			this.vY = yMove*SPIDER_VARS.RUN_SPEED;
 
 			this.orient(xMove, yMove);
 		} else {
@@ -84,8 +84,8 @@ class Wolf extends Animal {
 		var forceTurn = false;
 
 		// Try to move forward
-		if (Math.random() < WOLF_VARS.WALK_PROBABILITY) {
-			var movement = this.movementForward(WOLF_VARS.WALK_SPEED);
+		if (Math.random() < SPIDER_VARS.WALK_PROBABILITY) {
+			var movement = this.movementForward(SPIDER_VARS.WALK_SPEED);
 
 			if (this.positionInWalkRange(movement)) {
 				this.vX = movement.x;
@@ -96,7 +96,7 @@ class Wolf extends Animal {
 		}
 
 		// Change direction
-		if (Math.random() < WOLF_VARS.TURN_PROBABILITY || forceTurn) {
+		if (Math.random() < SPIDER_VARS.TURN_PROBABILITY || forceTurn) {
 			this.setDirection(MathUtil.modRadians(this.rotation + MathUtil.either(-1, 1) * (MathUtil.PI4)));
 		}
 	}
@@ -105,7 +105,7 @@ class Wolf extends Animal {
 		super.attack();
 		
 		//ATTACK CLOSEST FRIENDLY TARGET		
- 		this.enemyFocus.obj.removeHealth(WOLF_VARS.ATTACK_DAMAGE);
+ 		this.enemyFocus.obj.addStatus("move-slow", 5000, 0.0);
 	}
 	
 }

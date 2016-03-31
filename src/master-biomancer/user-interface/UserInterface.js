@@ -1,7 +1,7 @@
 "use strict";
 
 var USER_INTERFACE_VARS = {
-	ALPHA: 0.7,
+	ALPHA: 0.0,
 	INTERFACE_FILE: "biomancer/ui/main.png",
 	DIALOG_CLOSE: 81 // Q
 }

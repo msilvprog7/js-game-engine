@@ -52,6 +52,26 @@ class Biomancer extends Character {
 		this.aX = 0;
 		this.aY = 0;
 
+		if(pressedKeys.contains(50)) {
+			this.addStatus("dot", 5000, 10);
+		}
+
+		if(pressedKeys.contains(51)) {
+			this.addStatus("move-slow", 5000, 0.5);
+		}
+
+		if(pressedKeys.contains(52)) {
+			this.gun.swapAnimal("WOLF");
+		}
+
+		if(pressedKeys.contains(53)) {
+			this.gun.swapAnimal("SPIDER");
+		}
+
+		if(pressedKeys.contains(54)) {
+			this.gun.swapAnimal("PENGUIN");
+		}
+
 		// Orient and move
 		if (this.orient(pressedKeys)) {
 			this.aX = -Math.sin(this.rotation) * BIOMANCER_VARS.RUN_ACC;
