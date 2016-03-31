@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<style>
+		div#toolbar {
+			 display: block; width: 80%; height: 50px; margin: 0% 10%; color: #7d8e94; font-size: 14px;
+		}
+		div#toolbarOptions {
+			display: inline-block; padding: 20px;
+		}
+		div#displayView {
+			display: inline-block; float: right; padding: 20px;
+		}
+		select, button {
+			margin: 0px 10px;
+		}
+	</style>
+</head>
+
+<body>
+	<center>
+		<canvas id="editor" width="1200" height="600">
+			<p>Your browser doesn't support canvas.</p>
+		</canvas>
+	</center>
+	<div id="toolbar">
+		<div id="toolbarOptions">
+		</div>
+		<div id="displayView">
+			<span id="position">(0, 0)</span>
+		</div>
+	</div>
+
+	<!-- Game Engine -->
+	<script type="text/javascript" src="src/engine/util/ArrayList.js"></script>
+	<script type="text/javascript" src="src/engine/util/GameClock.js"></script>
+	<script type="text/javascript" src="src/engine/util/MathUtil.js"></script>
+	<script type="text/javascript" src="src/engine/util/SoundManager.js"></script>
+	<script type="text/javascript" src="src/engine/physics/Body.js"></script>
+	<script type="text/javascript" src="src/engine/physics/PhysicsManager.js"></script>
+	<script type="text/javascript" src="src/engine/util/Hitbox.js"></script>
+	<script type="text/javascript" src="src/engine/tween/TweenJuggler.js"></script>
+	<script type="text/javascript" src="src/engine/tween/TweenParam.js"></script>
+	<script type="text/javascript" src="src/engine/tween/Tween.js"></script>
+	<script type="text/javascript" src="src/engine/events/EventList.js"></script>
+	<script type="text/javascript" src="src/engine/events/EventDispatcher.js"></script>
+	<script type="text/javascript" src="src/engine/display/DisplayObject.js"></script>
+	<script type="text/javascript" src="src/engine/display/DisplayObjectContainer.js"></script>
+	<script type="text/javascript" src="src/engine/display/Sprite.js"></script>
+	<script type="text/javascript" src="src/engine/display/AnimatedSprite.js"></script>
+	<script type="text/javascript" src="src/engine/display/Game.js"></script>
+	<script type="text/javascript" src="src/engine/display/Level.js"></script>
+	<script type="text/javascript" src="src/engine/display/LevelParser.js"></script>
+	<script type="text/javascript" src="src/engine/display/shapes/Rectangle.js"></script>
+
+	<!-- Characters -->
+	<script type="text/javascript" src="src/master-biomancer/characters/Character.js"></script>
+	<script type="text/javascript" src="src/master-biomancer/characters/Animal.js"></script>
+	<script type="text/javascript" src="src/master-biomancer/characters/animals/Wolf.js"></script>
+	<script type="text/javascript" src="src/master-biomancer/characters/enemies/Bullet.js"></script>
+	<script type="text/javascript" src="src/master-biomancer/characters/Biomancer.js"></script>
+	<script type="text/javascript" src="src/master-biomancer/characters/Enemy.js"></script>
+	<script type="text/javascript" src="src/master-biomancer/characters/enemies/BasicEnemy.js"></script>
+
+	<!-- Inanimates -->
+	<script type="text/javascript" src="src/master-biomancer/inanimates/HealthBar.js"></script>
+	<script type="text/javascript" src="src/master-biomancer/inanimates/Gun.js"></script>
+	<script type="text/javascript" src="src/master-biomancer/inanimates/Wall.js"></script>
+
+	<!-- Levels -->
+	<script type="text/javascript" src="src/master-biomancer/levels/level-1.js"></script>
+	<script type="text/javascript" src="src/master-biomancer/levels/LevelList.js"></script>
+
+	<!-- Editor -->
+	<script type="text/javascript" src="src/engine/editor/MouseEventHandlers.js"></script>
+	<script type="text/javascript" src="src/engine/editor/LevelEditor.js"></script>
+
+
+
+	<!-- Start Editor -->
+	<script type="text/javascript">
+		"use strict";
+
+		var editor = new LevelEditor(document.getElementById("editor"));
+	</script>
+</body>
+</html>

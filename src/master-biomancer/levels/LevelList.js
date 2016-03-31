@@ -13,9 +13,12 @@ var LEVEL_LIST = [
 			addToLevel: addToLevel,
 			generate: undefined,
 			generateParams: -1,
+			generateParamsEditorOption: undefined,
 			options: BIOMANCER_VARS.ADD_DEFAULTS,
 			pivot: BIOMANCER_VARS.PIVOT,
-			dimensions: BIOMANCER_VARS.DIMENSIONS
+			dimensions: BIOMANCER_VARS.DIMENSIONS,
+			type: "Characters",
+			resource: "resources/images/biomancer/main-char/biomancer.png"
 		},
 
 		/* Enemies */
@@ -24,9 +27,12 @@ var LEVEL_LIST = [
 			addToLevel: addToLevel,
 			generate: undefined,
 			generateParams: -1,
+			generateParamsEditorOption: undefined,
 			options: ENEMY_VARS.ADD_DEFAULTS,
 			pivot: BASIC_ENEMY_VARS.SPAWN_IDLE_PIVOT,
-			dimensions: BASIC_ENEMY_VARS.SPAWN_DIMENSIONS
+			dimensions: BASIC_ENEMY_VARS.SPAWN_DIMENSIONS,
+			type: "Enemies",
+			resource: "resources/images/biomancer/enemies/basic-enemy/basic-enemy.png"
 		},
 
 		/* Floors */
@@ -35,9 +41,14 @@ var LEVEL_LIST = [
 			addToLevel: addToLevel,
 			generate: function (cols, rows) { return Level.generateTileRect("tile-0", cols, rows); },
 			generateParams: 2,
+			generateParamsEditorOption: ["Exceed-Width", "Exceed-Height"],
 			options: LEVEL_VARS.TILE_ADD_DEFAULTS,
 			pivot: undefined,
-			dimensions: undefined
+			dimensions: undefined,
+			type: "Floors",
+			resource: "resources/images/biomancer/levels/tiles/tile_0_400x400.png",
+			exceedWidth: 400,
+			exceedHeight: 400
 		},
 
 		/* Walls */
@@ -46,26 +57,37 @@ var LEVEL_LIST = [
 			addToLevel: addWallToLevel,
 			generate: function () { return WallGroup.generateWall("wall-0", 1, 1); },
 			generateParams: 0,
+			generateParamsEditorOption: [],
 			options: undefined,
 			pivot: undefined,
-			dimensions: undefined
+			dimensions: undefined,
+			type: "Walls",
+			resource: "resources/images/biomancer/levels/tiles/wall_0_50x50.png"
 		},
 		"Wall0-Wide": {
 			constructor: undefined,
 			addToLevel: addWallToLevel,
 			generate: function (cols) { return WallGroup.generateWall("wall-0-wide", cols, 1); },
 			generateParams: 1,
+			generateParamsEditorOption: ["Exceed-Width"],
 			options: undefined,
 			pivot: undefined,
-			dimensions: undefined
+			dimensions: undefined,
+			type: "Walls",
+			resource: "resources/images/biomancer/levels/tiles/wall_0_400x50.png",
+			exceedWidth: 400
 		},
 		"Wall0-Tall": {
 			constructor: undefined,
 			addToLevel: addWallToLevel,
 			generate: function (rows) { return WallGroup.generateWall("wall-0-tall", 1, rows); },
 			generateParams: 1,
+			generateParamsEditorOption: ["Exceed-Height"],
 			options: undefined,
 			pivot: undefined,
-			dimensions: undefined
+			dimensions: undefined,
+			type: "Walls",
+			resource: "resources/images/biomancer/levels/tiles/wall_0_50x400.png",
+			exceedHeight: 400
 		}
 	};
