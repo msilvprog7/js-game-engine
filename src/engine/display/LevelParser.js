@@ -41,8 +41,12 @@ class LevelParser {
 	}
 
 	parse(id, str, game) {
-		var level = new Level(id, game),
-			items = str.split("|");
+		var level = new Level(id, game);
+		return this.parseLevel(str, level);
+	}
+
+	parseLevel(str, level) {
+		var items = str.split("|");
 
 		// Item by item through level definition
 		for (let i = 0; i < items.length; i++) {
@@ -159,6 +163,8 @@ class LevelParser {
 				obj.hitbox.setHitboxFromImage(reference.dimensions);
 			}
 
+			// Id - parsed instruction
+			obj.id = items[i] + "|";
 
 			// Add object to level
 			reference.addToLevel(level, obj, reference.options);

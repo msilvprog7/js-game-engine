@@ -12,13 +12,21 @@
 		div#displayView {
 			display: inline-block; float: right; padding: 20px;
 		}
+		div#aboveCanvas {
+			display: block; padding: 20px;
+		}
 		select, button {
 			margin: 0px 10px;
+		}
+		div.panel {
+			display: block; width: 80%; margin: 0% 10%;
 		}
 	</style>
 </head>
 
 <body>
+	<div id="upperPanel" class="panel"></div>
+	<div id ="aboveCanvas" class="panel"></div>
 	<center>
 		<canvas id="editor" width="1200" height="600">
 			<p>Your browser doesn't support canvas.</p>
@@ -31,6 +39,7 @@
 			<span id="position">(0, 0)</span>
 		</div>
 	</div>
+	<div id="lowerPanel" class="panel"></div>
 
 	<!-- Game Engine -->
 	<script type="text/javascript" src="src/engine/util/ArrayList.js"></script>

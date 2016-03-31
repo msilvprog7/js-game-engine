@@ -10,6 +10,15 @@ var LEVEL_EDITOR_VARS = {
 	SELECT_OBJECT_ID: "selectObject",
 	DEFAULT_SELECT_OBJECT: "<none>",
 	EDIT_OBJECT_DIV: "editObject",
+	UPPER_PANEL_DIV: "upperPanel",
+	LOWER_PANEL_DIV: "lowerPanel",
+	DISPLAY_LEVEL_ID: "displayLevel",
+	ABOVE_CANVAS_DIV: "aboveCanvas",
+	LEVEL_ID_INPUT: "levelId",
+	LOAD_LEVEL_ID: "levelLoadField",
+	LOAD_LEVEL_ROWS: 30,
+	LOAD_LEVEL_COLS: 200,
+	LOAD_DRAW_WAIT: 2000,
 	VISIBLE_GRID_ROW_SEPARATION: 50,
 	VISIBLE_GRID_COL_SEPARATION: 50,
 	ORIGIN_GRID_COLOR: "#cba864",
@@ -147,9 +156,6 @@ class LevelEditor extends DisplayObject {
 		// Next draw
 		this.nextDraw = 0;
 
-		// Disable text selection
-		document.onselectstart = function () { return false; };
-
 		// Set background color
 		this.canvas.style.setProperty("background-color", LEVEL_EDITOR_VARS.BACKGROUND_COLOR);
 
@@ -174,6 +180,18 @@ class LevelEditor extends DisplayObject {
 		// Create edit object panel
 		this.createEditObjectPanel();
 
+		// Create upper panel
+		this.createUpperPanel();
+
+		// Create lower panel
+		this.createLowerPanel();
+
+		// Create above canvas panel
+		this.createAboveCanvas();
+
+		// Level parser
+		this.levelParser = new LevelParser(CLASS_REFERENCES);
+
 		// Set listeners
 		this.canvas.onmousemove = (e) => { e.preventDefault(); e.stopPropagation(); that.updateCursor(e) };
 		this.canvas.onmousedown = (e) => { e.preventDefault(); e.stopPropagation(); that.mouseDown(e) };
@@ -181,7 +199,6 @@ class LevelEditor extends DisplayObject {
 		this.canvas.onmouseout = (e) => { e.preventDefault(); e.stopPropagation(); that.mouseOut(e) };
 		document.getElementById(LEVEL_EDITOR_VARS.SELECT_CLASS_ID).onchange = (e) => { e.preventDefault(); e.stopPropagation(); that.getDrawingObject(); };
 		document.getElementById(LEVEL_EDITOR_VARS.DRAW_BUTTON_ID).onclick = (e) => { e.preventDefault(); e.stopPropagation(); that.drawClicked(); };
-		document.getElementById(LEVEL_EDITOR_VARS.SELECT_OBJECT_ID).onchange = (e) => { e.preventDefault(); e.stopPropagation(); that.selectPlacedObject(); };
 
 		// State
 		this.setDragging(false);
@@ -258,8 +275,10 @@ class LevelEditor extends DisplayObject {
 	 * Create select field for objects once placed
 	 */
 	createSelectObject() {
-		var select = document.createElement("select");
+		var select = document.createElement("select"),
+			that = this;
 		select.id = LEVEL_EDITOR_VARS.SELECT_OBJECT_ID;
+		select.onchange = (e) => { e.preventDefault(); e.stopPropagation(); that.selectPlacedObject(); };
 
 		var option = document.createElement("option");
 		option.value = LEVEL_EDITOR_VARS.DEFAULT_SELECT_OBJECT;
@@ -360,6 +379,179 @@ class LevelEditor extends DisplayObject {
 		this.draw(true);
 
 		document.getElementById(LEVEL_EDITOR_VARS.EDIT_OBJECT_DIV).style.display = "none";
+	}
+
+	createUpperPanel() {
+		var div = document.getElementById(LEVEL_EDITOR_VARS.UPPER_PANEL_DIV),
+			textarea = document.createElement("textarea"),
+			belowDiv = document.createElement("div"),
+			loadButton = document.createElement("button"),
+			cancelButton = document.createElement("button"),
+			that = this;
+
+		// Upper div
+		div.style.display = "none";
+
+		// Text area
+		textarea.id = LEVEL_EDITOR_VARS.LOAD_LEVEL_ID;
+		textarea.style.display = "block";
+		textarea.rows = LEVEL_EDITOR_VARS.LOAD_LEVEL_ROWS;
+		textarea.cols = LEVEL_EDITOR_VARS.LOAD_LEVEL_COLS;
+		div.appendChild(textarea);
+
+		// below div
+		belowDiv.style.display = "block";
+
+		// Load button
+		loadButton.innerHTML = "Load";
+		loadButton.onclick = function () { that.loadLevel(); };
+		belowDiv.appendChild(loadButton);
+
+		// Cancel button
+		cancelButton.innerHTML = "Cancel";
+		cancelButton.onclick = function () { 
+			document.getElementById(LEVEL_EDITOR_VARS.LOAD_LEVEL_ID).value = "";
+			document.getElementById(LEVEL_EDITOR_VARS.UPPER_PANEL_DIV).style.display = "none";
+		};
+		belowDiv.appendChild(cancelButton);
+
+		// Add below div
+		div.appendChild(belowDiv);
+	}
+
+	createLowerPanel() {
+		var div = document.getElementById(LEVEL_EDITOR_VARS.LOWER_PANEL_DIV),
+			pre = document.createElement("pre"),
+			aboveDiv = document.createElement("div"),
+			hide = document.createElement("button"),
+			that = this;
+
+		// Lower div
+		div.style.display = "none";
+
+		// Above div
+		aboveDiv.display = "block";
+
+		// Hide button
+		hide.innerHTML = "Hide";
+		hide.onclick = function () {
+			document.getElementById(LEVEL_EDITOR_VARS.DISPLAY_LEVEL_ID).innerHTML = "";
+			document.getElementById(LEVEL_EDITOR_VARS.LOWER_PANEL_DIV).style.display = "none";
+		};
+		aboveDiv.appendChild(hide);
+
+		// Add above div
+		div.appendChild(aboveDiv);
+
+		// Pre
+		pre.style.display = "block";
+		pre.id = LEVEL_EDITOR_VARS.DISPLAY_LEVEL_ID;
+		div.appendChild(pre);
+	}
+
+	createAboveCanvas() {
+		var div = document.getElementById(LEVEL_EDITOR_VARS.ABOVE_CANVAS_DIV),
+			text = document.createElement("input"),
+			exportButton = document.createElement("button"),
+			loadButton = document.createElement("button"),
+			that = this;
+
+		// Text input
+		text.id = LEVEL_EDITOR_VARS.LEVEL_ID_INPUT;
+		text.type = "text";
+		text.placeholder = "Level-id";
+		div.appendChild(text);
+
+		// Export button
+		exportButton.innerHTML = "Export";
+		exportButton.onclick = function () { that.exportLevel(); };
+		div.appendChild(exportButton);
+
+		// Load button
+		loadButton.innerHTML = "Load...";
+		loadButton.onclick = function () {
+			document.getElementById(LEVEL_EDITOR_VARS.UPPER_PANEL_DIV).style.display = "block";
+		};
+		div.appendChild(loadButton);
+	}
+
+	loadLevel() {
+		var jsonObj = document.getElementById(LEVEL_EDITOR_VARS.LOAD_LEVEL_ID).value,
+			matches = jsonObj.match(/\w+:/g),
+			levelObj = undefined,
+			tempLevel = undefined,
+			that = this,
+			select = undefined,
+			option = undefined,
+			levelEncodingSplit = undefined;
+
+		// String format the ids for parsing
+		for (let i = 0; i < matches.length; i++) {
+			jsonObj = jsonObj.replace(matches[i], "\"" + matches[i].substr(0, matches[i].length - 1) + "\":");
+		}
+
+		// Parse
+		levelObj = JSON.parse(jsonObj);
+
+		// Error check
+		if (levelObj.id === undefined || levelObj.id === null || levelObj.level === undefined || levelObj.level === null) {
+			console.log("Error parsing level loaded... missing an id or a level...");
+			return;
+		}
+
+		// Remove children from level
+		this.level.removeChildren();
+
+		// Prepare
+		tempLevel = new Level(levelObj.id, undefined);
+		tempLevel.monitorHealth = function (entity) { };
+
+		// Set display
+		document.getElementById(LEVEL_EDITOR_VARS.LEVEL_ID_INPUT).value = levelObj.id;
+		this.level.children = this.levelParser.parseLevel(levelObj.level, tempLevel).children;
+
+		// New selection (remove and create)
+		document.getElementById(LEVEL_EDITOR_VARS.SELECT_OBJECT_ID).remove();
+		this.createSelectObject();
+
+		// New edit options
+		document.getElementById(LEVEL_EDITOR_VARS.EDIT_OBJECT_DIV).remove();
+		this.createEditObjectPanel();
+
+		// Update selection options
+		levelEncodingSplit = levelObj.level.split("|");
+		for (let i = 0; i < this.level.children.length; i++) {
+			var optionValue = levelEncodingSplit[i] + "|";
+
+			// Add select item
+			option = document.createElement("option");
+			option.value = optionValue;
+			option.text = optionValue;
+			document.getElementById(LEVEL_EDITOR_VARS.SELECT_OBJECT_ID).appendChild(option);
+		}
+
+		// Hide upper panel
+		document.getElementById(LEVEL_EDITOR_VARS.UPPER_PANEL_DIV).style.display = "none";
+
+		// Draw
+		setTimeout(function () {
+			that.draw(true)
+		}, LEVEL_EDITOR_VARS.LOAD_DRAW_WAIT);
+	}
+
+	exportLevel() {
+		// Set display text
+		document.getElementById(LEVEL_EDITOR_VARS.DISPLAY_LEVEL_ID).innerHTML = this.getLevelEncoding();
+		// Show lower panel
+		document.getElementById(LEVEL_EDITOR_VARS.LOWER_PANEL_DIV).style.display = "block";
+	}
+
+	getLevelEncoding() {
+		var encoding = "{\n" + 
+			"\tid: \"" + document.getElementById(LEVEL_EDITOR_VARS.LEVEL_ID_INPUT).value + "\",\n" + 
+			"\tlevel: \"" + this.level.children.reduce((pv, cv) => pv + cv.id, "") + "\"\n" + 
+			"}";
+		return encoding;
 	}
 
 	/**
