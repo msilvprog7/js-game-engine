@@ -56,9 +56,9 @@ class Bullet extends Sprite {
 		let cur_time = new Date().getTime();
 		if(this.nextCollisionCheck < cur_time) {
 			//Do a collision check
-			let bullet = this, collders = this.level.getColliders();
-			for(let i = 0; i < collders.length; i++) {
-				let d = collders[i];
+			let bullet = this, colliders = this.level.getColliders();
+			for(let i = 0; i < colliders.length; i++) {
+				let d = colliders[i];
 				if(d !== this.creator && bullet.collidesWith(d)) {
 					this.onHitCallback(d, this.damage);					
 					bullet.level.removeEntity(this);

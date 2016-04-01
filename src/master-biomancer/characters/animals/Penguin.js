@@ -6,8 +6,8 @@ var PENGUIN_VARS = {
 	HEALTH: 30,
 	LAUNCH_IDLE: "biomancer/animals/penguin/penguin-launch.png",
 	LAUNCH_IDLE_PIVOT: {x: 6, y: 6},
-	LAUNCH_SPEED: 6,
-	LAUNCH_DURATION: 1000,
+	LAUNCH_SPEED: 2,
+	LAUNCH_DURATION: 500,
 	SPAWN_IDLE: "biomancer/animals/penguin/penguin-spawn.png",
 	SPAWN_IDLE_PIVOT: {x: 30, y: 30},
 	DECAY_AMOUNT: 1,
@@ -19,13 +19,12 @@ var PENGUIN_VARS = {
 	SIGHT_RANGE: 700,
 	ATTACK_RATE: 1500,
 	ATTACK_RANGE: 500,
-	ATTACK_DMG: 20,
+	ATTACK_DMG: 10,
 	BULLET_SPEED: 10,
 	BULLET_IMG: "biomancer/misc/snowball.png",
 	BULLET_FUNCTION: function(collider, dmg) {
 		if(collider instanceof Enemy) {
 			collider.removeHealth(dmg);
-			collider.addStatus("dot", 3000, 10);
 			collider.addStatus("move-slow", 3000, 0.6);
 		}
 	}
