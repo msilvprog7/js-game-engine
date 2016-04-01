@@ -305,22 +305,22 @@ class DisplayObject extends EventDispatcher{
 		this.addEventListener(EVENTS.COLLISION_TOP, this, function () {
 				that.vY = that.vY > 0 ? 0 : that.vY;
 				that.aY = that.aY > 0 ? 0 : that.aY;
-				console.log(that.id + ": collision top");
+				//console.log(that.id + ": collision top");
 			})
 			.addEventListener(EVENTS.COLLISION_BOTTOM, this, function () {
 				that.vY = that.vY < 0 ? 0 : that.vY;
 				that.aY = that.aY < 0 ? 0 : that.aY;
-				console.log(that.id + ": collision btm");
+				//console.log(that.id + ": collision btm");
 			})
 			.addEventListener(EVENTS.COLLISION_LEFT, this, function () {
 				that.vX = that.vX > 0 ? 0 : that.vX;
 				that.aX = that.aX > 0 ? 0 : that.aX;
-				console.log(that.id + ": collision left");
+				//console.log(that.id + ": collision left");
 			})
 			.addEventListener(EVENTS.COLLISION_RIGHT, this, function () {
 				that.vX = that.vX < 0 ? 0 : that.vX;
 				that.aX = that.aX < 0 ? 0 : that.aX;
-				console.log(that.id + ": collision right");
+				//console.log(that.id + ": collision right");
 			});
 
 	}

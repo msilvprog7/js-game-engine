@@ -9,6 +9,7 @@ var BIOMANCER_VARS = {
 	GUN_POSITION: {x: 45, y: 52},
 	SPEED: 3,
 	V_MAX: 4,
+	PRIORITY: FRIENDLY_VARS.PRIORITY_MEDIUM,
 	RUN_ACC: 1,
 	ADD_DEFAULTS: {
 		parentIsLevel: true,
@@ -22,10 +23,10 @@ var BIOMANCER_VARS = {
 /**
  * Main character
  */
-class Biomancer extends Character {
+class Biomancer extends Friendly {
 
 	constructor() {
-		super(BIOMANCER_VARS.ID, BIOMANCER_VARS.HEALTH, BIOMANCER_VARS.FILENAME, BIOMANCER_VARS.V_MAX);
+		super(BIOMANCER_VARS.ID, BIOMANCER_VARS.HEALTH, BIOMANCER_VARS.FILENAME, BIOMANCER_VARS.V_MAX, BIOMANCER_VARS.PRIORITY);
 
 		// Set your gun
 		this.setGun(new Gun());
@@ -52,24 +53,24 @@ class Biomancer extends Character {
 		this.aX = 0;
 		this.aY = 0;
 
-		if(pressedKeys.contains(50)) {
-			this.addStatus("dot", 5000, 10);
-		}
-
-		if(pressedKeys.contains(51)) {
-			this.addStatus("move-slow", 5000, 0.5);
-		}
-
-		if(pressedKeys.contains(52)) {
+		if(pressedKeys.contains(49)) {
 			this.gun.swapAnimal("WOLF");
 		}
 
-		if(pressedKeys.contains(53)) {
+		if(pressedKeys.contains(50)) {
 			this.gun.swapAnimal("SPIDER");
 		}
 
-		if(pressedKeys.contains(54)) {
+		if(pressedKeys.contains(51)) {
 			this.gun.swapAnimal("PENGUIN");
+		}
+
+		if(pressedKeys.contains(52)) {
+			this.addStatus("dot", 5000, 10);
+		}
+
+		if(pressedKeys.contains(53)) {
+			this.addStatus("move-slow", 5000, 0.5);
 		}
 
 		// Orient and move

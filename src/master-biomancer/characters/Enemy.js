@@ -23,7 +23,7 @@ class Enemy extends Character {
 		this.attackRate = attackRate;
 		this.attackRange = attackRange;
 		this.nextAttackTime = new Date().getTime();
-		this.closestFriendlyInSight = undefined;	
+		this.friendlyFocus = undefined;	
 	}
 
 	update(pressedKeys) {
@@ -49,10 +49,9 @@ class Enemy extends Character {
 	}
 
 	canAttack() {
-		// Call super in subclasses to enforce attack rate and range
-		return this.closestFriendlyInSight !== undefined && 
+		return this.friendlyFocus !== undefined && 
 			new Date().getTime() > this.nextAttackTime && 
-			this.closestFriendlyInSight.distance <= this.attackRange;
+			this.friendlyFocus.distance <= this.attackRange;
 	}
 
 	attack() {
@@ -73,15 +72,21 @@ class Enemy extends Character {
 		// Returns a list of all friendly entities (Biomancer and animals) 
 		// sorted by distance from the enemy
 		let allFriendlies = this.getLevel().getFriendlyEntities(),
-			inRange = [];
+			priorityInRange = [];
 		for(let i = 0; i < allFriendlies.length; i++) {
 			let dist = this.distanceTo(allFriendlies[i].position);
 			if(dist <= sight_range) {
 				// In range format: obj, distance
-				inRange.push({obj: allFriendlies[i], distance: dist});
+				priorityInRange.push({obj: allFriendlies[i], distance: dist});
 			}
 		}
-		inRange.sort((a, b) => a.distance-b.distance);
-		return inRange;
+		priorityInRange.sort((a, b) => {
+			if(a.obj.priority === b.obj.priority) {
+				return (a.distance - b.distance);
+			} else {
+				return b.obj.priority-a.obj.priority;
+			}
+		});
+		return priorityInRange;
 	}	
 }
