@@ -25,6 +25,7 @@ var PENGUIN_VARS = {
 	BULLET_FUNCTION: function(collider, dmg) {
 		if(collider instanceof Enemy) {
 			collider.removeHealth(dmg);
+			collider.addStatus("dot", 3000, 10);
 			collider.addStatus("move-slow", 3000, 0.6);
 		}
 	}
@@ -123,7 +124,7 @@ class Penguin extends Animal {
 			direction -= MathUtil['2PI'];
 		}
 		
- 		new Bullet(PENGUIN_VARS.BULLET_IMG, PENGUIN_VARS.BULLET_SPEED, PENGUIN_VARS.ATTACK_DMG, direction, myPivot, this.getLevel(), PENGUIN_VARS.BULLET_FUNCTION);
+ 		new Bullet(PENGUIN_VARS.BULLET_IMG, PENGUIN_VARS.BULLET_SPEED, PENGUIN_VARS.ATTACK_DMG, direction, this, this.getLevel(), PENGUIN_VARS.BULLET_FUNCTION);
 	}
 	
 }

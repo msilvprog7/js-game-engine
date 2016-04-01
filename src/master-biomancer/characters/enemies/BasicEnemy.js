@@ -70,6 +70,6 @@ class BasicEnemy extends Enemy {
 		}
 		
  		new Bullet(BASIC_ENEMY_VARS.BULLET_IMG, BASIC_ENEMY_VARS.BULLET_SPEED, BASIC_ENEMY_VARS.ATTACK_DMG, 
- 			direction, myPivot, this.getLevel(), BASIC_ENEMY_VARS.BULLET_FUNCTION);
+ 			direction, this, this.getLevel(), BASIC_ENEMY_VARS.BULLET_FUNCTION);
 	}
 }

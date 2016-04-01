@@ -12,14 +12,15 @@ var BULLET_VARS = {
 }
 
 class Bullet extends Sprite {
-	constructor(image, speed, damage, direction, parentPos, level, onHitCallback) {
+	constructor(image, speed, damage, direction, creator, level, onHitCallback) {
 		super('bullet-'+BULLET_VARS.count, image);
 
 		// Bullet qualities
 		this.launchSpeed = speed;
 		this.damage = damage;
+		this.creator = creator;
 		this.direction = direction;
-		this.parentPos = parentPos;
+		this.creatorPos = this.creator.getNormalizedPivotPoint();
 		this.onHitCallback = onHitCallback;
 
 		// Set level
@@ -38,8 +39,8 @@ class Bullet extends Sprite {
 	spawn() {	
 		this.hitbox.setHitboxFromImage({width: this.width, height: this.height});
 		this.setPosition({
-			x: this.parentPos.x,
-			y: this.parentPos.y
+			x: this.creatorPos.x,
+			y: this.creatorPos.y
 		});
 		this.setPivotPoint({x: this.width/2, y:  this.height/2});
 		this.setRotation(this.direction);
@@ -58,7 +59,7 @@ class Bullet extends Sprite {
 			let bullet = this, collders = this.level.getColliders();
 			for(let i = 0; i < collders.length; i++) {
 				let d = collders[i];
-				if(bullet.collidesWith(d)) {
+				if(d !== this.creator && bullet.collidesWith(d)) {
 					this.onHitCallback(d, this.damage);					
 					bullet.level.removeEntity(this);
 					return;
