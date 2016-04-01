@@ -145,6 +145,8 @@ class Level extends DisplayObjectContainer{
 		}
 		if(entity instanceof Enemy) {
 			this.enemies.push(entity);
+			this.addMover(entity);
+			this.addCollider(entity);
 		} else if(entity instanceof Animal){
 			this.addFriendly(entity);
 			this.animals.push(entity);

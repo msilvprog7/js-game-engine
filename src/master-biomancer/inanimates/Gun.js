@@ -46,9 +46,6 @@ class Gun extends Sprite {
 		// Fire!
 		var animal = this.generateCurrentAnimal();
 		this.getBiomancer().getLevel().addEntityToLevel(animal, ANIMAL_VARS.ADD_DEFAULTS);
-		// add animal to colliders, may abstract
-		this.getBiomancer().getLevel().addCollider(animal)
-			.addMover(animal);
 
 
 		// Update timestamp and return
