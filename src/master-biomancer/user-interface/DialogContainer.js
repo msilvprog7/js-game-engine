@@ -1,7 +1,7 @@
 "use strict";
 
 var DIALOG_VARS = {
-	WIDTH: 330,
+	WIDTH: 350,
 	HEIGHT: 100,
 	DIALOG_FILE: "biomancer/ui/dialog-box.png",	
 	DEFAULT_FONT_SIZE: 60, //In pixels
@@ -34,6 +34,7 @@ class DialogContainer extends DisplayObject {
 		this.wordsLength = this.words.length;
 
 		this.chunkedText = this.chunkText(message, ctx);
+		this.chunkedTextLineLength = this.chunkedText.map(e => e.split(" ").length);
 
 		if(this.options.wordTime !== undefined && this.options.wordTime > 0) {
 			this.nextWordTime = new Date().getTime() + this.options.wordTime;
@@ -67,10 +68,11 @@ class DialogContainer extends DisplayObject {
 		}		
 		let cur_time = new Date().getTime();
 		if(cur_time >= this.nextWordTime && this.wordToAdd < this.wordsLength) {
-			let cur_line = 0, inc = this.chunkedText[cur_line].split(" ").length, cur_length = inc;
+			let cur_line = 0, cur_length = this.chunkedTextLineLength[cur_line],
+				chunkLength = this.chunkedText.length;
 			while(cur_length < this.wordToAdd) {
-				cur_length += inc;
 				cur_line++;
+				cur_length += this.chunkedTextLineLength[cur_line];				
 			}			
 			if(this.currentWords[cur_line] === undefined) {
 				this.currentWords[cur_line] = [];
@@ -103,11 +105,10 @@ class DialogContainer extends DisplayObject {
             	if(current_lines.length > allowed_lines) { break; }
                 let testLine = line + this.words[n] + " ";
                 let metrics = ctx.measureText(testLine);
-                let testWidth = metrics.width;
 
-                if (testWidth > maxWidth) {
+                if (metrics.width > maxWidth) {
                     //context.fillText(line, x, y);
-                    current_lines.push(testLine);
+                    current_lines.push(line);
                     line = "";
                 }
                 else {
