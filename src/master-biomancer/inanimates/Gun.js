@@ -4,7 +4,7 @@ var GUN_VARS = {
 	ID: "gun",
 	FILENAME: "biomancer/main-char/gun.png",
 	RECHARGE_RATE: 1000, // ms
-	ANIMALS: ["WOLF", "SPIDER", "PENGUIN"],
+	ANIMALS: ["WOLF", "SPIDER", "PENGUIN", "TURTLE"],
 	LAUNCH_OFFSET: {x: 7.5, y: 36}
 };
 
@@ -67,6 +67,9 @@ class Gun extends Sprite {
 			case "PENGUIN":
 				animal = new Penguin();
 				break;
+			case "TURTLE":
+				animal = new Turtle();
+				break;
 			default:
 				return animal;
 		}
@@ -101,6 +104,9 @@ class Gun extends Sprite {
 	swapAnimal(name) {
 		var potentialAnimal = this.availableAnimals.find((element) => element === name);
 		this.currentAnimal = (potentialAnimal !== undefined) ? potentialAnimal : this.currentAnimal;
+		if(this.currentAnimal !== undefined) {
+			new UserInterface().animalContainer.setCurrentAnimal(name);
+		}
 		return (potentialAnimal !== undefined);
 	}
 
@@ -121,5 +127,6 @@ class Gun extends Sprite {
 		this.availableAnimals = [];
 		this.currentAnimal = undefined;
 		GUN_VARS.ANIMALS.map((x) => this.addAnimalToGun(x)); // Call like this to set default to first
+		this.swapAnimal(GUN_VARS.ANIMALS[0]);
 	}
 }

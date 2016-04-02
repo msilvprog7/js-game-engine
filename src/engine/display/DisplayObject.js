@@ -141,8 +141,14 @@ class DisplayObject extends EventDispatcher{
 		return this;}
 	getId(){return this.id;}
 
-	setDisplayImage(image){this.displayImage = image;
-		return this;} //image needs to already be loaded!
+	setDisplayImage(image){
+		if(typeof image === "string") {
+			this.loadImage(image);
+		} else {
+			this.displayImage = image;
+		}
+		return this;
+	}
 	getDisplayImage(){return this.displayImage;}
 
 	getUnscaledHeight(){return this.displayImage.height;}

@@ -22,25 +22,31 @@ class Enemy extends Character {
 		this.direction = 0;
 		this.attackRate = attackRate;
 		this.attackRange = attackRange;
-		this.nextAttackTime = new Date().getTime();
-		this.friendlyFocus = undefined;	
+		let cur_time = new Date().getTime();
+		this.nextAttackTime = cur_time;
+		this.nextUpdate = cur_time;
+
 	}
 
 	update(pressedKeys) {
 		super.update(pressedKeys);
 
-		// Move
-		this.move();
+		let cur_time = new Date().getTime();
+			if(cur_time > this.nextUpdate) {
+				// Move
+			this.move();
 
-		// Attack	
-		if(this.canAttack()) {
-			this.attack();
-		}
+			// Attack	
+			if(this.canAttack()) {
+				this.attack();
+			}
 
-		// Die
-		if (this.spawned && this.health <= 0) {
-			this.dispatchEvent(EVENTS.DIED);
-		}
+			// Die
+			if (this.spawned && this.health <= 0) {
+				this.dispatchEvent(EVENTS.DIED);
+			}
+			this.nextUpdate = cur_time + 30;
+		}		
 	}
 
 	draw(g) {
@@ -74,11 +80,13 @@ class Enemy extends Character {
 		let allFriendlies = this.getLevel().getFriendlyEntities(),
 			priorityInRange = [];
 		for(let i = 0; i < allFriendlies.length; i++) {
-			let dist = this.distanceTo(allFriendlies[i].position);
-			if(dist <= sight_range) {
-				// In range format: obj, distance
-				priorityInRange.push({obj: allFriendlies[i], distance: dist});
-			}
+			if(allFriendlies[i].isAlive()) {
+				let dist = this.distanceTo(allFriendlies[i].position);
+				if(dist <= sight_range) {
+					// In range format: obj, distance
+					priorityInRange.push({obj: allFriendlies[i], distance: dist});
+				}
+			}			
 		}
 		priorityInRange.sort((a, b) => {
 			if(a.obj.priority === b.obj.priority) {

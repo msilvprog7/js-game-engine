@@ -9,7 +9,7 @@ var BIOMANCER_VARS = {
 	GUN_POSITION: {x: 45, y: 52},
 	SPEED: 3,
 	V_MAX: 4,
-	PRIORITY: FRIENDLY_VARS.PRIORITY_MEDIUM,
+	PRIORITY: 1,
 	RUN_ACC: 1,
 	ADD_DEFAULTS: {
 		parentIsLevel: true,
@@ -66,7 +66,7 @@ class Biomancer extends Friendly {
 		}
 
 		if(pressedKeys.contains(52)) {
-			this.addStatus("dot", 5000, 10);
+			this.gun.swapAnimal("TURTLE");			
 		}
 
 		if(pressedKeys.contains(53)) {
