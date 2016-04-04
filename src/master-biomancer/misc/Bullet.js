@@ -2,6 +2,7 @@
 
 var BULLET_VARS = {
 	count: 0,
+	DECAY_TIME: 10000, //10 seconds
 	COLLISION_CHECK: 50, // this many ms between expensive collision checks
 	ADD_DEFAULTS: {
 		parentIsLevel: true,
@@ -18,10 +19,11 @@ class Bullet extends Sprite {
 		// Bullet qualities
 		this.launchSpeed = speed;
 		this.damage = damage;
-		this.direction = direction;
 		this.creator = creator;
-		this.creatorPos = creator.getNormalizedPivotPoint();
+		this.direction = direction;
+		this.creatorPos = this.creator.getNormalizedPivotPoint();
 		this.onHitCallback = onHitCallback;
+		this.decayTime = new Date().getTime() + BULLET_VARS.DECAY_TIME;
 
 		// Set level
 		this.level = level;
@@ -67,7 +69,7 @@ class Bullet extends Sprite {
 			}
 			this.nextCollisionCheck = cur_time + BULLET_VARS.COLLISION_CHECK
 		}
-		if(this.position.x < -1000 || this.position.x > 2000 || this.position.y < -1000 || this.position.y > 2000) {
+		if(new Date().getTime > this.decayTime) {
 			this.level.removeEntity(this);
 		}
 	}

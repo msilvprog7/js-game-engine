@@ -70,7 +70,6 @@ class BasicEnemy extends Enemy {
 		if(direction >= MathUtil['2PI']) { 
 			direction -= MathUtil['2PI'];
 		}
-		
  		new Bullet(this, BASIC_ENEMY_VARS.BULLET_IMG, BASIC_ENEMY_VARS.BULLET_SPEED, BASIC_ENEMY_VARS.ATTACK_DMG, 
  			direction, this.getLevel(), BASIC_ENEMY_VARS.BULLET_FUNCTION);
 	}
