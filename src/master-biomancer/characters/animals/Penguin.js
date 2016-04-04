@@ -2,11 +2,11 @@
 
 // Duration will equal (HEALTH / DECAY_AMOUNT) * ANIMAL_VARS.NEXT_DECAY
 var PENGUIN_VARS = {
-	count: 0,
-	HEALTH: 30,
-	LAUNCH_IDLE: "biomancer/animals/penguin/penguin-launch.png",
-	LAUNCH_IDLE_PIVOT: {x: 6, y: 6},
-	LAUNCH_SPEED: 2,
+	count: 0,															//Required
+	HEALTH: 30,															//Required
+	LAUNCH_IDLE: "biomancer/animals/penguin/penguin-launch.png",		//Required
+	LAUNCH_IDLE_PIVOT: {x: 6, y: 6},									//Required
+	LAUNCH_SPEED: 2,													
 	LAUNCH_DURATION: 1000,
 	SPAWN_IDLE: "biomancer/animals/penguin/penguin-spawn.png",
 	SPAWN_IDLE_PIVOT: {x: 30, y: 30},
