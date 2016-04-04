@@ -20,7 +20,7 @@ class MasterBiomancerGame extends Game{
 		// Tween Juggler
 		this.TJ = new TweenJuggler();
 
-		this.UI = new UserInterface(canvas.getContext('2d'));
+		this.UI = new UserInterface();
 		this.addChild(this.UI);
 	}
 

@@ -13,7 +13,7 @@ class UserInterface extends DisplayObjectContainer {
 			super('user-interface', USER_INTERFACE_VARS.INTERFACE_FILE);
 			_userinterfaceInstance = this;			
 			this.alpha = USER_INTERFACE_VARS.ALPHA;
-			this.canvasCTX = ctx;			
+			this.canvasCTX = document.getElementById('game').getContext('2d');			
 			this.animalContainer = new UIAnimalDisplay();
 			this.addChild(this.animalContainer);
 			this.dialogShown = false;

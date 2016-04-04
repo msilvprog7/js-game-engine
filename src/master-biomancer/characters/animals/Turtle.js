@@ -19,7 +19,7 @@ var TURTLE_VARS = {
 	MAX_SPEED: 2,
 	WALK_RANGE: 400,
 	SIGHT_RANGE: 500,
-	ATTACK_RATE: 7000,
+	ATTACK_RATE: 10000,
 	ATTACK_DAMAGE: 50,
 	ATTACK_RANGE: 500,
 	PRIORITY: 3
@@ -42,34 +42,8 @@ class Turtle extends Animal {
 		this.detonationTime = new Date().getTime() + TURTLE_VARS.ATTACK_RATE;
 	}
 
-	update(pressedKeys) {
-		super.update(pressedKeys);
-
-		var currentTime = new Date().getTime();
-
-		// Spawn
-		if (!this.spawned && currentTime >= this.spawnTime) {
-			this.spawn();
-		}
-
-		// Launch
-		if (!this.spawned) {
-			this.launch();
-		}
-
-		// Move
-		if (this.spawned && this.health > 0) {
-			this.move();
-		}
-
-		if(this.spawned && currentTime <= this.detonationTime) {
-			this.attack();
-		}		
-
-		// Decay
-		if (this.spawned && this.health > 0 && currentTime >= this.nextDecay) {
-			this.decay();
-		}
+	canAttack() {
+		return new Date().getTime() > this.detonationTime;
 	}
 
 	move() {
@@ -124,7 +98,7 @@ class Turtle extends Animal {
 		let enemies = this.getInSightRange();
 		enemies.forEach(function(enemy) {
 			if(enemy.distance <= TURTLE_VARS.ATTACK_RANGE) {
-				enemy.removeHealth(TURTLE_VARS.ATTACK_DAMAGE);
+				enemy.obj.removeHealth(TURTLE_VARS.ATTACK_DAMAGE);
 			}
 		});
 		this.killSelf();
