@@ -195,4 +195,6 @@ class Character extends AnimatedSprite {
 	die() {
 		// Override in subclasses
 	}
+
+	
 }

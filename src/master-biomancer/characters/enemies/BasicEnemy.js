@@ -15,7 +15,7 @@ var BASIC_ENEMY_VARS = {
 	SPAWN_DIMENSIONS: {width: 70, height: 70},
 	BULLET_IMG: "biomancer/misc/bullet.png",
 	BULLET_FUNCTION: function(collider, dmg) {
-		if(collider instanceof Animal || collider instanceof Biomancer) {
+		if(collider instanceof Friendly) {
 			collider.removeHealth(dmg);
 		}
 	}
@@ -32,19 +32,21 @@ class BasicEnemy extends Enemy {
 
 	move() {
 		let friendlies = this.getInSight(BASIC_ENEMY_VARS.SIGHT_RANGE);
-		if(friendlies.length === 0) {
+		if(friendlies.length === 0 && (this.friendlyFocus === undefined || !this.friendlyFocus.isAlive())) {
 			//No animals or biomancer in range, move randomly
-			this.closestFriendlyInSight = undefined;
+			this.friendlyFocus = undefined;
 			this.vX = 0;
 			this.vY = 0;
 		} else {
-			//MOVE TOWARDS CLOSEST FRIENDLY
-			this.closestFriendlyInSight = friendlies[0];
-			let posToMove = friendlies[0].obj.getPosition(),
+			//MOVE TOWARDS HIGHEST PRIORITY FRIENDLY, CLOSEST IF FRIENDLIES SHARE PRIORITY
+			if(friendlies.length > 0 && (this.friendlyFocus === undefined || friendlies[0].obj !== this.friendlyFocus || !this.friendlyFocus.isAlive())) {
+				this.friendlyFocus = friendlies[0];
+			}
+			let posToMove = this.friendlyFocus.obj.getPosition(),
 				xMove = (this.position.x-CHARACTER_VARS.MOVE_EPSILON > posToMove.x) ? -1 : (this.position.x+CHARACTER_VARS.MOVE_EPSILON < posToMove.x) ? 1 : 0, 
 				yMove = (this.position.y-CHARACTER_VARS.MOVE_EPSILON > posToMove.y) ? -1 : (this.position.y+CHARACTER_VARS.MOVE_EPSILON < posToMove.y) ? 1 : 0;
 
-			if(this.closestFriendlyInSight.distance <= this.attackRange) { 
+			if(this.friendlyFocus.distance <= this.attackRange) { 
 				this.orient(xMove, yMove);
 				return; 
 			}
@@ -61,7 +63,7 @@ class BasicEnemy extends Enemy {
 		super.attack();
 
 		//ATTACK CLOSEST FRIENDLY TARGET
-		let friendPivot = this.closestFriendlyInSight.obj.getNormalizedPivotPoint(),
+		let friendPivot = this.friendlyFocus.obj.getNormalizedPivotPoint(),
 			myPivot = this.getNormalizedPivotPoint(),
 			direction = MathUtil['3PI2']-Math.atan2((myPivot.y - friendPivot.y), (friendPivot.x - myPivot.x));
 
@@ -69,7 +71,7 @@ class BasicEnemy extends Enemy {
 			direction -= MathUtil['2PI'];
 		}
 		
- 		new Bullet(BASIC_ENEMY_VARS.BULLET_IMG, BASIC_ENEMY_VARS.BULLET_SPEED, BASIC_ENEMY_VARS.ATTACK_DMG, 
- 			direction, myPivot, this.getLevel(), BASIC_ENEMY_VARS.BULLET_FUNCTION);
+ 		new Bullet(this, BASIC_ENEMY_VARS.BULLET_IMG, BASIC_ENEMY_VARS.BULLET_SPEED, BASIC_ENEMY_VARS.ATTACK_DMG, 
+ 			direction, this.getLevel(), BASIC_ENEMY_VARS.BULLET_FUNCTION);
 	}
 }

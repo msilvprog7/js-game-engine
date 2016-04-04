@@ -16,7 +16,8 @@ var LEVEL_VARS = {
 		indexReferenceEntity: undefined, //Leave undefined for before focus child, or if no child exists appending to end
 		indexReferencePlacing: true, //True or undefined is before, false is after
 		monitorHealth: false //True only if monitor health from start
-	}
+	},
+	MAX_ANIMALS: 6
 };
 
 /**
@@ -150,6 +151,9 @@ class Level extends DisplayObjectContainer{
 		} else if(entity instanceof Animal){
 			this.addFriendly(entity);
 			this.animals.push(entity);
+			if(this.animals.length > LEVEL_VARS.MAX_ANIMALS) {
+				this.animals[0].removeHealth(10000);
+			}
 		} else if(entity instanceof Biomancer) {
 			this.addFriendly(entity);
 			this.setFocusChild(entity);

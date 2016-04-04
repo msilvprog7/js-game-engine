@@ -14,13 +14,13 @@ var ANIMAL_VARS = {
 /**
  * Abstract Animals for shared qualities for the different animals
  */
-class Animal extends Character {
+class Animal extends Friendly {
 
 	constructor(id, health, launchIdle, launchIdlePivot, spawnIdle, spawnIdlePivot, 
 		launchSpeed, launchDuration, decayAmount, walkRange, sightRange,
-		attackRate, attackRange, maxSpeed) {
+		attackRate, attackRange, maxSpeed, priority) {
 
-		super(id, health, launchIdle, maxSpeed);
+		super(id, health, launchIdle, maxSpeed, priority);
 
 		// Idle images and pivots
 		this.launchIdle = launchIdle;
