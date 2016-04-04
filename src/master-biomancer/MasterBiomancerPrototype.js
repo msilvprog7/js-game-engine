@@ -20,7 +20,7 @@ class MasterBiomancerGame extends Game{
 		// Tween Juggler
 		this.TJ = new TweenJuggler();
 
-		this.UI = new UserInterface(canvas.getContext('2d'));
+		this.UI = new UserInterface();
 		this.addChild(this.UI);
 	}
 
@@ -30,7 +30,7 @@ class MasterBiomancerGame extends Game{
 		// Update the tween juggler
 		this.TJ.update(timedelta);
 
-		if(pressedKeys.contains(49) && this.UI.dialog === undefined) {
+		if(pressedKeys.contains(54) && this.UI.dialog === undefined) {
 			let options = {wordTime: 100, pauseOnPeriods: true}
 			this.UI.showDialog("This is a test message. Hopefully this will work perfectly. Test Test Test Test Test Test Test Test Test Test Test Test Test.", options)
 		}

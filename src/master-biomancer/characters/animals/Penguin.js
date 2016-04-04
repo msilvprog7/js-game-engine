@@ -2,24 +2,26 @@
 
 // Duration will equal (HEALTH / DECAY_AMOUNT) * ANIMAL_VARS.NEXT_DECAY
 var PENGUIN_VARS = {
-	count: 0,
-	HEALTH: 30,
-	LAUNCH_IDLE: "biomancer/animals/penguin/penguin-launch.png",
-	LAUNCH_IDLE_PIVOT: {x: 6, y: 6},
-	LAUNCH_SPEED: 2,
-	LAUNCH_DURATION: 500,
+	count: 0,															//Required
+	HEALTH: 30,															//Required
+	LAUNCH_IDLE: "biomancer/animals/penguin/penguin-launch.png",		//Required
+	LAUNCH_IDLE_PIVOT: {x: 6, y: 6},									//Required
+	LAUNCH_SPEED: 2,													
+	LAUNCH_DURATION: 1000,
 	SPAWN_IDLE: "biomancer/animals/penguin/penguin-spawn.png",
 	SPAWN_IDLE_PIVOT: {x: 30, y: 30},
 	DECAY_AMOUNT: 1,
 	TURN_PROBABILITY: 0.1,
 	WALK_PROBABILITY: 0.75,
 	WALK_SPEED: 1,
-	RUN_SPEED: 2,	
+	RUN_SPEED: 2,
+	MAX_SPEED: 2,
 	WALK_RANGE: 400,
-	SIGHT_RANGE: 700,
+	SIGHT_RANGE: 800,
 	ATTACK_RATE: 1500,
 	ATTACK_RANGE: 500,
 	ATTACK_DMG: 10,
+	PRIORITY: 0,
 	BULLET_SPEED: 10,
 	BULLET_IMG: "biomancer/misc/snowball.png",
 	BULLET_FUNCTION: function(collider, dmg) {
@@ -36,11 +38,11 @@ var PENGUIN_VARS = {
 class Penguin extends Animal {
 	
 	constructor() {
-		super("spider-" + PENGUIN_VARS.count, PENGUIN_VARS.HEALTH, PENGUIN_VARS.LAUNCH_IDLE, PENGUIN_VARS.LAUNCH_IDLE_PIVOT, 
+		super("penguin-" + PENGUIN_VARS.count, PENGUIN_VARS.HEALTH, PENGUIN_VARS.LAUNCH_IDLE, PENGUIN_VARS.LAUNCH_IDLE_PIVOT, 
 			PENGUIN_VARS.SPAWN_IDLE, PENGUIN_VARS.SPAWN_IDLE_PIVOT,
 			PENGUIN_VARS.LAUNCH_SPEED, PENGUIN_VARS.LAUNCH_DURATION, 
 			PENGUIN_VARS.DECAY_AMOUNT, PENGUIN_VARS.WALK_RANGE, PENGUIN_VARS.SIGHT_RANGE,
-			PENGUIN_VARS.ATTACK_RATE, PENGUIN_VARS.ATTACK_RANGE);
+			PENGUIN_VARS.ATTACK_RATE, PENGUIN_VARS.ATTACK_RANGE, PENGUIN_VARS.MAX_SPEED, PENGUIN_VARS.PRIORITY);
 
 		PENGUIN_VARS.count++;
 	}
@@ -123,7 +125,7 @@ class Penguin extends Animal {
 			direction -= MathUtil['2PI'];
 		}
 		
- 		new Bullet(PENGUIN_VARS.BULLET_IMG, PENGUIN_VARS.BULLET_SPEED, PENGUIN_VARS.ATTACK_DMG, direction, this, this.getLevel(), PENGUIN_VARS.BULLET_FUNCTION);
+ 		new Bullet(this, PENGUIN_VARS.BULLET_IMG, PENGUIN_VARS.BULLET_SPEED, PENGUIN_VARS.ATTACK_DMG, direction, this.getLevel(), PENGUIN_VARS.BULLET_FUNCTION);
 	}
 	
 }

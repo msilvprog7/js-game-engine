@@ -2,6 +2,7 @@
 
 var BULLET_VARS = {
 	count: 0,
+	DECAY_TIME: 10000, //10 seconds
 	COLLISION_CHECK: 50, // this many ms between expensive collision checks
 	ADD_DEFAULTS: {
 		parentIsLevel: true,
@@ -12,7 +13,7 @@ var BULLET_VARS = {
 }
 
 class Bullet extends Sprite {
-	constructor(image, speed, damage, direction, creator, level, onHitCallback) {
+	constructor(creator, image, speed, damage, direction, level, onHitCallback) {
 		super('bullet-'+BULLET_VARS.count, image);
 
 		// Bullet qualities
@@ -22,6 +23,7 @@ class Bullet extends Sprite {
 		this.direction = direction;
 		this.creatorPos = this.creator.getNormalizedPivotPoint();
 		this.onHitCallback = onHitCallback;
+		this.decayTime = new Date().getTime() + BULLET_VARS.DECAY_TIME;
 
 		// Set level
 		this.level = level;
@@ -56,10 +58,10 @@ class Bullet extends Sprite {
 		let cur_time = new Date().getTime();
 		if(this.nextCollisionCheck < cur_time) {
 			//Do a collision check
-			let bullet = this, colliders = this.level.getColliders();
-			for(let i = 0; i < colliders.length; i++) {
-				let d = colliders[i];
-				if(d !== this.creator && bullet.collidesWith(d)) {
+			let bullet = this, collders = this.level.getColliders();
+			for(let i = 0; i < collders.length; i++) {
+				let d = collders[i];
+				if(d.id !== this.creator.id && d.id !== this.id && bullet.collidesWith(d)) {
 					this.onHitCallback(d, this.damage);					
 					bullet.level.removeEntity(this);
 					return;
@@ -67,7 +69,7 @@ class Bullet extends Sprite {
 			}
 			this.nextCollisionCheck = cur_time + BULLET_VARS.COLLISION_CHECK
 		}
-		if(this.position.x < -1000 || this.position.x > 2000 || this.position.y < -1000 || this.position.y > 2000) {
+		if(new Date().getTime > this.decayTime) {
 			this.level.removeEntity(this);
 		}
 	}
