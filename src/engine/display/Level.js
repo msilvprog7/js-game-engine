@@ -152,7 +152,7 @@ class Level extends DisplayObjectContainer{
 			this.addFriendly(entity);
 			this.animals.push(entity);
 			if(this.animals.length > LEVEL_VARS.MAX_ANIMALS) {
-				this.animals[0].removeHealth(10000);
+				this.animals[0].killSelf();
 			}
 		} else if(entity instanceof Biomancer) {
 			this.addFriendly(entity);

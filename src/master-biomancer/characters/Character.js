@@ -27,11 +27,14 @@ var CHARACTER_VARS = {
 			"dot": {v: false, d: 0, amount: 0.0},
 			"attack-slow": {v: false, d: 0, amount: 0.0}
 		}
+	},
+	DEFAULT_RESISTANCES: {
+
 	}
 };
 
 class Character extends AnimatedSprite {
-	constructor(id, health, idle, maxSpeed) {
+	constructor(id, health, idle, maxSpeed, resistances) {
 		super(id, idle);
 
 		// Initialize direction
@@ -45,6 +48,7 @@ class Character extends AnimatedSprite {
 		this.statuses = CHARACTER_VARS.GEN_STATUS_LIST();
 		this.nextStatusCull = new Date().getTime();
 		this.nextDotTick = new Date().getTime();
+		this.resistances = (resistances === undefined) ? CHARACTER_VARS.DEFAULT_RESISTANCES : resistances;
 
 		// Set physics
 		this.hasPhysics = true;
@@ -156,9 +160,13 @@ class Character extends AnimatedSprite {
 		return (this.maxHealth <= 0) ? 0 : this.health / this.maxHealth;
 	}
 
-	removeHealth(hit) {
+	removeHealth(hit, damageType) {
 		// Take damage
-		this.health -= hit;
+		if(damageType === undefined || this.resistances[damageType] === undefined) {
+			this.health -= hit;
+		} else {
+			this.health -= hit * (1 - this.resistances[damageType]);
+		}
 
 		// Dispatch event
 		if (this.health > 0) {
