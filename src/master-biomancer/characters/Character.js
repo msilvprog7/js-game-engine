@@ -196,5 +196,11 @@ class Character extends AnimatedSprite {
 		// Override in subclasses
 	}
 
+	killSelf() {
+		this.health = 0;
+		this.dispatchEvent(EVENTS.DIED);
+		this.die();
+	}
+
 	
 }

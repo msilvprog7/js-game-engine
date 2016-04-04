@@ -32,14 +32,14 @@ class BasicEnemy extends Enemy {
 
 	move() {
 		let friendlies = this.getInSight(BASIC_ENEMY_VARS.SIGHT_RANGE);
-		if(friendlies.length === 0 && (this.friendlyFocus === undefined || !this.friendlyFocus.isAlive())) {
+		if(friendlies.length === 0 && (this.friendlyFocus === undefined || !this.friendlyFocus.obj.isAlive())) {
 			//No animals or biomancer in range, move randomly
 			this.friendlyFocus = undefined;
 			this.vX = 0;
 			this.vY = 0;
 		} else {
 			//MOVE TOWARDS HIGHEST PRIORITY FRIENDLY, CLOSEST IF FRIENDLIES SHARE PRIORITY
-			if(friendlies.length > 0 && (this.friendlyFocus === undefined || friendlies[0].obj !== this.friendlyFocus || !this.friendlyFocus.isAlive())) {
+			if(friendlies.length > 0 && (this.friendlyFocus === undefined || friendlies[0].obj !== this.friendlyFocus || !this.friendlyFocus.obj.isAlive())) {
 				this.friendlyFocus = friendlies[0];
 			}
 			let posToMove = this.friendlyFocus.obj.getPosition(),
