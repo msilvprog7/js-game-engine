@@ -35,6 +35,7 @@ class Level extends DisplayObjectContainer{
 		this.enemies = [];
 		this.colliders = [];
 		this.movers = [];
+		this.obstacles = [];
 		this.game = game;
 	}
 
@@ -70,6 +71,16 @@ class Level extends DisplayObjectContainer{
 			}
 		});
 		this.enemies = this.enemies.filter((enemy) => (enemy.isAlive()));
+
+		// Remove obstacles that have been destroyed
+		this.obstacles.forEach(function (obstacle) {
+			if (obstacle.destroyed) {
+				that.removeChild(obstacle);
+				that.removeCollider(obstacle);
+				that.removeMover(obstacle);
+			}
+		});
+		this.obstacles = this.obstacles.filter((obstacle) => (!obstacle.destroyed));
 
 		// Check collisions
 		this.movers.forEach(mover => {
@@ -131,9 +142,11 @@ class Level extends DisplayObjectContainer{
 		var that = this;
 
 		if(options === undefined) { return; }
+
 		if(options["parentIsLevel"] !== undefined && options["parentIsLevel"]) {
 			entity.parent = this;
 		}
+
 		if(options["indexReferenceEntity"] !== undefined) {
 			//Different Entity Types to add before or after
 			let index = this.getIndexOfChildType(options["indexReferenceEntity"], options["indexReferencePlacing"]);
@@ -144,6 +157,7 @@ class Level extends DisplayObjectContainer{
 		} else {
 			this.addChild(entity, this.getChildIndex(this.focusChild));
 		}
+
 		if(entity instanceof Enemy) {
 			this.enemies.push(entity);
 			this.addMover(entity);
@@ -160,7 +174,12 @@ class Level extends DisplayObjectContainer{
 			entity.addEventListener(EVENTS.DIED, this, function () {
 				that.reload();
 			});
+		} else if(entity instanceof Obstacle) {
+			this.obstacles.push(entity);
+			this.addMover(entity);
+			this.addCollider(entity);
 		}
+
 		if(options["monitorHealth"] !== undefined && options["monitorHealth"]) {
 			this.monitorHealth(entity);
 		}
