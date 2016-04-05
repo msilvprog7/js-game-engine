@@ -191,6 +191,7 @@ class MathUtil {
 
 var init_pi = function() {
 	let pi_vars = [
+		{n: 'PI8', v: Math.PI/8},
 		{n: 'PI4', v: Math.PI/4},
 		{n: 'PI2', v: Math.PI/2},
 		{n: '3PI4', v: 3*Math.PI/4},

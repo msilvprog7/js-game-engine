@@ -96,5 +96,20 @@ class Enemy extends Character {
 			}
 		});
 		return priorityInRange;
-	}	
+	}
+
+	getInFront(sight_range, permissible_angle) {
+		var that = this;
+		return this.getInSight(sight_range).filter(function (friendly) {
+			let friendPivot = friendly.obj.getNormalizedPivotPoint(),
+				myPivot = that.getNormalizedPivotPoint(),
+				direction = MathUtil['3PI2']-Math.atan2((myPivot.y - friendPivot.y), (friendPivot.x - myPivot.x));
+
+			if(direction >= MathUtil['2PI']) { 
+				direction -= MathUtil['2PI'];
+			}
+
+			return Math.abs(that.direction - direction) <= permissible_angle;
+		});
+	}
 }
