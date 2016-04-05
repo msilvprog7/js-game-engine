@@ -48,6 +48,7 @@ class MasterBiomancerGame extends Game{
 		LEVEL_LIST.forEach(l => this.addLevel(l.id, l.level));
 
 		// Load
+		//this.nextLevel();
 		this.reloadLevel();
 	}
 }

@@ -193,10 +193,11 @@ class LevelEditor extends DisplayObject {
 		this.levelParser = new LevelParser(CLASS_REFERENCES);
 
 		// Set listeners
-		this.canvas.onmousemove = (e) => { e.preventDefault(); e.stopPropagation(); that.updateCursor(e) };
-		this.canvas.onmousedown = (e) => { e.preventDefault(); e.stopPropagation(); that.mouseDown(e) };
-		this.canvas.onmouseup = (e) => { e.preventDefault(); e.stopPropagation(); that.mouseUp(e) };
-		this.canvas.onmouseout = (e) => { e.preventDefault(); e.stopPropagation(); that.mouseOut(e) };
+		this.canvas.onmousemove = (e) => { e.preventDefault(); e.stopPropagation(); that.updateCursor(e); };
+		this.canvas.onmousedown = (e) => { e.preventDefault(); e.stopPropagation(); that.mouseDown(e); };
+		this.canvas.onmouseup = (e) => { e.preventDefault(); e.stopPropagation(); that.mouseUp(e); };
+		this.canvas.onmouseout = (e) => { e.preventDefault(); e.stopPropagation(); that.mouseOut(e); };
+		this.canvas.onmousewheel = (e) => { e.preventDefault(); e.stopPropagation(); that.scroll(e); };
 		document.getElementById(LEVEL_EDITOR_VARS.SELECT_CLASS_ID).onchange = (e) => { e.preventDefault(); e.stopPropagation(); that.getDrawingObject(); };
 		document.getElementById(LEVEL_EDITOR_VARS.DRAW_BUTTON_ID).onclick = (e) => { e.preventDefault(); e.stopPropagation(); that.drawClicked(); };
 
@@ -943,6 +944,20 @@ class LevelEditor extends DisplayObject {
 			// Done drawing the generated class reference
 			this.setDrawDragging(false, e);
 		}
+	}
+
+	scroll(e) {
+		var evt=window.event || e, //equalize event object
+			delta=evt.detail? evt.detail*(-120) : evt.wheelDelta;
+		if(delta >= 120) {
+			console.log("WHEEL SCROLL UP");
+			this.ctx.scale(1.25, 1.25);
+		}
+		else {
+			console.log("WHEEL SCROLL DOWN");
+			this.ctx.scale(0.8,0.8);
+		}
+		this.draw(true);
 	}
 
 	setPositionDisplay(position) {

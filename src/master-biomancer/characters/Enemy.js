@@ -14,8 +14,8 @@ var ENEMY_VARS = {
  */
 class Enemy extends Character {
 
-	constructor(id, health, spawnIdle, spawnIdlePivot, attackRate, attackRange, maxSpeed) {
-		super(id, health, spawnIdle, maxSpeed);
+	constructor(id, health, spawnIdle, spawnIdlePivot, attackRate, attackRange, maxSpeed, resistances) {
+		super(id, health, spawnIdle, maxSpeed, resistances);
 
 		this.spawnIdle = spawnIdle;
 		this.spawnIdlePivot = spawnIdlePivot;

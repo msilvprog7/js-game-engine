@@ -8,8 +8,8 @@ var FRIENDLY_VARS = {
 }
 
 class Friendly extends Character {
-	constructor(id, health, idle, maxSpeed, priority) {
-		super(id, health, idle, maxSpeed);
+	constructor(id, health, idle, maxSpeed, priority, resistances) {
+		super(id, health, idle, maxSpeed, resistances);
 		if(priority === undefined || priority > 3 || priority < 0) {
 			this.priority = FRIENDLY_VARS.PRIORITY_MEDIUM;
 		} else {

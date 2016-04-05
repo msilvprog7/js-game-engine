@@ -1,7 +1,8 @@
 "use strict";
 
 var LEVEL_LIST = [
-		LEVEL1
+		LEVEL1,
+		LEVEL2
 	],
 
 	addToLevel = function (level, obj, options) { level.addEntityToLevel(obj, options); },

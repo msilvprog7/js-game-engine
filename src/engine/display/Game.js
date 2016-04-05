@@ -83,7 +83,7 @@ class Game extends DisplayObjectContainer{
 			return true;
 		}
 
-		reloadLevel();
+		this.reloadLevel();
 		return false;
 	}
 
