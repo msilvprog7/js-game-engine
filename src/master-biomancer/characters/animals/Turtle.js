@@ -95,12 +95,22 @@ class Turtle extends Animal {
 	}
 
 	attack() {
+		// Attack enemies in range
 		let enemies = this.getInSightRange();
 		enemies.forEach(function(enemy) {
 			if(enemy.distance <= TURTLE_VARS.ATTACK_RANGE) {
 				enemy.obj.removeHealth(TURTLE_VARS.ATTACK_DAMAGE);
 			}
 		});
+
+		// Attack destroyable obstacles in range
+		let obstacles = this.getObstaclesInSightRange();
+		obstacles.forEach(function (obstacle) {
+			if (obstacle.distance <= TURTLE_VARS.ATTACK_RANGE) {
+				obstacle.obj.destroy();
+			}
+		});
+
 		this.killSelf();
 	}
 	

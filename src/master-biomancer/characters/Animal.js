@@ -177,6 +177,22 @@ class Animal extends Friendly {
 		return inRange;
 	}	
 
+	getObstaclesInSightRange() {
+		//Returns a list of all obstacles within range
+		//sorted by distance
+		let allObstacles = this.getLevel().obstacles,
+			inRange = [];
+		for(let i = 0; i < allObstacles.length; i++) {
+			let dist = this.distanceTo(allObstacles[i].getNormalizedPivotPoint());
+			if(dist <= this.sightRange) {
+				// In range format: obj, distance
+				inRange.push({obj: allObstacles[i], distance: dist});
+			}
+		}
+		inRange.sort((a, b) => a.distance - b.distance);
+		return inRange;
+	}
+
 	canAttack() {
 		// Call super in subclasses to enforce attack rate
 		return this.enemyFocus !== undefined && 

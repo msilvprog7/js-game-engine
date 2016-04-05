@@ -35,6 +35,20 @@ var LEVEL_LIST = [
 			resource: "resources/images/biomancer/enemies/basic-enemy/basic-enemy.png"
 		},
 
+		/* Obstacles */
+		"Rock": {
+			constructor: function () { return new Rock(); },
+			addToLevel: addToLevel,
+			generate: undefined,
+			generateParams: -1,
+			generateParamsEditorOption: undefined,
+			options: ROCK_VARS.ADD_DEFAULTS,
+			pivot: ROCK_VARS.IDLE_PIVOT,
+			dimensions: ROCK_VARS.DIMENSIONS,
+			type: "Obstacles",
+			resource: "resources/images/biomancer/misc/rock.png"
+		},
+
 		/* Floors */
 		"Tiles0": {
 			constructor: undefined,

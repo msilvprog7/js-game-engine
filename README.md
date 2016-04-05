@@ -3,6 +3,10 @@ CS 4730 Game Engine written in JS
 
 Authors: Michael Snider, Kyle Bibler, John Reagan
 
+## Lab 9
+
+We have a level editor, more animals, and rock walls that can be blown up by turtles. Number keys 1-4 for animals.
+
 ## Lab 8
 
 We decide a alpha
