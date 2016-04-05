@@ -35,6 +35,18 @@ var LEVEL_LIST = [
 			type: "Enemies",
 			resource: "resources/images/biomancer/enemies/basic-enemy/basic-enemy.png"
 		},
+		"Hotbot": {
+			constructor: function () { return new Hotbot(); },
+			addToLevel: addToLevel,
+			generate: undefined,
+			generateParams: -1,
+			generateParamsEditorOption: undefined,
+			options: ENEMY_VARS.ADD_DEFAULTS,
+			pivot: HOTBOT_VARS.SPAWN_IDLE_PIVOT,
+			dimensions: HOTBOT_VARS.SPAWN_DIMENSIONS,
+			type: "Enemies",
+			resource: "resources/images/biomancer/enemies/hotbot/hotbot-normal.png"
+		},
 
 		/* Obstacles */
 		"Rock": {
