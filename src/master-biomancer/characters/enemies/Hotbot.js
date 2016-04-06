@@ -5,6 +5,7 @@ var HOTBOT_VARS = {
 	SIGHT_RANGE: 200,
 	ATTACK_RANGE: 50,
 	ATTACK_DMG: 20,
+	DAMAGE_TYPE: "fire",
 	BULLET_SPEED: 10,
 	ATTACK_RATE: 5000, //ms between attacks
 	HEALTH: 45,
@@ -82,7 +83,7 @@ class Hotbot extends Enemy {
 		super.attack();
 
 		// ATTACK CLOSEST FRIENDLY TARGET
-		this.friendlyFocus.obj.removeHealth(HOTBOT_VARS.ATTACK_DMG);
+		this.friendlyFocus.obj.removeHealth(HOTBOT_VARS.ATTACK_DMG, HOTBOT_VARS.DAMAGE_TYPE);
 
 		// Do damage animation
 		this.setCurrentAnimation(HOTBOT_VARS.ATTACK_ANIMATION_NAME);

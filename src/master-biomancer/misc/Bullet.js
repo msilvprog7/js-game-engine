@@ -13,7 +13,7 @@ var BULLET_VARS = {
 }
 
 class Bullet extends Sprite {
-	constructor(creator, image, speed, damage, direction, level, onHitCallback) {
+	constructor(creator, image, speed, damage, damageType, direction, level, onHitCallback) {
 		super('bullet-'+BULLET_VARS.count, image);
 
 		// Bullet qualities
@@ -21,6 +21,7 @@ class Bullet extends Sprite {
 		this.damage = damage;
 		this.creator = creator;
 		this.direction = direction;
+		this.damageType = damageType || DAMAGE_TYPES.PHYSICAL;
 		this.creatorPos = this.creator.getNormalizedPivotPoint();
 		this.onHitCallback = onHitCallback;
 		this.decayTime = new Date().getTime() + BULLET_VARS.DECAY_TIME;
@@ -62,7 +63,7 @@ class Bullet extends Sprite {
 			for(let i = 0; i < collders.length; i++) {
 				let d = collders[i];
 				if(d.id !== this.creator.id && d.id !== this.id && bullet.collidesWith(d)) {
-					this.onHitCallback(d, this.damage);					
+					this.onHitCallback(d, this.damage, this.damageType);					
 					bullet.level.removeEntity(this);
 					return;
 				}

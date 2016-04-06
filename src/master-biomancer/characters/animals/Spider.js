@@ -27,9 +27,12 @@ var SPIDER_VARS = {
 /**
  * Our first animal, a friendly wolf
  */
-class Spider extends Animal {
-	
-	constructor() {
+class Spider extends Animal {	
+	/* constructor(id, health, launchIdle, launchIdlePivot, spawnIdle, spawnIdlePivot, 
+	*	launchSpeed, launchDuration, decayAmount, walkRange, sightRange,
+	*	attackRate, attackRange, maxSpeed, priority)
+	*/
+	constructor() {		
 		super("spider-" + SPIDER_VARS.count, SPIDER_VARS.HEALTH, SPIDER_VARS.LAUNCH_IDLE, SPIDER_VARS.LAUNCH_IDLE_PIVOT, 
 			SPIDER_VARS.SPAWN_IDLE, SPIDER_VARS.SPAWN_IDLE_PIVOT,
 			SPIDER_VARS.LAUNCH_SPEED, SPIDER_VARS.LAUNCH_DURATION, 

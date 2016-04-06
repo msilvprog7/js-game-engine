@@ -21,14 +21,18 @@ var PENGUIN_VARS = {
 	ATTACK_RATE: 1500,
 	ATTACK_RANGE: 500,
 	ATTACK_DMG: 10,
+	DAMAGE_TYPE: DAMAGE_TYPES["ICE"],
 	PRIORITY: 0,
 	BULLET_SPEED: 10,
 	BULLET_IMG: "biomancer/misc/snowball.png",
-	BULLET_FUNCTION: function(collider, dmg) {
+	BULLET_FUNCTION: function(collider, dmg, dmgType) {
 		if(collider instanceof Enemy) {
-			collider.removeHealth(dmg);
+			collider.removeHealth(dmg, dmgType);
 			collider.addStatus("move-slow", 3000, 0.6);
 		}
+	},
+	RESISTANCES: {
+		[DAMAGE_TYPES["FIRE"]]: 0.5
 	}
 };
 
@@ -36,7 +40,10 @@ var PENGUIN_VARS = {
  * Our first animal, a friendly wolf
  */
 class Penguin extends Animal {
-	
+	/* constructor(id, health, launchIdle, launchIdlePivot, spawnIdle, spawnIdlePivot, 
+	*	launchSpeed, launchDuration, decayAmount, walkRange, sightRange,
+	*	attackRate, attackRange, maxSpeed, priority)
+	*/
 	constructor() {
 		super("penguin-" + PENGUIN_VARS.count, PENGUIN_VARS.HEALTH, PENGUIN_VARS.LAUNCH_IDLE, PENGUIN_VARS.LAUNCH_IDLE_PIVOT, 
 			PENGUIN_VARS.SPAWN_IDLE, PENGUIN_VARS.SPAWN_IDLE_PIVOT,
@@ -125,7 +132,8 @@ class Penguin extends Animal {
 			direction -= MathUtil['2PI'];
 		}
 		
- 		new Bullet(this, PENGUIN_VARS.BULLET_IMG, PENGUIN_VARS.BULLET_SPEED, PENGUIN_VARS.ATTACK_DMG, direction, this.getLevel(), PENGUIN_VARS.BULLET_FUNCTION);
+ 		new Bullet(this, PENGUIN_VARS.BULLET_IMG, PENGUIN_VARS.BULLET_SPEED, PENGUIN_VARS.ATTACK_DMG, 
+ 			PENGUIN_VARS.DAMAGE_TYPE, direction, this.getLevel(), PENGUIN_VARS.BULLET_FUNCTION);
 	}
 	
 }

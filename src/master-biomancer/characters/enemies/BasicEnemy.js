@@ -5,27 +5,33 @@ var BASIC_ENEMY_VARS = {
 	SIGHT_RANGE: 500,
 	ATTACK_RANGE: 300,
 	ATTACK_DMG: 10,
+	DAMAGE_TYPE: DAMAGE_TYPES["LASER"],
 	BULLET_SPEED: 10,
 	ATTACK_RATE: 2000, //ms between attacks
 	HEALTH: 50,
 	SPEED: 2,
-	MOVE_BEHAVIOR: 'NONE',
+	MAX_SPEED: 2,
+	RESISTANCES: {
+		[DAMAGE_TYPES["EXPLOSIVE"]]: 0.5
+	},
 	SPAWN_IDLE: "biomancer/enemies/basic-enemy/basic-enemy.png",
 	SPAWN_IDLE_PIVOT: {x: 35, y: 15},
 	SPAWN_DIMENSIONS: {width: 70, height: 70},
 	BULLET_IMG: "biomancer/misc/bullet.png",
-	BULLET_FUNCTION: function(collider, dmg) {
+	BULLET_FUNCTION: function(collider, dmg, dmgType) {
 		if(collider instanceof Friendly) {
-			collider.removeHealth(dmg);
+			collider.removeHealth(dmg, dmgType);
 		}
 	}
 };
 
 class BasicEnemy extends Enemy {
 	constructor() {
+		//constructor(id, health, spawnIdle, spawnIdlePivot, attackRate, attackRange, maxSpeed, resistances)
 		super("basic-enemy-" + BASIC_ENEMY_VARS.count, BASIC_ENEMY_VARS.HEALTH, 
 			BASIC_ENEMY_VARS.SPAWN_IDLE, BASIC_ENEMY_VARS.SPAWN_IDLE_PIVOT, 
-			BASIC_ENEMY_VARS.ATTACK_RATE, BASIC_ENEMY_VARS.ATTACK_RANGE);
+			BASIC_ENEMY_VARS.ATTACK_RATE, BASIC_ENEMY_VARS.ATTACK_RANGE,
+			BASIC_ENEMY_VARS.MAX_SPEED, BASIC_ENEMY_VARS.RESISTANCES);
 
 		BASIC_ENEMY_VARS.count++;
 	}
@@ -71,6 +77,6 @@ class BasicEnemy extends Enemy {
 			direction -= MathUtil['2PI'];
 		}
  		new Bullet(this, BASIC_ENEMY_VARS.BULLET_IMG, BASIC_ENEMY_VARS.BULLET_SPEED, BASIC_ENEMY_VARS.ATTACK_DMG, 
- 			direction, this.getLevel(), BASIC_ENEMY_VARS.BULLET_FUNCTION);
+ 			BASIC_ENEMY_VARS.DAMAGE_TYPE, direction, this.getLevel(), BASIC_ENEMY_VARS.BULLET_FUNCTION);
 	}
 }

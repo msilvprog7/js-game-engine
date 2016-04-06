@@ -207,7 +207,7 @@ class Animal extends Friendly {
 
 	decay() {
 		// Apply decay
-		this.removeHealth(this.decayAmount);
+		this.removeHealth(this.decayAmount, DAMAGE_TYPES["PURE"]);
 
 		// Time till next decay
 		if(this.health > 0) {

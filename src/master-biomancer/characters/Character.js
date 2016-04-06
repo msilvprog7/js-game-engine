@@ -11,6 +11,17 @@ var ROTATION = {
 	SE: MathUtil['7PI4']
 };
 
+var DAMAGE_TYPES = {
+	PHYSICAL: "physical",
+	EXPLOSIVE: "explosive",
+	LASER: "laser",
+	PURE: "pure",		//pure damage is usually unresistable
+	FIRE: "fire",
+	ICE: "ice",
+	POISON: "poison",
+	ELECTRIC: "electric"
+};
+
 var CHARACTER_VARS = {	
 	MOVE_EPSILON: 10,
 	STATUS_CULL_RATE: 200,
@@ -24,7 +35,7 @@ var CHARACTER_VARS = {
 		*/
 		return { 
 			"move-slow": {v: false, d: 0, amount: 0.0},
-			"dot": {v: false, d: 0, amount: 0.0},
+			"dot": {v: false, d: 0, amount: 0.0, damageType: DAMAGE_TYPES["PURE"]},
 			"attack-slow": {v: false, d: 0, amount: 0.0}
 		}
 	},
@@ -32,6 +43,8 @@ var CHARACTER_VARS = {
 
 	}
 };
+
+
 
 class Character extends AnimatedSprite {
 	constructor(id, health, idle, maxSpeed, resistances) {
@@ -76,9 +89,10 @@ class Character extends AnimatedSprite {
 			this.nextStatusCull = cur_time + CHARACTER_VARS.STATUS_CULL_RATE;
 		}
 
-		//APPLY DOTS
+		//APPLY DOTS		
 		if(this.statuses['dot'].v && cur_time > this.nextDotTick) {
-			this.removeHealth(this.statuses['dot'].amount);
+			let dot = this.statuses['dot'];
+			this.removeHealth(dot.amount, dot.damageType);
 			this.nextDotTick = cur_time + CHARACTER_VARS.DOT_TICK_RATE;
 		}			
 	}
@@ -165,7 +179,7 @@ class Character extends AnimatedSprite {
 		if(damageType === undefined || this.resistances[damageType] === undefined) {
 			this.health -= hit;
 		} else {
-			this.health -= hit * (1 - this.resistances[damageType]);
+			this.health -= hit * this.resistances[damageType];
 		}
 
 		// Dispatch event
@@ -177,13 +191,18 @@ class Character extends AnimatedSprite {
 		}
 	}
 
-	addStatus(status, duration, amount) {
+	addStatus(status, duration, amount, damageType) {
 		let s = this.statuses[status]
 		if(!s.v) {
 			console.log(this.id + " IS NOW AFFLICTED BY: " + status);
 		}
 		s.v = true;
 		s.d = new Date().getTime()+duration;
+		if(status === "dot") {
+			//Please include damage types with dots
+			//COMMON EXAMPLES - physical for bleed, poison for ...poison, fire for burns
+			s.damageType = damageType || DAMAGE_TYPES["PURE"];
+		}
 		s.amount = amount;
 	}
 

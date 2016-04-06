@@ -44,6 +44,7 @@ class LevelEditor extends DisplayObject {
 
 		this.canvas = canvas;
 		this.ctx = canvas.getContext("2d");
+		this.currentScale = 1.0;
 		this.reset();
 	}
 
@@ -54,6 +55,8 @@ class LevelEditor extends DisplayObject {
 		if (force === undefined && new Date().getTime() < this.nextDraw) {
 			return;
 		}
+		this.ctx.save();
+		this.ctx.scale(this.currentScale, this.currentScale);
 
 		// Set the level's position (negative of the editors because I goofed)
 		this.level.setPosition({x: -this.position.x, y: -this.position.y});
@@ -73,6 +76,8 @@ class LevelEditor extends DisplayObject {
 		// Draw editor tools
 		this.drawNearestSnapGrid();
 
+		this.ctx.restore();
+
 		// Update next draw
 		this.nextDraw = new Date().getTime() + LEVEL_EDITOR_VARS.DRAW_RATE;
 	}
@@ -81,7 +86,7 @@ class LevelEditor extends DisplayObject {
 		// Horizontal lines
 		let yMod = this.position.y % LEVEL_EDITOR_VARS.VISIBLE_GRID_ROW_SEPARATION,
 			yPos = ((yMod > 0) ? LEVEL_EDITOR_VARS.VISIBLE_GRID_ROW_SEPARATION - yMod : -yMod);
-		for (; yPos <= this.dimensions.height; yPos += LEVEL_EDITOR_VARS.VISIBLE_GRID_ROW_SEPARATION) {
+		for (; yPos <= this.dimensions.height/this.currentScale; yPos += LEVEL_EDITOR_VARS.VISIBLE_GRID_ROW_SEPARATION*this.currentScale) {
 			this.drawHorizontalLine((Math.abs(this.position.y + yPos) < 0.0001) ? LEVEL_EDITOR_VARS.ORIGIN_GRID_COLOR : LEVEL_EDITOR_VARS.REGULAR_GRID_COLOR,
 				yPos, 0, this.dimensions.width);
 		}
@@ -89,7 +94,7 @@ class LevelEditor extends DisplayObject {
 		// Vertical lines
 		let xMod = this.position.x % LEVEL_EDITOR_VARS.VISIBLE_GRID_COL_SEPARATION,
 			xPos = ((xMod > 0) ? LEVEL_EDITOR_VARS.VISIBLE_GRID_COL_SEPARATION - xMod : -xMod);
-		for (; xPos <= this.dimensions.width; xPos += LEVEL_EDITOR_VARS.VISIBLE_GRID_COL_SEPARATION) {
+		for (; xPos <= this.dimensions.width/this.currentScale; xPos += LEVEL_EDITOR_VARS.VISIBLE_GRID_COL_SEPARATION*this.currentScale) {
 			this.drawVerticalLine((Math.abs(this.position.x + xPos) < 0.0001) ? LEVEL_EDITOR_VARS.ORIGIN_GRID_COLOR : LEVEL_EDITOR_VARS.REGULAR_GRID_COLOR,
 				xPos, 0, this.dimensions.height);
 		}
@@ -155,6 +160,7 @@ class LevelEditor extends DisplayObject {
 
 		// Next draw
 		this.nextDraw = 0;
+		this.currentScale = 1.0;
 
 		// Set background color
 		this.canvas.style.setProperty("background-color", LEVEL_EDITOR_VARS.BACKGROUND_COLOR);

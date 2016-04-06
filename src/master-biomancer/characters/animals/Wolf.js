@@ -21,6 +21,10 @@ var WOLF_VARS = {
 	ATTACK_RATE: 1000,
 	ATTACK_RANGE: 100,
 	ATTACK_DAMAGE: 5,
+	DAMAGE_TYPE: DAMAGE_TYPES["PHYSICAL"],
+	RESISTANCES: {
+
+	},
 	PRIORTY: 2
 };
 
@@ -28,13 +32,17 @@ var WOLF_VARS = {
  * Our first animal, a friendly wolf
  */
 class Wolf extends Animal {
-	
+	/* constructor(id, health, launchIdle, launchIdlePivot, spawnIdle, spawnIdlePivot, 
+	*	launchSpeed, launchDuration, decayAmount, walkRange, sightRange,
+	*	attackRate, attackRange, maxSpeed, priority)
+	*/
 	constructor() {
 		super("wolf-" + WOLF_VARS.count, WOLF_VARS.HEALTH, WOLF_VARS.LAUNCH_IDLE, WOLF_VARS.LAUNCH_IDLE_PIVOT, 
 			WOLF_VARS.SPAWN_IDLE, WOLF_VARS.SPAWN_IDLE_PIVOT,
 			WOLF_VARS.LAUNCH_SPEED, WOLF_VARS.LAUNCH_DURATION, 
 			WOLF_VARS.DECAY_AMOUNT, WOLF_VARS.WALK_RANGE, WOLF_VARS.SIGHT_RANGE,
-			WOLF_VARS.ATTACK_RATE, WOLF_VARS.ATTACK_RANGE, WOLF_VARS.MAX_SPEED, WOLF_VARS.PRIORTY);
+			WOLF_VARS.ATTACK_RATE, WOLF_VARS.ATTACK_RANGE, WOLF_VARS.MAX_SPEED, 
+			WOLF_VARS.PRIORTY, WOLF_VARS.RESISTANCES);
 
 		WOLF_VARS.count++;
 	}
@@ -107,7 +115,7 @@ class Wolf extends Animal {
 		super.attack();
 		
 		//ATTACK CLOSEST FRIENDLY TARGET		
- 		this.enemyFocus.obj.removeHealth(WOLF_VARS.ATTACK_DAMAGE);
+ 		this.enemyFocus.obj.removeHealth(WOLF_VARS.ATTACK_DAMAGE, WOLF_VARS.DAMAGE_TYPE);
 	}
 	
 }

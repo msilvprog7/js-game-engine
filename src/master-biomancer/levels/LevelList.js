@@ -47,6 +47,18 @@ var LEVEL_LIST = [
 			type: "Enemies",
 			resource: "resources/images/biomancer/enemies/hotbot/hotbot-normal.png"
 		},
+		"ElementalSentry": {
+			constructor: function () { return new ElementalSentry(); },
+			addToLevel: addToLevel,
+			generate: undefined,
+			generateParams: -1,
+			generateParamsEditorOption: undefined,
+			options: ENEMY_VARS.ADD_DEFAULTS,
+			pivot: ELEMENTAL_SENTRY_VARS.SPAWN_IDLE_PIVOT,
+			dimensions: ELEMENTAL_SENTRY_VARS.SPAWN_DIMENSIONS,
+			type: "Enemies",
+			resource: "resources/images/biomancer/enemies/elemental-sentry/elemental-sentry.png"
+		},
 
 		/* Obstacles */
 		"Rock": {

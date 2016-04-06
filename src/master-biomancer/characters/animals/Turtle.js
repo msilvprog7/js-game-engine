@@ -21,21 +21,29 @@ var TURTLE_VARS = {
 	SIGHT_RANGE: 500,
 	ATTACK_RATE: 10000,
 	ATTACK_DAMAGE: 50,
+	DAMAGE_TYPE: DAMAGE_TYPES["EXPLOSIVE"],
 	ATTACK_RANGE: 500,
-	PRIORITY: 3
+	PRIORITY: 3,
+	RESISTANCES: {
+
+	}
 };
 
 /**
  * 
  */
 class Turtle extends Animal {
-	
+	/* constructor(id, health, launchIdle, launchIdlePivot, spawnIdle, spawnIdlePivot, 
+	*	launchSpeed, launchDuration, decayAmount, walkRange, sightRange,
+	*	attackRate, attackRange, maxSpeed, priority)
+	*/
 	constructor() {
 		super("turtle-" + TURTLE_VARS.count, TURTLE_VARS.HEALTH, TURTLE_VARS.LAUNCH_IDLE, TURTLE_VARS.LAUNCH_IDLE_PIVOT, 
 			TURTLE_VARS.SPAWN_IDLE, TURTLE_VARS.SPAWN_IDLE_PIVOT,
 			TURTLE_VARS.LAUNCH_SPEED, TURTLE_VARS.LAUNCH_DURATION, 
 			TURTLE_VARS.DECAY_AMOUNT, TURTLE_VARS.WALK_RANGE, TURTLE_VARS.SIGHT_RANGE,
-			TURTLE_VARS.ATTACK_RATE, TURTLE_VARS.ATTACK_RANGE, TURTLE_VARS.MAX_SPEED, TURTLE_VARS.PRIORITY);
+			TURTLE_VARS.ATTACK_RATE, TURTLE_VARS.ATTACK_RANGE, TURTLE_VARS.MAX_SPEED, 
+			TURTLE_VARS.PRIORITY, TURTLE_VARS.RESISTANCES);
 
 		TURTLE_VARS.count++;
 		this.addAnimation("scared", {images: [TURTLE_VARS.SCARED_IMG], loop: true});
@@ -99,7 +107,7 @@ class Turtle extends Animal {
 		let enemies = this.getInSightRange();
 		enemies.forEach(function(enemy) {
 			if(enemy.distance <= TURTLE_VARS.ATTACK_RANGE) {
-				enemy.obj.removeHealth(TURTLE_VARS.ATTACK_DAMAGE);
+				enemy.obj.removeHealth(TURTLE_VARS.ATTACK_DAMAGE, TURTLE_VARS.DAMAGE_TYPE);
 			}
 		});
 
