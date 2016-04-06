@@ -3,6 +3,10 @@ CS 4730 Game Engine written in JS
 
 Authors: Michael Snider, Kyle Bibler, John Reagan
 
+## Alpha Instructions
+
+Walk around with arrow keys, launch animals with space bar, and use the number keys 1-4 to switch animals. We have two levels, several enemies, different animal types, and a level editor (editor.html). If you need to get through a rock wall, try blowing it up with a turtle. Thanks for playing!
+
 ## Lab 9
 
 We have a level editor, more animals, and rock walls that can be blown up by turtles. Number keys 1-4 for animals.
