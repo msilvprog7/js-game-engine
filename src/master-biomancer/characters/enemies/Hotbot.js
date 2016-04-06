@@ -2,16 +2,16 @@
 
 var HOTBOT_VARS = {
 	count: 0,
-	SIGHT_RANGE: 200,
-	ATTACK_RANGE: 50,
-	ATTACK_DMG: 20,
-	DAMAGE_TYPE: "fire",
+	SIGHT_RANGE: 400,
+	ATTACK_RANGE: 100,
+	ATTACK_DMG: 30,
+	DAMAGE_TYPE: DAMAGE_TYPES["FIRE"],
 	BULLET_SPEED: 10,
 	ATTACK_RATE: 5000, //ms between attacks
 	HEALTH: 45,
 	SPEED: 4,
 	PERMISSIBLE_ANGLE: MathUtil['PI8'],
-	TIME_BETWEEN_ROTATIONS: 1000,
+	TIME_BETWEEN_ROTATIONS: 500,
 	MOVE_BEHAVIOR: 'NONE',
 	SPAWN_IDLE: "biomancer/enemies/hotbot/hotbot-normal.png",
 	SPAWN_IDLE_PIVOT: {x: 25, y: 25},
@@ -19,10 +19,15 @@ var HOTBOT_VARS = {
 	SPAWN_IDLE_ANIMATION_NAME: "idle",
 	ATTACK_ANIMATION_NAME: "hot",
 	ATTACK_IMG: "biomancer/enemies/hotbot/hotbot-hot.png",
-	ATTACK_IMG_DURATION: 1000
+	ATTACK_IMG_DURATION: 1000,
+	RESISTANCES: {
+		[DAMAGE_TYPES["FIRE"]]: 0.5,
+		[DAMAGE_TYPES["ICE"]]: 1.5
+	}
 };
 
 class Hotbot extends Enemy {
+	//constructor(id, health, spawnIdle, spawnIdlePivot, attackRate, attackRange, maxSpeed, resistances)
 	constructor() {
 		super("hotbot-" + HOTBOT_VARS.count, HOTBOT_VARS.HEALTH, 
 			HOTBOT_VARS.SPAWN_IDLE, HOTBOT_VARS.SPAWN_IDLE_PIVOT, 

@@ -71,6 +71,18 @@ var LEVEL_LIST = [
 			type: "Enemies",
 			resource: "resources/images/biomancer/enemies/elemental-sentry/elemental-sentry-fire.png"
 		},
+		"Exit": {
+			constructor: function () { return new Exit(); },
+			addToLevel: addToLevel,
+			generate: undefined,
+			generateParams: -1,
+			generateParamsEditorOption: undefined,
+			options: EXIT_VARS.ADD_DEFAULTS,
+			pivot: EXIT_VARS.IDLE_PIVOT,
+			dimensions: EXIT_VARS.DIMENSIONS,
+			type: "Obstacles",
+			resource: "resources/images/biomancer/misc/exit.png"
+		},
 
 		/* Obstacles */
 		"Rock": {
