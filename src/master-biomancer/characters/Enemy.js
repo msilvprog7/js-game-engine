@@ -62,7 +62,11 @@ class Enemy extends Character {
 
 	attack() {
 		// Call super in subclasses to enforce attack rate
-		this.nextAttackTime = new Date().getTime() + this.attackRate;
+		if(this.statuses["attack-slow"].v) {
+			this.nextAttackTime = new Date().getTime() + this.attackRate/this.statuses["attack-slow"].amount;
+		} else {
+			this.nextAttackTime = new Date().getTime() + this.attackRate;
+		}
 	}
 
 	move() {

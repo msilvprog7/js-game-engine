@@ -21,7 +21,7 @@ var SPIDER_VARS = {
 	ATTACK_RATE: 3000,
 	ATTACK_RANGE: 500,
 	ATTACK_DAMAGE: 0,
-	PRIORITY: 1
+	PRIORITY: FRIENDLY_VARS["PRIORITY_LOW"]
 };
 
 /**
@@ -111,6 +111,7 @@ class Spider extends Animal {
 		
 		//ATTACK CLOSEST FRIENDLY TARGET		
  		this.enemyFocus.obj.addStatus("move-slow", 5000, 0.0);
+ 		this.enemyFocus.obj.addStatus("attack-slow", 5000, 0.5);
 	}
 	
 }

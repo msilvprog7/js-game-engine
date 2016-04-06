@@ -44,12 +44,18 @@ class Gun extends Sprite {
 		}
 
 		// Fire!
-		var animal = this.generateCurrentAnimal();
-		this.getBiomancer().getLevel().addEntityToLevel(animal, ANIMAL_VARS.ADD_DEFAULTS);
+		var animal = this.generateCurrentAnimal(),
+			biomancer = this.getBiomancer();
+		biomancer.getLevel().addEntityToLevel(animal, ANIMAL_VARS.ADD_DEFAULTS);
 
 
 		// Update timestamp and return
-		this.nextFire = new Date().getTime() + this.rechargeRate;
+		if(biomancer.statuses["attack-slow"].v) {
+			this.nextFire = new Date().getTime() + this.rechargeRate/biomancer.statuses["attack-slow"].amount;
+		} else {
+			this.nextFire = new Date().getTime() + this.rechargeRate;
+		}
+
 		return true;
 	}
 
