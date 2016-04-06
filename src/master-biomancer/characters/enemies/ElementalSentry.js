@@ -16,7 +16,7 @@ var ELEMENTAL_SENTRY_VARS = {
 		[DAMAGE_TYPES["PHYSICAL"]]: 0.5,
 		[DAMAGE_TYPES["EXPLOSIVE"]]: 1.25
 	},
-	SPAWN_IDLE: "biomancer/enemies/elemental-sentry/elemental-sentry.png",
+	SPAWN_IDLE: "biomancer/enemies/elemental-sentry/elemental-sentry-fire.png",
 	IDLE_IMAGES: [
 		"biomancer/enemies/elemental-sentry/elemental-sentry-fire.png",
 		"biomancer/enemies/elemental-sentry/elemental-sentry-ice.png",
@@ -33,8 +33,8 @@ var ELEMENTAL_SENTRY_VARS = {
 				case DAMAGE_TYPES["POISON"]:
 					collider.addStatus("dot", 3000, dmg/2, dmgType);
 					break;
-				case DAMAGE_TYPES["POISON"]:
-				case DAMAGE_TYPES["POISON"]:
+				case DAMAGE_TYPES["ICE"]:
+				case DAMAGE_TYPES["ELECTRIC"]:
 					collider.addStatus("move-slow", 3000, 0.5);
 					break;
 			}
@@ -48,7 +48,7 @@ var ELEMENTAL_SENTRY_VARS = {
 class ElementalSentry extends Enemy {
 	constructor() {
 		//constructor(id, health, spawnIdle, spawnIdlePivot, attackRate, attackRange, maxSpeed, resistances)
-		super("basic-enemy-" + ELEMENTAL_SENTRY_VARS.count, ELEMENTAL_SENTRY_VARS.HEALTH, 
+		super("elemental-sentry-" + ELEMENTAL_SENTRY_VARS.count, ELEMENTAL_SENTRY_VARS.HEALTH, 
 			ELEMENTAL_SENTRY_VARS.SPAWN_IDLE, ELEMENTAL_SENTRY_VARS.SPAWN_IDLE_PIVOT, 
 			ELEMENTAL_SENTRY_VARS.ATTACK_RATE, ELEMENTAL_SENTRY_VARS.ATTACK_RANGE,
 			ELEMENTAL_SENTRY_VARS.MAX_SPEED, ELEMENTAL_SENTRY_VARS.RESISTANCES);
