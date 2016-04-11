@@ -261,7 +261,7 @@ class DisplayObject extends EventDispatcher{
 		collided = this.doOverlap(hitbox1.tl, hitbox2.tl, hitbox1.br, hitbox2.br);
 
 		if (collided)
-			this.dispatchEvent(EVENTS.COLLISION);
+			this.dispatchEvent(EVENTS.COLLISION, [this, otherDO]);
 
 		// maybe should be for all
 		if (this.hasPhysics && collided) {

@@ -98,6 +98,22 @@ var LEVEL_LIST = [
 			resource: "resources/images/biomancer/misc/rock.png"
 		},
 
+		/* Dialogue */
+		"Dialogue": {
+			constructor: undefined,
+			addToLevel: addToLevel,
+			generate: function (text, cols, rows) { return DialogueObject.generateDialogue(text, cols, rows); },
+			generateParams: 3,
+			generateParamsEditorOption: ["Get-Text", "Exceed-Width", "Exceed-Height"],
+			options: DIALOGUE_VARS.ADD_DEFAULTS,
+			pivot: undefined,
+			dimensions: undefined,
+			type: "Misc",
+			resource: "resources/images/biomancer/misc/dialogue.png",
+			exceedWidth: 50,
+			exceedHeight: 50
+		},
+
 		/* Floors */
 		"Tiles0": {
 			constructor: undefined,

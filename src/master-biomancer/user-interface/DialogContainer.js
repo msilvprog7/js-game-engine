@@ -23,7 +23,7 @@ class DialogContainer extends DisplayObject {
 		super('dialog-message', DIALOG_VARS.DIALOG_FILE);
 		if(!message) { message = "Please put a message."}
 		this.finalMsg = message;
-		this.options = options;
+		this.options = options || {};
 		this.finished = false;
 		this.setPosition({x: DIALOG_VARS.X_POSITION, y: DIALOG_VARS.Y_POSITION});
 		this.setAlpha(DIALOG_VARS.BOX_ALPHA);

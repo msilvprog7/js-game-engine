@@ -51,7 +51,7 @@ class LevelParser {
 		// Item by item through level definition
 		for (let i = 0; i < items.length; i++) {
 			// Parse each item defined
-			var words = items[i].match(/[\w-.]+/g);
+			var words = items[i].match(/[\w-.!]+/g);
 
 			// Empty line
 			if (words === undefined || words === null || words.length === 0) {

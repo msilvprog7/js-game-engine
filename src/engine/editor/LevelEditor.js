@@ -29,6 +29,7 @@ var LEVEL_EDITOR_VARS = {
 	DRAW_DRAG_SPEED: 8,
 	DRAW_DRAG_RATE: 1000 / 30,
 	DEFAULT_GENERATE_PARMAS: {
+		"Get-Text": "Insert text...",
 		"Exceed-Width": 1,
 		"Exceed-Height": 1
 	}
@@ -517,6 +518,9 @@ class LevelEditor extends DisplayObject {
 		document.getElementById(LEVEL_EDITOR_VARS.LEVEL_ID_INPUT).value = levelObj.id;
 		this.level.children = this.levelParser.parseLevel(levelObj.level, tempLevel).children;
 
+		// All children visible
+		this.level.children.forEach((child) => child.visible = true);
+
 		// New selection (remove and create)
 		document.getElementById(LEVEL_EDITOR_VARS.SELECT_OBJECT_ID).remove();
 		this.createSelectObject();
@@ -695,8 +699,24 @@ class LevelEditor extends DisplayObject {
 		} else if (reference.generate !== undefined && typeof(reference.generate) === "function" && reference.generateParams >= 0) {
 			// Generate
 			generateParams = reference.generateParamsEditorOption.map(x => LEVEL_EDITOR_VARS.DEFAULT_GENERATE_PARMAS[x]);
+			// Get text for dialogue options
+			for (let i = 0; i < reference.generateParamsEditorOption.length; i++) {
+				switch (reference.generateParamsEditorOption[i]) {
+					case "Get-Text":
+						var textInput = window.prompt("Enter text for generated param " + i, LEVEL_EDITOR_VARS.DEFAULT_GENERATE_PARMAS["Get-Text"]);
+						if (textInput !== undefined && textInput !== null && textInput.length > 0) {
+							// Replace whitespace characters with ---s
+							generateParams[i] = textInput.replace(/\s/g, "---");
+						}
+						break;
+				}
+			}
+
 			displayObject = reference.generate(...generateParams);
 		}
+
+		// Always display in editor
+		displayObject.visible = true;
 
 		// Set centered position
 		displayObject.setPosition({
@@ -722,6 +742,9 @@ class LevelEditor extends DisplayObject {
 		// Get display object
 		var position = this.drawingObject.displayObject.position;
 		this.drawingObject.displayObject = this.drawingObject.reference.generate(...generateParams);
+
+		// Set visible
+		this.drawingObject.displayObject.visible = true;
 
 		// Set to old position
 		this.drawingObject.displayObject.setPosition(position);
@@ -852,8 +875,10 @@ class LevelEditor extends DisplayObject {
 			this.drawDrag(diffMapPosition);
 
 			// Recompute the generated problems based on mouse position
-			var computedGenerateParams = this.drawingObject.reference.generateParamsEditorOption.map(function (option) {
+			var computedGenerateParams = this.drawingObject.reference.generateParamsEditorOption.map(function (option, index) {
 				switch (option) {
+					case "Get-Text":
+						return that.drawingObject.generateParams[index];
 					case "Exceed-Width":
 						var numCols = Math.ceil(absPositionDiff.x / that.drawingObject.reference.exceedWidth);
 						return (numCols > 0) ? numCols : 1;

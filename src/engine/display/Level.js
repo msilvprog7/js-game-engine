@@ -36,6 +36,7 @@ class Level extends DisplayObjectContainer{
 		this.colliders = [];
 		this.movers = [];
 		this.obstacles = [];
+		this.dialogues = [];
 		this.game = game;
 	}
 
@@ -81,6 +82,15 @@ class Level extends DisplayObjectContainer{
 			}
 		});
 		this.obstacles = this.obstacles.filter((obstacle) => (!obstacle.destroyed));
+
+		// Remove dialogues that have been triggered
+		this.dialogues.forEach(function (dialogue) {
+			if (dialogue.shown) {
+				that.removeChild(dialogue);
+				that.removeCollider(dialogue);
+			}
+		});
+		this.dialogues = this.dialogues.filter((dialogue) => (!dialogue.shown));
 
 		// Check collisions
 		this.movers.forEach(mover => {
@@ -177,6 +187,9 @@ class Level extends DisplayObjectContainer{
 		} else if(entity instanceof Obstacle) {
 			this.obstacles.push(entity);
 			this.addMover(entity);
+			this.addCollider(entity);
+		} else if(entity instanceof DialogueObject) {
+			this.dialogues.push(entity);
 			this.addCollider(entity);
 		}
 

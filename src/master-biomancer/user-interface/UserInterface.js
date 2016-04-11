@@ -8,7 +8,7 @@ var USER_INTERFACE_VARS = {
 let _userinterfaceInstance = null;
 
 class UserInterface extends DisplayObjectContainer {
-	constructor(ctx) {
+	constructor() {
 		if(!_userinterfaceInstance) {
 			super('user-interface', USER_INTERFACE_VARS.INTERFACE_FILE);
 			_userinterfaceInstance = this;			
