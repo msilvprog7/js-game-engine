@@ -11,6 +11,7 @@ var BIOMANCER_VARS = {
 	V_MAX: 4,
 	PRIORITY: 1,
 	RUN_ACC: 1,
+	KEY_UPDATE_TIME: 70,
 	ADD_DEFAULTS: {
 		parentIsLevel: true,
 		indexReferenceEntity: undefined, //Leave undefined for before focus child, or if no child exists appending to end
@@ -30,6 +31,7 @@ class Biomancer extends Friendly {
 
 		// Set your gun
 		this.setGun(new Gun());
+		this.nextKeyPress = new Date().getTime();
 	}
 
 	setGun() {
@@ -53,25 +55,38 @@ class Biomancer extends Friendly {
 		this.aX = 0;
 		this.aY = 0;
 
-		if(pressedKeys.contains(49)) {
-			this.gun.swapAnimal("WOLF");
+		var currentTime = new Date().getTime();
+
+		if(currentTime > this.nextKeyPress) {
+			if(pressedKeys.contains(49)) {
+				this.gun.swapAnimal("WOLF");
+			}
+
+			else if(pressedKeys.contains(50)) {
+				this.gun.swapAnimal("SPIDER");
+			}
+
+			else if(pressedKeys.contains(51)) {
+				this.gun.swapAnimal("PENGUIN");
+			}
+
+			else if(pressedKeys.contains(52)) {
+				this.gun.swapAnimal("TURTLE");			
+			}
+
+			else if(pressedKeys.contains(9)) {
+				if(pressedKeys.contains(16)) {
+					this.gun.tabAnimal(-1);
+				}
+				else { 
+					this.gun.tabAnimal(1);
+				}
+			}
+
+			this.nextKeyPress = currentTime + BIOMANCER_VARS.KEY_UPDATE_TIME;
 		}
 
-		if(pressedKeys.contains(50)) {
-			this.gun.swapAnimal("SPIDER");
-		}
-
-		if(pressedKeys.contains(51)) {
-			this.gun.swapAnimal("PENGUIN");
-		}
-
-		if(pressedKeys.contains(52)) {
-			this.gun.swapAnimal("TURTLE");			
-		}
-
-		if(pressedKeys.contains(53)) {
-			this.addStatus("move-slow", 5000, 0.5);
-		}
+		
 
 		// Orient and move
 		if (this.orient(pressedKeys)) {
