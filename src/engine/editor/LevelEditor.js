@@ -205,6 +205,12 @@ class LevelEditor extends DisplayObject {
 		this.canvas.onmouseup = (e) => { e.preventDefault(); e.stopPropagation(); that.mouseUp(e); };
 		this.canvas.onmouseout = (e) => { e.preventDefault(); e.stopPropagation(); that.mouseOut(e); };
 		this.canvas.onmousewheel = (e) => { e.preventDefault(); e.stopPropagation(); that.scroll(e); };
+		window.addEventListener("keydown", function() {
+			this.keysPressed.push(e.keyCode);
+		}, true);
+		window.addEventListener("keyup", function() {
+			this.keysPressed = this.keysPressed.filter(c => c !== e.keyCode);
+		}, true);
 		document.getElementById(LEVEL_EDITOR_VARS.SELECT_CLASS_ID).onchange = (e) => { e.preventDefault(); e.stopPropagation(); that.getDrawingObject(); };
 		document.getElementById(LEVEL_EDITOR_VARS.DRAW_BUTTON_ID).onclick = (e) => { e.preventDefault(); e.stopPropagation(); that.drawClicked(); };
 

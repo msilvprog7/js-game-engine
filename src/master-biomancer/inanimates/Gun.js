@@ -111,9 +111,21 @@ class Gun extends Sprite {
 		var potentialAnimal = this.availableAnimals.find((element) => element === name);
 		this.currentAnimal = (potentialAnimal !== undefined) ? potentialAnimal : this.currentAnimal;
 		if(this.currentAnimal !== undefined) {
-			new UserInterface().animalContainer.setCurrentAnimal(name);
+			new UserInterface().animalContainer.setCurrentAnimal(this.currentAnimal);
 		}
 		return (potentialAnimal !== undefined);
+	}
+
+	tabAnimal(dir) {
+		var index = this.availableAnimals.indexOf(this.currentAnimal),
+			current = index + dir;
+		if(current < 0) { current = this.availableAnimals.length-1;}
+		else if(current >= this.availableAnimals.length) { current = 0; }
+		this.currentAnimal = (index !== -1) ? this.availableAnimals[current] : this.currentAnimal;
+		if(index !== -1) {
+			new UserInterface().animalContainer.setCurrentAnimal(this.currentAnimal);
+		}
+		return (index !== -1);
 	}
 
 	getCurrentAnimal() {
