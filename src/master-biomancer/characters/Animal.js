@@ -161,16 +161,26 @@ class Animal extends Friendly {
 		super.move();
 	}
 
-	getInSightRange() {
+	getInSightRange(friendlyIncludeTypes) {
 		//Returns a list of all friendly entities (Biomancer and animals)
 		//Sorted by distance from the enemy
-		let allEnemies = this.getLevel().getEnemyEntities(),
+		let level = this.getLevel(),
+			allEntities = level.getEnemyEntities(),
 			inRange = [];
-		for(let i = 0; i < allEnemies.length; i++) {
-			let dist = this.distanceTo(allEnemies[i].getNormalizedPivotPoint());
+		if(friendlyIncludeTypes && friendlyIncludeTypes.length > 0) {
+			friendlyIncludeTypes.forEach(friendlyIncludeType => {
+				level.getFriendlyEntities().forEach(friendly => {
+					if(friendly.constructor.name === friendlyIncludeType) {
+						allEntities.push(friendly);
+					}
+				});
+			});			
+		}
+		for(let i = 0; i < allEntities.length; i++) {
+			let dist = this.distanceTo(allEntities[i].getNormalizedPivotPoint());
 			if(dist <= this.sightRange) {
 				// In range format: obj, distance
-				inRange.push({obj: allEnemies[i], distance: dist});
+				inRange.push({obj: allEntities[i], distance: dist});
 			}
 		}
 		inRange.sort((a, b) => a.distance - b.distance);

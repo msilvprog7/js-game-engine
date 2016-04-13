@@ -76,9 +76,14 @@ class Wolf extends Animal {
 
 			this.orient(xMove, yMove);
 		} else {
-			let enemies = this.getInSightRange();
+			let enemies = this.getInSightRange(["Turtle"]);
 			if(enemies.length > 0) {
-				this.enemyFocus = enemies[0];
+				let turtleFocus  = enemies.find(enemy => enemy instanceof Turtle);
+				if(turtleFocus) {
+					this.enemyFocus = turtleFocus; 
+				} else {
+					this.enemyFocus = enemies[0];
+				}
 			} else {
 				if(this.enemyFocus !== undefined) {
 					//reset search radius
