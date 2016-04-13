@@ -1,7 +1,7 @@
 "use strict";
 
 
-var DIALOGUE_VARS = {
+var DIALOGUE_SCRIPT_VARS = {
 	count: 0,
 	FILENAME: "biomancer/misc/dialogue.png",
 	PIVOT: {x: 25, y: 25},
@@ -15,25 +15,15 @@ var DIALOGUE_VARS = {
 };
 
 
-class DialogueObject extends DisplayObjectContainer {
+class DialogueScript extends ScriptObject {
 	
 	constructor(id, text) {
-		super(id, undefined);
+
+		super(id);
 
 		// Set text
 		this.text = this.filter(text);
-		this.shown = false;
-
-		// Get UI
-		this.UserInterface = new UserInterface();
-
-		// Hidden
-		this.visible = false;
-
-		this.hasPhysics = true;
-		this.friction = 0.0;
-		this.initCollisions();
-		this.addEventListener(EVENTS.COLLISION, this, this.checkBiomancerCollision, this);
+		this.setScript(this.show);
 	}
 
 	/** 
@@ -43,49 +33,28 @@ class DialogueObject extends DisplayObjectContainer {
 		return text.replace(/---/g, " ");
 	}
 
-	checkBiomancerCollision(d1, d2) {
-		console.log("here");
-		if ((d1 === this || d2 === this) && (d1 instanceof Biomancer || d2 instanceof Biomancer)) {
-			show();
-		}
-	}
-
 	show() {
 		this.UserInterface.showDialog(this.text);
-		this.shown = true;
-	}
-
-	getLevel() {
-		let l = this.parent, iters = 0;
-		while(!(l instanceof Level)) {
-			l = l.parent;
-			iters++;
-			if(iters > 10) { return undefined; }
-		}
-		return l;
-	}
-
-	setLevel(level) {
-		this.parent = level;
+		this.activated = true;
 	}
 
 	/**
 	  * Generate Dialogue
 	 */
 	static generateDialogue(text, cols, rows) {
-		var dialogueImage = DIALOGUE_VARS.FILENAME,
-			generatedDialogue = new DialogueObject("dialogue-" + DIALOGUE_VARS.count, text),
+		var DialogueImage = DIALOGUE_SCRIPT_VARS.FILENAME,
+			generatedDialogue = new DialogueScript("Dialogue-" + DIALOGUE_SCRIPT_VARS.count, text),
 			currentDialogueId = 0,
-			width = DIALOGUE_VARS.DIMENSIONS.width,
-			height = DIALOGUE_VARS.DIMENSIONS.height;
+			width = DIALOGUE_SCRIPT_VARS.DIMENSIONS.width,
+			height = DIALOGUE_SCRIPT_VARS.DIMENSIONS.height;
 
 		// Layout walls
 		for (let i = 0; i < rows; i++) {
 			for (let j = 0; j < cols; j++) {
-				var currentDialogue = new Sprite("dialogue" + "-" + DIALOGUE_VARS.count + "-" + currentDialogueId, dialogueImage);
+				var currentDialogue = new Sprite("Dialogue" + "-" + DIALOGUE_SCRIPT_VARS.count + "-" + currentDialogueId, DialogueImage);
 				currentDialogue.setPosition({x: j * width, y: i * height});
 				currentDialogue.setPivotPoint({x: width / 2, y: height / 2});
-				currentDialogue.hitbox.setHitboxFromImage(DIALOGUE_VARS.DIMENSIONS);
+				currentDialogue.hitbox.setHitboxFromImage(DIALOGUE_SCRIPT_VARS.DIMENSIONS);
 				generatedDialogue.addChild(currentDialogue);
 				currentDialogueId++;
 			}
@@ -98,7 +67,7 @@ class DialogueObject extends DisplayObjectContainer {
 		generatedDialogue.hitbox.setHitboxFromImage({width: cols * width, height: rows * height});
 
 		// Increment count
-		DIALOGUE_VARS.count++;
+		DIALOGUE_SCRIPT_VARS.count++;
 
 		return generatedDialogue;
 	}

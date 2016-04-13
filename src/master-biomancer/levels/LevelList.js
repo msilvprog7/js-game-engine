@@ -99,13 +99,13 @@ var LEVEL_LIST = [
 		},
 
 		/* Dialogue */
-		"Dialogue": {
+		"DialogueScript": {
 			constructor: undefined,
 			addToLevel: addToLevel,
-			generate: function (text, cols, rows) { return DialogueObject.generateDialogue(text, cols, rows); },
+			generate: function (text, cols, rows) { return DialogueScript.generateDialogue(text, cols, rows); },
 			generateParams: 3,
 			generateParamsEditorOption: ["Get-Text", "Exceed-Width", "Exceed-Height"],
-			options: DIALOGUE_VARS.ADD_DEFAULTS,
+			options: DIALOGUE_SCRIPT_VARS.ADD_DEFAULTS,
 			pivot: undefined,
 			dimensions: undefined,
 			type: "Misc",

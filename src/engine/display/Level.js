@@ -29,6 +29,7 @@ class Level extends DisplayObjectContainer{
 	constructor(id, game) {
 		super(id, undefined);
 		this.focusChild = undefined;
+		this.biomancer = undefined;
 		this.animals = [];
 		this.healthBars = [];
 		this.friendlies = [];
@@ -36,7 +37,7 @@ class Level extends DisplayObjectContainer{
 		this.colliders = [];
 		this.movers = [];
 		this.obstacles = [];
-		this.dialogues = [];
+		this.scriptObjects = [];
 		this.game = game;
 	}
 
@@ -84,13 +85,12 @@ class Level extends DisplayObjectContainer{
 		this.obstacles = this.obstacles.filter((obstacle) => (!obstacle.destroyed));
 
 		// Remove dialogues that have been triggered
-		this.dialogues.forEach(function (dialogue) {
-			if (dialogue.shown) {
-				that.removeChild(dialogue);
-				that.removeCollider(dialogue);
+		this.scriptObjects.forEach(function (script) {
+			if (script.activated) {
+				that.removeChild(script);
 			}
 		});
-		this.dialogues = this.dialogues.filter((dialogue) => (!dialogue.shown));
+		this.scriptObjects = this.scriptObjects.filter((scriptObject) => (!scriptObject.activated));
 
 		// Check collisions
 		this.movers.forEach(mover => {
@@ -121,6 +121,12 @@ class Level extends DisplayObjectContainer{
 						// });
 					}
 			});
+		});
+
+		this.scriptObjects.forEach(scriptObject => {
+			if(scriptObject.collidesWith(this.biomancer)) {
+				//Do nothing because the event handles all that jazz
+			}
 		});
 	}
 
@@ -181,6 +187,7 @@ class Level extends DisplayObjectContainer{
 		} else if(entity instanceof Biomancer) {
 			this.addFriendly(entity);
 			this.setFocusChild(entity);
+			this.biomancer = entity;
 			entity.addEventListener(EVENTS.DIED, this, function () {
 				that.reload();
 			});
@@ -188,9 +195,8 @@ class Level extends DisplayObjectContainer{
 			this.obstacles.push(entity);
 			this.addMover(entity);
 			this.addCollider(entity);
-		} else if(entity instanceof DialogueObject) {
-			this.dialogues.push(entity);
-			this.addCollider(entity);
+		} else if(entity instanceof ScriptObject) {
+			this.scriptObjects.push(entity);
 		}
 
 		if(options["monitorHealth"] !== undefined && options["monitorHealth"]) {
