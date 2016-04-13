@@ -84,6 +84,7 @@ class Character extends AnimatedSprite {
 				let status = this.statuses[k];
 				if(status.v && cur_time > status.d) {
 					status.v = false;
+					this.dispatchEvent(EVENTS.STATUS_UPDATED);
 				}
 			}
 			this.nextStatusCull = cur_time + CHARACTER_VARS.STATUS_CULL_RATE;
@@ -204,11 +205,13 @@ class Character extends AnimatedSprite {
 			s.damageType = damageType || DAMAGE_TYPES["PURE"];
 		}
 		s.amount = amount;
+		this.dispatchEvent(EVENTS.STATUS_UPDATED);
 	}
 
 	removeStatus(status) {
 		let s = this.statuses[status];
 		s.v = false;
+		this.dispatchEvent(EVENTS.STATUS_UPDATED);
 	}
 
 	hasStatus(status) {

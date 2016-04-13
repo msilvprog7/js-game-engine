@@ -83,6 +83,10 @@ class Biomancer extends Friendly {
 				}
 			}
 
+			else if(pressedKeys.contains(83)) {
+				this.addStatus("move-slow", 3000, 0.6);
+			}
+
 			this.nextKeyPress = currentTime + BIOMANCER_VARS.KEY_UPDATE_TIME;
 		}
 

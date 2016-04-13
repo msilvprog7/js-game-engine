@@ -8,6 +8,7 @@ var EVENTS = {
 	COIN_PICKED_UP: "coin-picked-up",
 	TWEEN_COMPLETE: "tween-complete",
 	HEALTH_UPDATED: "health-changed",
+	STATUS_UPDATED: "status-changed",
 	DIED: "health-zero",
 	HITBOX_UPDATED: "hitbox-updated",
 	COLLISION_LEFT: "collision-left",

@@ -9,7 +9,14 @@ var HEALTHBAR_VARS = {
 		{LOWERBOUND: 0.15, COLOR: "#FFFF00"},
 		{LOWERBOUND: 0.00, COLOR: "#FF0000"}
 	],
-	HEALTHBAR_PADDING: {x: 2, y: 2}
+	HEALTHBAR_PADDING: {x: 2, y: 2},
+	STATUS_ICONS: {
+		"move-slow": "biomancer/status/move-slow-icon-large.png",
+		"poison": "biomancer/status/poison-icon.png",
+		"burn": "biomancer/status/burning-icon-large.png",
+		"attack-slow": "biomancer/status/attack-slow-icon-large.png",
+	},
+	STATUS_POSITIONING: {x: -20, y: -20}
 };
 
 
@@ -29,6 +36,7 @@ class HealthBar extends DisplayObjectContainer {
 
 		// listeners
 		this.entity.addEventListener(EVENTS.HEALTH_UPDATED, this, this.updateHealth, this);
+		this.entity.addEventListener(EVENTS.STATUS_UPDATED, this, this.updateStatus, this);
 		this.entity.addEventListener(EVENTS.HITBOX_UPDATED, this, this.updatePosition, this);
 		this.entity.addEventListener(EVENTS.DIED, this, this.died, this);
 	}
@@ -109,6 +117,35 @@ class HealthBar extends DisplayObjectContainer {
 		// Health bar
 		this.healthBar.setPosition(this.getHealthBarPosition());
 		this.healthBar.setDimensions(this.getHealthBarDimensions());
+	}
+
+	updateStatus(data) {
+		var i = 0;
+		for(let s in this.entity.statuses) {
+			let status = this.entity.statuses[s]
+			if(status.v) {
+				let image = ""
+				if(s === "dot") {
+					switch(status.damageType) {
+						case DAMAGE_TYPES["POISON"]:
+							image = HEALTHBAR_VARS.STATUS_ICONS["poison"]
+							break;
+						case DAMAGE_TYPES["FIRE"]:
+							image = HEALTHBAR_VARS.STATUS_ICONS["burn"]
+							break;
+					}
+				} else {
+					image = HEALTHBAR_VARS.STATUS_ICONS[s];
+				}
+				if(image !== "") {
+					let child = new Sprite(this.id +"-status-" + i, image);
+					child.setPosition({x: HEALTHBAR_VARS.STATUS_POSITIONING.x + 20*i, y: HEALTHBAR_VARS.STATUS_POSITIONING.y});
+					this.addChild(child);
+					i++;
+				}
+			}
+			
+		}
 	}
 
 	updateHealth(data) {
