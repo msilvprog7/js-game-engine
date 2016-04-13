@@ -108,7 +108,7 @@ var LEVEL_LIST = [
 			options: DIALOGUE_SCRIPT_VARS.ADD_DEFAULTS,
 			pivot: undefined,
 			dimensions: undefined,
-			type: "Misc",
+			type: "Scripts",
 			resource: "resources/images/biomancer/misc/dialogue.png",
 			exceedWidth: 50,
 			exceedHeight: 50
