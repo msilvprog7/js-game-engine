@@ -3,7 +3,7 @@
 var USER_INTERFACE_VARS = {
 	ALPHA: 0.0,
 	INTERFACE_FILE: "biomancer/ui/main.png",
-	DIALOG_CLOSE: 81 // Q
+	DIALOG_CLOSE: 81, // Q
 }
 let _userinterfaceInstance = null;
 
@@ -18,24 +18,35 @@ class UserInterface extends DisplayObjectContainer {
 			this.addChild(this.animalContainer);
 			this.dialogShown = false;
 			this.dialog = undefined;
+			this.dialogQueue = [];
 		}
 
 		return _userinterfaceInstance;
 	}	
 
 	update(pressedKeys) {
-		if(pressedKeys.contains(USER_INTERFACE_VARS.DIALOG_CLOSE)) {
-			if(this.dialog && this.dialog.finished) {
+		let currentTime = new Date().getTime();
+
+		if(this.dialog && this.dialog.finished) {
+			if(this.dialog.finishedTimeout < currentTime || pressedKeys.contains(USER_INTERFACE_VARS.DIALOG_CLOSE)) {			
 				this.removeChild(this.dialog);
 				this.dialog = undefined;
+				this.dialogShown = false;
+				if(this.dialogQueue.length > 0) {
+					let nextDialog = this.dialogQueue.shift();
+					this.showDialog(nextDialog.message, nextDialog.options);
+				}
 			}
-		}
+		}		
 	}
 
 	showDialog(message, options) {
 		if(!this.dialogShown) {
 			this.dialog = new DialogContainer(message, options, this.canvasCTX)
 			this.addChild(this.dialog);
+			this.dialogShown = true;
+		} else {
+			this.dialogQueue.push({message: message, options: options});
 		}
 	}
 }

@@ -15,6 +15,7 @@ var DIALOG_VARS = {
 	FONT_STYLE: "Arial",
 	BOX_ALPHA: 0.7,
 	TEXT_ALPHA: 1.0,
+	FINISHED_TIMEOUT: 1000
 };
 
 
@@ -32,6 +33,7 @@ class DialogContainer extends DisplayObject {
 		ctx.font=this.currentFontSize+"px " + DIALOG_VARS.FONT_STYLE;
 		this.words = message.split(" ");
 		this.wordsLength = this.words.length;
+		this.finishedTime = -1;
 
 		this.chunkedText = this.chunkText(message, ctx);
 		this.chunkedTextLineLength = this.chunkedText.map(e => e.split(" ").length);
@@ -85,7 +87,10 @@ class DialogContainer extends DisplayObject {
 			this.wordToAdd++;
 			this.currentWordsMapped = this.currentWords.map(e => e.join(' '));
 		}
-		if(this.wordToAdd >= this.wordsLength) { this.finished = true; }
+		if(this.wordToAdd >= this.wordsLength) { 
+			this.finished = true; 
+			this.finishedTimeout = cur_time+DIALOG_VARS.FINISHED_TIMEOUT;
+		}
 		return this.currentWordsMapped;
 	}
 

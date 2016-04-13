@@ -6,6 +6,10 @@ var DIALOGUE_SCRIPT_VARS = {
 	FILENAME: "biomancer/misc/dialogue.png",
 	PIVOT: {x: 25, y: 25},
 	DIMENSIONS: {width: 50, height: 50},
+	OPTIONS: {
+		wordTime: 50,
+		pauseOnPeriod: true
+	},
 	ADD_DEFAULTS: {
 		parentIsLevel: true,
 		indexReferenceEntity: undefined, //Leave undefined for before focus child, or if no child exists appending to end
@@ -34,7 +38,7 @@ class DialogueScript extends ScriptObject {
 	}
 
 	show() {
-		this.UserInterface.showDialog(this.text);
+		this.UserInterface.showDialog(this.text, DIALOGUE_SCRIPT_VARS.OPTIONS);
 		this.activated = true;
 	}
 
