@@ -2,7 +2,8 @@
 
 var LEVEL_LIST = [
 		LEVEL1,
-		LEVEL2
+		LEVEL2,
+		LEVEL3
 	],
 
 	addToLevel = function (level, obj, options) { level.addEntityToLevel(obj, options); },
