@@ -134,5 +134,5 @@ class Game extends DisplayObjectContainer{
 	}
 }
 
-function onKeyDown(e){ Game.getInstance().addKey(e.keyCode); e.preventDefault(); e.stopPropagation();}
-function onKeyUp(e){ Game.getInstance().removeKey(e.keyCode); e.preventDefault(); e.stopPropagation();}
+function onKeyDown(e){ Game.getInstance().addKey(e.keyCode);}
+function onKeyUp(e){ Game.getInstance().removeKey(e.keyCode);}
