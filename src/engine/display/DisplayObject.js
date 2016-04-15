@@ -65,7 +65,7 @@ class DisplayObject extends EventDispatcher{
 				this.vX = this.vX < 0 ? 0 : this.vX;
 			} else if (this.vX < 0) {
 				this.vX += this.friction;
-				this.vx = this.vX > 0 ? 0 : this.vX;
+				this.vX = this.vX > 0 ? 0 : this.vX;
 			}
 			if (this.vY > 0) {
 				this.vY -= this.friction;
