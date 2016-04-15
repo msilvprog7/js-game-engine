@@ -83,8 +83,7 @@ class Character extends AnimatedSprite {
 			for(let k in this.statuses) {
 				let status = this.statuses[k];
 				if(status.v && cur_time > status.d) {
-					status.v = false;
-					this.dispatchEvent(EVENTS.STATUS_UPDATED);
+					this.removeStatus(status);
 				}
 			}
 			this.nextStatusCull = cur_time + CHARACTER_VARS.STATUS_CULL_RATE;
@@ -193,10 +192,13 @@ class Character extends AnimatedSprite {
 	}
 
 	addStatus(status, duration, amount, damageType) {
-		let s = this.statuses[status]
+		let s = this.statuses[status],
+			updateOthers = false;
 		if(!s.v) {
 			console.log(this.id + " IS NOW AFFLICTED BY: " + status);
+			updateOthers = true;
 		}
+
 		s.v = true;
 		s.d = new Date().getTime()+duration;
 		if(status === "dot") {
@@ -205,12 +207,14 @@ class Character extends AnimatedSprite {
 			s.damageType = damageType || DAMAGE_TYPES["PURE"];
 		}
 		s.amount = amount;
-		this.dispatchEvent(EVENTS.STATUS_UPDATED);
+
+		if (updateOthers) {
+			this.dispatchEvent(EVENTS.STATUS_UPDATED);
+		}
 	}
 
 	removeStatus(status) {
-		let s = this.statuses[status];
-		s.v = false;
+		status.v = false;
 		this.dispatchEvent(EVENTS.STATUS_UPDATED);
 	}
 
