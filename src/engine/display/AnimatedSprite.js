@@ -14,6 +14,7 @@ class Animation {
 		this.loadedCallback = loadedCallback;
 		this.reverse = this.setReverse(false);
 		this.finished = false;
+		this.finishedCallback = undefined;
 	}
 
 	loadImages(imageList) {
@@ -47,6 +48,9 @@ class Animation {
 		}
 
 		this.finished = (!this.loop && (this.currentFrame <= 0 || this.currentFrame >= (this.frames.length - 1)));
+		if (this.finished && this.finishedCallback !== undefined && typeof(this.finishedCallback) === "function") {
+			this.finishedCallback();
+		}
 	}
 
 	setFrame(frame) {
@@ -79,6 +83,10 @@ class Animation {
 
 	isFinished() {
 		return this.finished;
+	}
+
+	setFinishedCallback(fcn) {
+		this.finishedCallback = fcn;
 	}
 
 	isLoaded() {
@@ -151,7 +159,7 @@ class AnimatedSprite extends Sprite{
 		if(this.currentAnimation === property) {return;}
 
 		var animation = this.animations[property];
-		if(animation) {
+		if (animation) {
 			this.loaded = animation.isLoaded();
 			this.displayImage = animation.getFrameImage();
 			this.currentAnimation = property;

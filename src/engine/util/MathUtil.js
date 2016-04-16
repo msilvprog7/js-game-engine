@@ -187,6 +187,20 @@ class MathUtil {
 
 		return Math.abs(v1 - v2) < eps;
 	}
+
+	static range(limit) {
+		var output = [];
+
+		if (limit < 0) {
+			return output;
+		}
+
+		for (let i = 0; i < limit; i++) {
+			output.push(i);
+		}
+
+		return output;
+	}
 }
 
 var init_pi = function() {

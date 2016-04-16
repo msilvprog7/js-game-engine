@@ -27,6 +27,7 @@ class SoundManager{
 		if(this.sounds[id] === undefined) {console.error("Sound does not exist");}
 		this.currentSound = this.sounds[id];
 		this.currentSound.load();
+		options = options || {};
 		if(options.pauseMusic) {
 			let that = this;
 			that.pauseMusic();
