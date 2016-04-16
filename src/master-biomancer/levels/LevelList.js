@@ -3,7 +3,8 @@
 var LEVEL_LIST = [
 		LEVEL1,
 		LEVEL2,
-		LEVEL3
+		LEVEL3,
+		LEVEL4
 	],
 
 	addToLevel = function (level, obj, options) { level.addEntityToLevel(obj, options); },
@@ -83,6 +84,18 @@ var LEVEL_LIST = [
 			dimensions: EXIT_VARS.DIMENSIONS,
 			type: "Obstacles",
 			resource: "resources/images/biomancer/misc/exit.png"
+		},
+		"KeyScript": {
+			constructor: function () { return new KeyScript(); },
+			addToLevel: addToLevel,
+			generate: undefined,
+			generateParams: -1,
+			generateParamsEditorOption: undefined,
+			options: KEY_SCRIPT_VARS.ADD_DEFAULTS,
+			pivot: KEY_SCRIPT_VARS.IDLE_PIVOT,
+			dimensions: KEY_SCRIPT_VARS.DIMENSIONS,
+			type: "Scripts",
+			resource: "resources/images/biomancer/misc/key.png"
 		},
 
 		/* Obstacles */
