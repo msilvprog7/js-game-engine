@@ -4,12 +4,12 @@
 var WOLF_VARS = {
 	count: 0,
 	HEALTH: 40,
-	LAUNCH_IDLE: "biomancer/animals/wolf/wolf-launch.png",
-	LAUNCH_IDLE_PIVOT: {x: 6, y: 6},
+	LAUNCH_IDLE: "biomancer/animals/wolf/wolf_launch_0.png",
+	LAUNCH_IDLE_PIVOT: {x: 6, y: 15},
 	LAUNCH_SPEED: 8,
 	LAUNCH_DURATION: 750,
-	SPAWN_IDLE: "biomancer/animals/wolf/wolf-spawn.png",
-	SPAWN_IDLE_PIVOT: {x: 25, y: 25},
+	SPAWN_IDLE: "biomancer/animals/wolf/wolf_idle_0.png",
+	SPAWN_IDLE_PIVOT: {x: 12, y: 29},
 	DECAY_AMOUNT: 1,
 	TURN_PROBABILITY: 0.1,
 	WALK_PROBABILITY: 0.75,
@@ -27,6 +27,35 @@ var WOLF_VARS = {
 		[DAMAGE_TYPES["LASER"]]: 1.25,
 		[DAMAGE_TYPES["PHYSICAL"]]: 0.7
 	},
+	IMAGE_PATH: "biomancer/animals/wolf/",
+	ANIMATIONS: {
+		"walk": {
+			images: ["wolf_walk_0.png","wolf_walk_1.png","wolf_walk_2.png","wolf_walk_3.png"],
+			loop: true,
+			speed: 30
+		},
+		"run": {
+			images: ["wolf_run_0.png","wolf_run_1.png","wolf_run_2.png","wolf_run_3.png"],
+			loop: true,
+			speed: 15
+		},
+		"attack": {
+			images: ["wolf_attack_0.png","wolf_attack_1.png","wolf_attack_2.png","wolf_attack_3.png", "wolf_attack_4.png"],
+			loop: false,
+			speed: 15
+		},
+		"death": {
+			images: ["wolf_death_0.png", "wolf_death_1.png", "wolf_death_2.png"],
+			loop: false,
+			speed: 50
+		}
+	},
+	ATTACK_SOUNDS: [
+		"biomancer/animals/wolf/wolf_attack_0.mp3",
+		"biomancer/animals/wolf/wolf_attack_1.mp3",
+		"biomancer/animals/wolf/wolf_attack_2.mp3",
+		"biomancer/animals/wolf/wolf_attack_3.mp3"
+	],
 	PRIORTY: 2
 };
 
@@ -47,6 +76,23 @@ class Wolf extends Animal {
 			WOLF_VARS.PRIORTY, WOLF_VARS.RESISTANCES);
 
 		WOLF_VARS.count++;
+		for(var animation in WOLF_VARS.ANIMATIONS) {
+			let currentAnimation = WOLF_VARS.ANIMATIONS[animation];
+			let animationInfo = {
+				images: currentAnimation.images.map(image => WOLF_VARS.IMAGE_PATH+image),
+				loop: currentAnimation.loop,
+				speed: currentAnimation.speed
+			}
+			this.addAnimation(animation, animationInfo);
+		}
+
+		var that = this;
+		WOLF_VARS.ATTACK_SOUNDS.forEach(function(soundfile, index) {
+			if (!that.SM.hasSound("wolf-attack-"+index)) {
+				that.SM.loadSound("wolf-attack-"+index, soundfile);
+			}
+		})
+		
 	}
 
 	move() {
@@ -69,6 +115,11 @@ class Wolf extends Animal {
 				this.vY = 0;
 				super.move();
 				return; 
+			} else {
+				let currentAnimation = this.getCurrentAnimation();
+				if(currentAnimation.id !== "attack" || currentAnimation.finished) {
+					this.setCurrentAnimation("run");
+				}
 			}
 
 			this.vX = xMove*WOLF_VARS.RUN_SPEED;
@@ -100,6 +151,11 @@ class Wolf extends Animal {
 	randomMove() {
 		var forceTurn = false;
 
+		let currentAnimation = this.getCurrentAnimation();
+		if(currentAnimation.id !== "attack" || currentAnimation.finished) {
+			this.setCurrentAnimation("walk");
+		}
+
 		// Try to move forward
 		if (Math.random() < WOLF_VARS.WALK_PROBABILITY) {
 			var movement = this.movementForward(WOLF_VARS.WALK_SPEED);
@@ -118,9 +174,19 @@ class Wolf extends Animal {
 		}
 	}
 
+	die() {
+		this.setCurrentAnimation("death");
+		this.getCurrentAnimation().setFinishedCallback(function() {
+			this.alive = false;
+			this.dispatchEvent(EVENTS.DIED);
+		}, this);
+	}
+
 	attack() {
 		super.attack();
-		
+		this.setCurrentAnimation("attack");
+		let sound = MathUtil.randomInt(0, WOLF_VARS.ATTACK_SOUNDS.length-1);
+		this.SM.playSound("wolf-attack-"+sound);
 		//ATTACK CLOSEST FRIENDLY TARGET		
  		this.enemyFocus.obj.removeHealth(WOLF_VARS.ATTACK_DAMAGE, WOLF_VARS.DAMAGE_TYPE);
 	}

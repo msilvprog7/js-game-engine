@@ -28,7 +28,6 @@ var TURTLE_VARS = {
 		[DAMAGE_TYPES["PHYSICAL"]]: 1.25
 	},
 	EXPLOSION_IMAGES: MathUtil.range(16).map((num) => "biomancer/misc/explosions/explosion-" + num + ".png"),
-	explosionSoundLoaded: false,
 	EXPLOSION_SOUND_ID: "explosion",
 	EXPLOSION_SOUND_FILENAME: "biomancer/misc/explosion.mp3"
 };
@@ -51,23 +50,18 @@ class Turtle extends Animal {
 
 		TURTLE_VARS.count++;
 
-		// Sound Manager
-		this.SM = new SoundManager();
-
 		// Scared animation
 		this.addAnimation("scared", {images: [TURTLE_VARS.SCARED_IMG], loop: true});
 
 		// Explosion animation and behavior (to kill self)
-		var that = this;
 		this.addAnimation("explosion", {images: TURTLE_VARS.EXPLOSION_IMAGES, loop: false});
 		this.animations["explosion"].setFinishedCallback(function () {
-			that.killSelf();
-		});
+			this.killSelf();
+		}, this);
 
 		// Explosion sound
-		if (!TURTLE_VARS.explosionSoundLoaded) {
+		if (!this.SM.hasSound(TURTLE_VARS.EXPLOSION_SOUND_ID)) {
 			this.SM.loadSound(TURTLE_VARS.EXPLOSION_SOUND_ID, TURTLE_VARS.EXPLOSION_SOUND_FILENAME);
-			TURTLE_VARS.explosionSoundLoaded = true;
 		}
 
 

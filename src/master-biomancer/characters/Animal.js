@@ -60,19 +60,19 @@ class Animal extends Friendly {
 			this.launch();
 		}
 
-		// Move
-		if (this.spawned && this.health > 0) {
+		if(this.health > 0 && this.spawned) {
+			//Move
 			this.move();
+			// Attack
+			if (this.canAttack()) {
+				this.attack();
+			}
+			// Decay
+			if (currentTime >= this.nextDecay) {
+				this.decay();
+			}
 		}
-
-		if (this.spawned && this.canAttack()) {
-			this.attack();
-		}
-
-		// Decay
-		if (this.spawned && this.health > 0 && currentTime >= this.nextDecay) {
-			this.decay();
-		}
+		
 	}
 
 	draw(g) {

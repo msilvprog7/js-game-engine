@@ -56,6 +56,7 @@ class Character extends AnimatedSprite {
 		// Set health
 		this.maxHealth = health;
 		this.health = health;
+		this.alive = true;
 
 		// Statuses
 		this.statuses = CHARACTER_VARS.GEN_STATUS_LIST();
@@ -67,6 +68,8 @@ class Character extends AnimatedSprite {
 		this.hasPhysics = true;
 		this.friction = 0.3;
 		this.initCollisions();
+
+		this.SM = new SoundManager();
 
 		// Set max speed
 		this.maxSpeed = maxSpeed;
@@ -186,7 +189,6 @@ class Character extends AnimatedSprite {
 		if (this.health > 0) {
 			this.dispatchEvent(EVENTS.HEALTH_UPDATED, {health: this.health});
 		} else {
-			this.dispatchEvent(EVENTS.DIED);
 			this.die();
 		}
 	}
@@ -223,16 +225,17 @@ class Character extends AnimatedSprite {
 	}
 
 	isAlive() {
-		return this.health > 0;
+		return this.alive;
 	}
 
 	die() {
 		// Override in subclasses
+		this.alive = false;
+		this.dispatchEvent(EVENTS.DIED);
 	}
 
 	killSelf() {
 		this.health = 0;
-		this.dispatchEvent(EVENTS.DIED);
 		this.die();
 	}
 

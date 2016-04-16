@@ -70,4 +70,8 @@ class SoundManager{
 		}
 	}
 
+	hasSound(soundName) {
+		return this.sounds[soundName] !== undefined;
+	}
+
 }
