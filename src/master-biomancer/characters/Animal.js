@@ -165,7 +165,7 @@ class Animal extends Friendly {
 		//Returns a list of all friendly entities (Biomancer and animals)
 		//Sorted by distance from the enemy
 		let level = this.getLevel(),
-			allEntities = level.getEnemyEntities(),
+			allEntities = level.getEnemyEntities().slice(),
 			inRange = [];
 		if(friendlyIncludeTypes && friendlyIncludeTypes.length > 0) {
 			friendlyIncludeTypes.forEach(friendlyIncludeType => {
