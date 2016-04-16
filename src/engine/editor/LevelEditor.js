@@ -211,8 +211,8 @@ class LevelEditor extends DisplayObject {
 		this.canvas.onmouseout = (e) => { e.preventDefault(); e.stopPropagation(); that.mouseOut(e); };
 		this.canvas.onmousewheel = (e) => { e.preventDefault(); e.stopPropagation(); that.scroll(e); };
 		window.addEventListener("keydown", function(e) {
-			e.preventDefault();
-			e.stopPropagation();
+			// e.preventDefault();
+			// e.stopPropagation();
 
 			if (that.keysPressed.indexOf(e.keyCode) === -1) {
 				that.keysPressed.push(e.keyCode);

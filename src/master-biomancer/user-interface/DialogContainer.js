@@ -1,25 +1,27 @@
 "use strict";
 
 var DIALOG_VARS = {
-	WIDTH: 350,
+	WIDTH: 330,
 	HEIGHT: 100,
-	DIALOG_FILE: "biomancer/ui/dialog-box.png",	
-	DEFAULT_FONT_SIZE: 60, //In pixels
+	DIALOG_FILE: "biomancer/ui/dialog-box.png",
+	CLOSE_ICON: "biomancer/ui/q-key.png",
+	CLOSE_ICON_POSITION: {x: 450, y: 110},
+	DEFAULT_FONT_SIZE: 28, //In pixels
 	DEFAULT_Y_SPACING: 2,
-	X_TEXT_START: 35,
-	Y_TEXT_START: 30,
+	X_TEXT_START: 33,
+	Y_TEXT_START: 33,
 	X_POSITION: 250,
-	Y_POSITION: 563/2+75,
+	Y_POSITION: 357,
 	PERIOD_MULTIPLIER: 6,
 	FONT_INCREMENT: 2,
 	FONT_STYLE: "Arial",
 	BOX_ALPHA: 0.7,
 	TEXT_ALPHA: 1.0,
-	FINISHED_TIMEOUT: 1000
+	FINISHED_TIMEOUT: 10000
 };
 
 
-class DialogContainer extends DisplayObject {
+class DialogContainer extends DisplayObjectContainer {
 	constructor(message, options, ctx) {
 		super('dialog-message', DIALOG_VARS.DIALOG_FILE);
 		if(!message) { message = "Please put a message."}
@@ -37,6 +39,8 @@ class DialogContainer extends DisplayObject {
 
 		this.chunkedText = this.chunkText(message, ctx);
 		this.chunkedTextLineLength = this.chunkedText.map(e => e.split(" ").length);
+		this.closeIcon = new Sprite("dialog-close-key", DIALOG_VARS.CLOSE_ICON);
+		this.closeIcon.setPosition(DIALOG_VARS.CLOSE_ICON_POSITION);
 
 		if(this.options.wordTime !== undefined && this.options.wordTime > 0) {
 			this.nextWordTime = new Date().getTime() + this.options.wordTime;
@@ -57,7 +61,11 @@ class DialogContainer extends DisplayObject {
 				for(let i=0; i < currentLines.length; i++) {
 					ctx.fillText(currentLines[i], DIALOG_VARS.X_TEXT_START, DIALOG_VARS.Y_TEXT_START+lineHeight*i);
 				}
+				this.children.forEach(function (child) {
+					child.draw(ctx);
+				});
 				this.setAlpha(DIALOG_VARS.BOX_ALPHA);
+
 			}
 			this.reverseTransformations(ctx);
 		}
@@ -87,9 +95,10 @@ class DialogContainer extends DisplayObject {
 			this.wordToAdd++;
 			this.currentWordsMapped = this.currentWords.map(e => e.join(' '));
 		}
-		if(this.wordToAdd >= this.wordsLength) { 
+		if(this.wordToAdd >= this.wordsLength && !this.finished) {
 			this.finished = true; 
 			this.finishedTimeout = cur_time+DIALOG_VARS.FINISHED_TIMEOUT;
+			this.addChild(this.closeIcon);
 		}
 		return this.currentWordsMapped;
 	}

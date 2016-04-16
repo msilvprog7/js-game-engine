@@ -66,12 +66,15 @@ class Game extends DisplayObjectContainer{
 		// Set current level to first
 		if (this.levelsList.length === 1) {
 			this.currentLevelIndex = 0;
+		} else if (this.levelsList.length === 4) {
+			this.currentLevelIndex = 3;
 		}
 	}
 
 	reloadLevel() {
 		this.removeChildren();
 		this.addChild(this.createCurrentLevel());
+		// new UserInterface().reloadDefaults();
 		this.addChild(new UserInterface());
 	}
 

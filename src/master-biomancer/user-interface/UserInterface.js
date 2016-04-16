@@ -17,6 +17,7 @@ class UserInterface extends DisplayObjectContainer {
 			this.animalContainer = new UIAnimalDisplay();
 			this.addChild(this.animalContainer);
 			this.dialogShown = false;
+			this.keysToGet = 0;
 			this.dialog = undefined;
 			this.dialogQueue = [];
 		}
@@ -48,6 +49,17 @@ class UserInterface extends DisplayObjectContainer {
 		} else {
 			this.dialogQueue.push({message: message, options: options});
 		}
+	}
+
+	reloadDefaults() {
+		this.alpha = USER_INTERFACE_VARS.ALPHA;
+		this.canvasCTX = document.getElementById('game').getContext('2d');			
+		this.animalContainer = new UIAnimalDisplay();
+		this.addChild(this.animalContainer);
+		this.dialogShown = false;
+		this.keysToGet = 0;
+		this.dialog = undefined;
+		this.dialogQueue = [];
 	}
 }
 
