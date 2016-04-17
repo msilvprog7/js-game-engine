@@ -31,6 +31,7 @@ class HealthBar extends DisplayObjectContainer {
 
 		// initialize
 		this.backgroundBar = undefined;
+		this.originalBackgroundBarDimensions = undefined;
 		this.healthBar = undefined;
 		this.statusIcons = [];
 		this.healthColor = HEALTHBAR_VARS.HEALTHBAR_COLOR[0].COLOR;
@@ -50,7 +51,8 @@ class HealthBar extends DisplayObjectContainer {
 		this.setPosition(this.entity.position);
 
 		// Add background bar
-		this.backgroundBar = new Rectangle(this.getBackgroundBarPosition(), this.getBackgroundBarDimensions(), HEALTHBAR_VARS.BACKGROUNDBAR_COLOR);
+		this.originalBackgroundBarDimensions = this.getBackgroundBarDimensions();
+		this.backgroundBar = new Rectangle(this.getBackgroundBarPosition(), this.originalBackgroundBarDimensions, HEALTHBAR_VARS.BACKGROUNDBAR_COLOR);
 		this.addChild(this.backgroundBar);
 
 		// Add inner health bar
@@ -84,12 +86,11 @@ class HealthBar extends DisplayObjectContainer {
 	}
 
 	getHealthBarDimensions() {
-		var backgroundBarDim = this.getBackgroundBarDimensions(),
-			fullWidth = backgroundBarDim.width - 2 * HEALTHBAR_VARS.HEALTHBAR_PADDING.x;
+		var fullWidth = this.originalBackgroundBarDimensions.width - 2 * HEALTHBAR_VARS.HEALTHBAR_PADDING.x;
 
 		return {
 			width: this.entity.getHealthRatio() * fullWidth,
-			height: backgroundBarDim.height - 2 * HEALTHBAR_VARS.HEALTHBAR_PADDING.y
+			height: this.originalBackgroundBarDimensions.height - 2 * HEALTHBAR_VARS.HEALTHBAR_PADDING.y
 		};
 	}
 

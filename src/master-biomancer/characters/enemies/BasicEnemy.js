@@ -22,7 +22,14 @@ var BASIC_ENEMY_VARS = {
 		if(collider instanceof Friendly) {
 			collider.removeHealth(dmg, dmgType);
 		}
-	}
+	},
+	ATTACK_SOUNDS: [
+		{id: "gun-shot-0", sound: "biomancer/weapons/basic-enemy/gun-shot-0.mp3"},
+		{id: "gun-shot-1", sound: "biomancer/weapons/basic-enemy/gun-shot-1.mp3"},
+		{id: "gun-shot-2", sound: "biomancer/weapons/basic-enemy/gun-shot-2.mp3"},
+		{id: "gun-shot-3", sound: "biomancer/weapons/basic-enemy/gun-shot-3.mp3"}
+	],
+	ATTACK_SOUNDS_LIST: ["gun-shot-0", "gun-shot-1", "gun-shot-2", "gun-shot-3"]
 };
 
 class BasicEnemy extends Enemy {
@@ -34,6 +41,17 @@ class BasicEnemy extends Enemy {
 			BASIC_ENEMY_VARS.MAX_SPEED, BASIC_ENEMY_VARS.RESISTANCES);
 
 		BASIC_ENEMY_VARS.count++;
+
+		// Sound manager
+		this.SM = new SoundManager();
+
+		// Load sounds
+		var that = this;
+		BASIC_ENEMY_VARS.ATTACK_SOUNDS.forEach(function (soundObj) {
+			if (!that.SM.hasSound(soundObj.id)) {
+				that.SM.loadSound(soundObj.id, soundObj.sound);
+			}
+		});
 	}
 
 	move() {
@@ -78,5 +96,8 @@ class BasicEnemy extends Enemy {
 		}
  		new Bullet(this, BASIC_ENEMY_VARS.BULLET_IMG, BASIC_ENEMY_VARS.BULLET_SPEED, BASIC_ENEMY_VARS.ATTACK_DMG, 
  			BASIC_ENEMY_VARS.DAMAGE_TYPE, direction, this.getLevel(), BASIC_ENEMY_VARS.BULLET_FUNCTION);
+
+ 		// Play sound
+ 		this.SM.playSound(MathUtil.eitherFromList(BASIC_ENEMY_VARS.ATTACK_SOUNDS_LIST));
 	}
 }

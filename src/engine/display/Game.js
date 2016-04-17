@@ -66,7 +66,7 @@ class Game extends DisplayObjectContainer{
 		// Set current level to first
 		if (this.levelsList.length === 1) {
 			this.currentLevelIndex = 0;
-		} 
+		}
 	}
 
 	reloadLevel() {

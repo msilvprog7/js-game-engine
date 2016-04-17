@@ -167,6 +167,14 @@ class MathUtil {
 		return arguments[MathUtil.randomInt(0, arguments.length - 1)];
 	}
 
+	static eitherFromList(list) {
+		if (list.length === 0) {
+			return undefined;
+		}
+
+		return list[MathUtil.randomInt(0, list.length - 1)];
+	}
+
 	static euclidianDist(pos1, pos2) {
 		return Math.sqrt((pos1.x - pos2.x) * (pos1.x - pos2.x) + (pos1.y - pos2.y) * (pos1.y - pos2.y));
 	}
