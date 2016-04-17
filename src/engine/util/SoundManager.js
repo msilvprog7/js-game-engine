@@ -38,6 +38,13 @@ class SoundManager{
 				}); 
 			}			
 		}
+		if(options.volume && typeof options.volume === "number") {
+			if(options.volume >= 0.0 && options.volume <= 1.0) {
+				this.currentSound.volume = options.volume;
+			} else {
+				console.error("Volume option must be between 0 and 1");
+			}
+		}
 		this.currentSound.play();
 	}
 

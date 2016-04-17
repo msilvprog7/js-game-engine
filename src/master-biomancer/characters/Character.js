@@ -240,4 +240,6 @@ class Character extends AnimatedSprite {
 	}
 
 	
+
+	
 }

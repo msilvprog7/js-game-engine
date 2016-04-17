@@ -56,6 +56,8 @@ var WOLF_VARS = {
 		"biomancer/animals/wolf/wolf_attack_2.mp3",
 		"biomancer/animals/wolf/wolf_attack_3.mp3"
 	],
+	ATTACK_SOUNDS_VOLUME: 0.3,
+	MAX_VOLUME_RANGE: 1500,
 	PRIORTY: 2
 };
 
@@ -186,7 +188,10 @@ class Wolf extends Animal {
 		super.attack();
 		this.setCurrentAnimation("attack");
 		let sound = MathUtil.randomInt(0, WOLF_VARS.ATTACK_SOUNDS.length-1);
-		this.SM.playSound("wolf-attack-"+sound);
+		this.SM.playSound("wolf-attack-"+sound, {
+			volume: MathUtil.normalizeVolumeDistance(WOLF_VARS.ATTACK_SOUNDS_VOLUME, 
+				WOLF_VARS.MAX_VOLUME_RANGE, this.getNormalizedPivotPoint(), this.getLevel().focusChild.getNormalizedPivotPoint())
+		});
 		//ATTACK CLOSEST FRIENDLY TARGET		
  		this.enemyFocus.obj.removeHealth(WOLF_VARS.ATTACK_DAMAGE, WOLF_VARS.DAMAGE_TYPE);
 	}
