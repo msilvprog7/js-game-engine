@@ -129,7 +129,7 @@ class Spider extends Animal {
  		this.enemyFocus.obj.addStatus("attack-slow", 5000, 0.5);
 
  		// Play any attack sound
- 		this.SM.playSound(MathUtil.either(SPIDER_VARS.ATTACK_SOUNDS.map((soundObj) => soundObj.id)));
+ 		this.SM.playSound(MathUtil.eitherFromList(SPIDER_VARS.ATTACK_SOUNDS.map((soundObj) => soundObj.id)));
 	}
 	
 }

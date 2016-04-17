@@ -13,6 +13,7 @@ var KEY_SCRIPT_VARS = {
 		indexReferencePlacing: true, //True or undefined is before, false is after
 		monitorHealth: false //True only if monitor health from start
 	},
+	KEY_COLLECT_SOUND: {id: "key-collect-sound", sound: "biomancer/misc/key-jingle.mp3"}
 };
 
 
@@ -26,11 +27,22 @@ class KeyScript extends ScriptObject {
 		this.loadImage(KEY_SCRIPT_VARS.FILENAME);
 		this.setScript(this.keyPickup);
 		this.UserInterface.keysToGet++;
+
+		// Sound manager
+		this.SM = new SoundManager();
+
+		// Load sound
+		if (!this.SM.hasSound(KEY_SCRIPT_VARS.KEY_COLLECT_SOUND.id)) {
+			this.SM.loadSound(KEY_SCRIPT_VARS.KEY_COLLECT_SOUND.id, KEY_SCRIPT_VARS.KEY_COLLECT_SOUND.sound);
+		}
 	}
 
 	keyPickup() {		
 		this.activated = true;
 		this.UserInterface.keysToGet--;
+
+		// Play sound
+		this.SM.playSound(KEY_SCRIPT_VARS.KEY_COLLECT_SOUND.id);
 	}
 
 	/**
