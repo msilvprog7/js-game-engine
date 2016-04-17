@@ -21,6 +21,10 @@ var SPIDER_VARS = {
 	ATTACK_RATE: 3000,
 	ATTACK_RANGE: 500,
 	ATTACK_DAMAGE: 0,
+	ATTACK_SOUNDS: [
+		{id: "spider-attack-0", sound: "biomancer/animals/spider/spider-attack-0.mp3"},
+		{id: "spider-attack-1", sound: "biomancer/animals/spider/spider-attack-1.mp3"},
+	],
 	PRIORITY: FRIENDLY_VARS["PRIORITY_LOW"]
 };
 
@@ -40,6 +44,17 @@ class Spider extends Animal {
 			SPIDER_VARS.ATTACK_RATE, SPIDER_VARS.ATTACK_RANGE, SPIDER_VARS.MAX_SPEED, SPIDER_VARS.PRIORITY);
 
 		SPIDER_VARS.count++;
+
+		// Sound manager
+		this.SM = new SoundManager();
+
+		// Load attack sounds
+		var that = this;
+		SPIDER_VARS.ATTACK_SOUNDS.forEach(function (soundObj) {
+			if (!that.SM.hasSound(soundObj.id)) {
+				that.SM.loadSound(soundObj.id, soundObj.sound);
+			}
+		});
 	}
 
 	move() {
@@ -112,6 +127,9 @@ class Spider extends Animal {
 		//ATTACK CLOSEST FRIENDLY TARGET		
  		this.enemyFocus.obj.addStatus("move-slow", 5000, 0.0);
  		this.enemyFocus.obj.addStatus("attack-slow", 5000, 0.5);
+
+ 		// Play any attack sound
+ 		this.SM.playSound(MathUtil.either(SPIDER_VARS.ATTACK_SOUNDS.map((soundObj) => soundObj.id)));
 	}
 	
 }

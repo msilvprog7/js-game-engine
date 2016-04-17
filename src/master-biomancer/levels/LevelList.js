@@ -1,9 +1,9 @@
 "use strict";
 
 var LEVEL_LIST = [
-		LEVEL1,
-		LEVEL2,
 		LEVEL3,
+		LEVEL2,
+		LEVEL1,
 		LEVEL4
 	],
 

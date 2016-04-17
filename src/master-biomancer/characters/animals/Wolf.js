@@ -56,6 +56,8 @@ var WOLF_VARS = {
 		"biomancer/animals/wolf/wolf_attack_2.mp3",
 		"biomancer/animals/wolf/wolf_attack_3.mp3"
 	],
+	DEATH_SOUND: "biomancer/animals/wolf/wolf-whimper.mp3",
+	DEATH_SOUND_ID: "wolf-death-whimper",
 	PRIORTY: 2
 };
 
@@ -91,8 +93,12 @@ class Wolf extends Animal {
 			if (!that.SM.hasSound("wolf-attack-"+index)) {
 				that.SM.loadSound("wolf-attack-"+index, soundfile);
 			}
-		})
-		
+		});
+
+		// Death sound
+		if (!this.SM.hasSound(WOLF_VARS.DEATH_SOUND_ID)) {
+			this.SM.loadSound(WOLF_VARS.DEATH_SOUND_ID, WOLF_VARS.DEATH_SOUND);
+		}
 	}
 
 	move() {
@@ -180,6 +186,7 @@ class Wolf extends Animal {
 			this.alive = false;
 			this.dispatchEvent(EVENTS.DIED);
 		}, this);
+		this.SM.playSound(WOLF_VARS.DEATH_SOUND_ID);
 	}
 
 	attack() {
