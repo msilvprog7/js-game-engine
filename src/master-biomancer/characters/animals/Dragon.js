@@ -135,11 +135,11 @@ class Dragon extends Animal {
 
 			this.orient(xMove, yMove);
 		} else {
-			let enemies = this.getInSightRange(["Turtle"]);
+			let enemies = this.getInSightRange(["Wolf"]);
 			if(enemies.length > 0) {
-				let turtleFocus  = enemies.find(enemy => enemy instanceof Turtle);
-				if(turtleFocus) {
-					this.enemyFocus = turtleFocus; 
+				let wolfFocus  = enemies.find(enemy => enemy instanceof Wolf);
+				if(wolfFocus) {
+					this.enemyFocus = wolfFocus; 
 				} else {
 					this.enemyFocus = enemies[0];
 				}
