@@ -16,6 +16,7 @@ var DIALOGUE_SCRIPT_VARS = {
 		indexReferencePlacing: true, //True or undefined is before, false is after
 		monitorHealth: false //True only if monitor health from start
 	},
+	NOTIFICATION_SOUND: {id: "notification-sound", sound: "biomancer/misc/notification.mp3"}
 };
 
 
@@ -28,6 +29,14 @@ class DialogueScript extends ScriptObject {
 		// Set text
 		this.text = this.filter(text);
 		this.setScript(this.show);
+
+		// Sound manager
+		this.SM = new SoundManager();
+
+		// Add notification sound
+		if (!this.SM.hasSound(DIALOGUE_SCRIPT_VARS.NOTIFICATION_SOUND.id)) {
+			this.SM.loadSound(DIALOGUE_SCRIPT_VARS.NOTIFICATION_SOUND.id, DIALOGUE_SCRIPT_VARS.NOTIFICATION_SOUND.sound)
+		}
 	}
 
 	/** 
@@ -40,6 +49,9 @@ class DialogueScript extends ScriptObject {
 	show() {
 		this.UserInterface.showDialog(this.text, DIALOGUE_SCRIPT_VARS.OPTIONS);
 		this.activated = true;
+
+		// Play sound
+		this.SM.playSound(DIALOGUE_SCRIPT_VARS.NOTIFICATION_SOUND.id);
 	}
 
 	/**
