@@ -193,6 +193,28 @@ class Character extends AnimatedSprite {
 		}
 	}
 
+	repeatedlyAddHealth(amount, remaining, delay) {
+		this.health = Math.min(this.health + amount, this.maxHealth);
+		this.dispatchEvent(EVENTS.HEALTH_UPDATED, {health: this.health});
+
+		// Continue
+		if (remaining > 0 && this.health < this.maxHealth) {
+			var that = this;
+			setTimeout(function () {
+				that.repeatedlyAddHealth(amount, remaining - 1, delay);
+			}, delay);
+		}
+	}
+
+	addHealth(amount, duration) {
+		if (duration === undefined) {
+			this.health = Math.min(this.health + amount, this.maxHealth);
+			this.dispatchEvent(EVENTS.HEALTH_UPDATED, {health: this.health});
+		} else if (amount > 0) {
+			this.repeatedlyAddHealth(1, amount, duration / amount);
+		}
+	}
+
 	addStatus(status, duration, amount, damageType) {
 		let s = this.statuses[status],
 			updateOthers = false;

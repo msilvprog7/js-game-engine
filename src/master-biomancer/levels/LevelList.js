@@ -98,6 +98,20 @@ var LEVEL_LIST = [
 			resource: "resources/images/biomancer/misc/key.png"
 		},
 
+		/* Potions */
+		"HealthPotion": {
+			constructor: function () { return new HealthPotion(); },
+			addToLevel: addToLevel,
+			generate: undefined,
+			generateParams: -1,
+			generateParamsEditorOption: undefined,
+			options: POTION_VARS.ADD_DEFAULTS,
+			pivot: POTION_VARS.IDLE_PIVOT,
+			dimensions: POTION_VARS.DIMENSIONS,
+			type: "Potions",
+			resource: "resources/images/biomancer/misc/potions/health-potion.png"
+		},
+
 		/* Obstacles */
 		"Rock": {
 			constructor: function () { return new Rock(); },
