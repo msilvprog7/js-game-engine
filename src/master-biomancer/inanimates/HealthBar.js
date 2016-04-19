@@ -16,7 +16,8 @@ var HEALTHBAR_VARS = {
 		"burn": "biomancer/status/burning-icon-large.png",
 		"attack-slow": "biomancer/status/attack-slow-icon-large.png",
 	},
-	STATUS_POSITIONING: {x: -20, y: -20}
+	STATUS_POSITIONING: {x: -10, y: -30},
+	STATUS_X_PADDING: 20
 };
 
 
@@ -30,7 +31,9 @@ class HealthBar extends DisplayObjectContainer {
 
 		// initialize
 		this.backgroundBar = undefined;
+		this.originalBackgroundBarDimensions = undefined;
 		this.healthBar = undefined;
+		this.statusIcons = [];
 		this.healthColor = HEALTHBAR_VARS.HEALTHBAR_COLOR[0].COLOR;
 		this.create();
 
@@ -44,19 +47,25 @@ class HealthBar extends DisplayObjectContainer {
 	create() {
 		this.removeChildren();
 
+		// Set position
+		this.setPosition(this.entity.position);
+
 		// Add background bar
-		this.backgroundBar = new Rectangle(this.getBackgroundBarPosition(), this.getBackgroundBarDimensions(), HEALTHBAR_VARS.BACKGROUNDBAR_COLOR);
+		this.originalBackgroundBarDimensions = this.getBackgroundBarDimensions();
+		this.backgroundBar = new Rectangle(this.getBackgroundBarPosition(), this.originalBackgroundBarDimensions, HEALTHBAR_VARS.BACKGROUNDBAR_COLOR);
 		this.addChild(this.backgroundBar);
 
 		// Add inner health bar
 		this.healthBar = new Rectangle(this.getHealthBarPosition(), this.getHealthBarDimensions(), this.healthColor);
 		this.addChild(this.healthBar);
+
+		this.statusIcons = [];
 	}
 
 	getBackgroundBarPosition() {
 		return {
-			x: this.entity.position.x + HEALTHBAR_VARS.OFFSET.x,
-			y: this.entity.position.y + HEALTHBAR_VARS.OFFSET.y
+			x: HEALTHBAR_VARS.OFFSET.x,
+			y: HEALTHBAR_VARS.OFFSET.y
 		};
 	}
 
@@ -77,12 +86,18 @@ class HealthBar extends DisplayObjectContainer {
 	}
 
 	getHealthBarDimensions() {
-		var backgroundBarDim = this.getBackgroundBarDimensions(),
-			fullWidth = backgroundBarDim.width - 2 * HEALTHBAR_VARS.HEALTHBAR_PADDING.x;
+		var fullWidth = this.originalBackgroundBarDimensions.width - 2 * HEALTHBAR_VARS.HEALTHBAR_PADDING.x;
 
 		return {
 			width: this.entity.getHealthRatio() * fullWidth,
-			height: backgroundBarDim.height - 2 * HEALTHBAR_VARS.HEALTHBAR_PADDING.y
+			height: this.originalBackgroundBarDimensions.height - 2 * HEALTHBAR_VARS.HEALTHBAR_PADDING.y
+		};
+	}
+
+	getStatusPosition(index) {
+		return {
+			x: HEALTHBAR_VARS.STATUS_POSITIONING.x + HEALTHBAR_VARS.STATUS_X_PADDING * index,
+			y: HEALTHBAR_VARS.STATUS_POSITIONING.y
 		};
 	}
 
@@ -110,22 +125,43 @@ class HealthBar extends DisplayObjectContainer {
 	}
 
 	updatePosition(data) {
+		this.setPosition(this.entity.position);
 		// Background bar
-		this.backgroundBar.setPosition(this.getBackgroundBarPosition());
-		this.backgroundBar.setDimensions(this.getBackgroundBarDimensions());
+		// this.backgroundBar.setPosition(this.getBackgroundBarPosition());
+		// this.backgroundBar.setDimensions(this.getBackgroundBarDimensions());
 
 		// Health bar
-		this.healthBar.setPosition(this.getHealthBarPosition());
-		this.healthBar.setDimensions(this.getHealthBarDimensions());
+		// this.healthBar.setPosition(this.getHealthBarPosition());
+		// this.healthBar.setDimensions(this.getHealthBarDimensions());
+	}
+
+	addStatusIcon(name, index, image) {
+		var icon = new Sprite(this.id + "-status-" + name, image);
+		icon.setPosition(this.getStatusPosition(index));
+		this.statusIcons.push(icon);
+		this.addChild(icon);
+	}
+
+	removeAllStatusIcons() {
+		var that = this;
+		this.statusIcons.forEach((i) => that.removeChild(i));
+		this.statusIcons = [];
 	}
 
 	updateStatus(data) {
-		var i = 0;
-		for(let s in this.entity.statuses) {
-			let status = this.entity.statuses[s]
+		var statusIndex = 0,
+			image = "";
+
+		this.removeAllStatusIcons();
+
+		// Get status names
+		for(let statusName in this.entity.statuses) {
+			// Obtain status
+			let status = this.entity.statuses[statusName]
+			// If status valid on character
 			if(status.v) {
-				let image = ""
-				if(s === "dot") {
+				// Image based on status type
+				if(statusName === "dot") {
 					switch(status.damageType) {
 						case DAMAGE_TYPES["POISON"]:
 							image = HEALTHBAR_VARS.STATUS_ICONS["poison"]
@@ -135,16 +171,12 @@ class HealthBar extends DisplayObjectContainer {
 							break;
 					}
 				} else {
-					image = HEALTHBAR_VARS.STATUS_ICONS[s];
+					image = HEALTHBAR_VARS.STATUS_ICONS[statusName];
 				}
-				if(image !== "") {
-					let child = new Sprite(this.id +"-status-" + i, image);
-					child.setPosition({x: HEALTHBAR_VARS.STATUS_POSITIONING.x + 20*i, y: HEALTHBAR_VARS.STATUS_POSITIONING.y});
-					this.addChild(child);
-					i++;
-				}
+
+				this.addStatusIcon(statusName, statusIndex, image);
+				statusIndex++;
 			}
-			
 		}
 	}
 

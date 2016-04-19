@@ -6,14 +6,17 @@
  * */
 
 class Animation {
-	constructor(imageList, loop, loadedCallback) {
+	constructor(id, animationInfo, loadedCallback, finishedCallback) {
+		this.id = id;
 		this.loaded = false;
 		this.frames = [];
-		this.loadImages(imageList);
-		this.loop = loop;
+		this.loadImages(animationInfo.images);
+		this.loop = animationInfo.loop || false;
+		this.speed = animationInfo.speed;
 		this.loadedCallback = loadedCallback;
 		this.reverse = this.setReverse(false);
 		this.finished = false;
+		this.finishedCallback = finishedCallback;
 	}
 
 	loadImages(imageList) {
@@ -47,6 +50,10 @@ class Animation {
 		}
 
 		this.finished = (!this.loop && (this.currentFrame <= 0 || this.currentFrame >= (this.frames.length - 1)));
+		if (this.finished && this.finishedCallback !== undefined && typeof(this.finishedCallback.fcn) === "function") {
+			let context = this.finishedCallback.ctx;
+			this.finishedCallback.fcn.apply(context);
+		}
 	}
 
 	setFrame(frame) {
@@ -81,6 +88,13 @@ class Animation {
 		return this.finished;
 	}
 
+	setFinishedCallback(fcn, context) {
+		this.finishedCallback = {
+			fcn: fcn,
+			ctx: context
+		};
+	}
+
 	isLoaded() {
 		return this.loaded;
 	}
@@ -99,7 +113,7 @@ class AnimatedSprite extends Sprite{
 		super(id, undefined);
 		var that = this;
 		this.animations = {
-			'idle': new Animation([filename], true, function () {
+			'idle': new Animation('idle', {images: [filename], loop: true}, function () {
 				that.setLoaded(true);
 				that.hitbox.setHitboxFromImage(that.animations["idle"].frames[0]);
 			})
@@ -116,10 +130,12 @@ class AnimatedSprite extends Sprite{
 	update(pressedKeys){
 		super.update(pressedKeys);
 		if(this.paused) { return; }
-		if(this.currentFrameTick >= this.speed) {
+		let currentAnimation = this.getCurrentAnimation(),
+			speed = currentAnimation.speed || this.speed;
+		if(this.currentFrameTick >= speed) {
 			this.currentFrameTick = 0;
 			this.nextAnimationFrame();
-			this.displayImage = this.getCurrentAnimation().getFrameImage();
+			this.displayImage = currentAnimation.getFrameImage();
 		}
 		this.currentFrameTick++;
 	}
@@ -132,13 +148,16 @@ class AnimatedSprite extends Sprite{
 		super.draw(g);
 	}
 
-	addAnimation(property, animationInfo) {
+	addAnimation(property, animationInfo, imagePath) {
 		if (animationInfo.images.length <= 0) {
 			throw "You should add images to your animation... smh";
 			return;
 		}
 
-		this.animations[property] = new Animation(animationInfo.images, animationInfo.loop, x => this.loaded=true);
+		if(imagePath !== undefined && typeof imagePath === "string") {
+			animationInfo.images = animationInfo.images.map(image => imagePath+image);
+		}
+		this.animations[property] = new Animation(property, animationInfo, x => this.loaded=true);
 	}
 
 	removeAnimation(property) {
@@ -151,7 +170,7 @@ class AnimatedSprite extends Sprite{
 		if(this.currentAnimation === property) {return;}
 
 		var animation = this.animations[property];
-		if(animation) {
+		if (animation) {
 			this.loaded = animation.isLoaded();
 			this.displayImage = animation.getFrameImage();
 			this.currentAnimation = property;

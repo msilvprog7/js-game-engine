@@ -56,6 +56,7 @@ class Character extends AnimatedSprite {
 		// Set health
 		this.maxHealth = health;
 		this.health = health;
+		this.alive = true;
 
 		// Statuses
 		this.statuses = CHARACTER_VARS.GEN_STATUS_LIST();
@@ -67,6 +68,8 @@ class Character extends AnimatedSprite {
 		this.hasPhysics = true;
 		this.friction = 0.3;
 		this.initCollisions();
+
+		this.SM = new SoundManager();
 
 		// Set max speed
 		this.maxSpeed = maxSpeed;
@@ -83,8 +86,7 @@ class Character extends AnimatedSprite {
 			for(let k in this.statuses) {
 				let status = this.statuses[k];
 				if(status.v && cur_time > status.d) {
-					status.v = false;
-					this.dispatchEvent(EVENTS.STATUS_UPDATED);
+					this.removeStatus(status);
 				}
 			}
 			this.nextStatusCull = cur_time + CHARACTER_VARS.STATUS_CULL_RATE;
@@ -187,16 +189,40 @@ class Character extends AnimatedSprite {
 		if (this.health > 0) {
 			this.dispatchEvent(EVENTS.HEALTH_UPDATED, {health: this.health});
 		} else {
-			this.dispatchEvent(EVENTS.DIED);
 			this.die();
 		}
 	}
 
+	repeatedlyAddHealth(amount, remaining, delay) {
+		this.health = Math.min(this.health + amount, this.maxHealth);
+		this.dispatchEvent(EVENTS.HEALTH_UPDATED, {health: this.health});
+
+		// Continue
+		if (remaining > 0 && this.health < this.maxHealth) {
+			var that = this;
+			setTimeout(function () {
+				that.repeatedlyAddHealth(amount, remaining - 1, delay);
+			}, delay);
+		}
+	}
+
+	addHealth(amount, duration) {
+		if (duration === undefined) {
+			this.health = Math.min(this.health + amount, this.maxHealth);
+			this.dispatchEvent(EVENTS.HEALTH_UPDATED, {health: this.health});
+		} else if (amount > 0) {
+			this.repeatedlyAddHealth(1, amount, duration / amount);
+		}
+	}
+
 	addStatus(status, duration, amount, damageType) {
-		let s = this.statuses[status]
+		let s = this.statuses[status],
+			updateOthers = false;
 		if(!s.v) {
 			console.log(this.id + " IS NOW AFFLICTED BY: " + status);
+			updateOthers = true;
 		}
+
 		s.v = true;
 		s.d = new Date().getTime()+duration;
 		if(status === "dot") {
@@ -205,12 +231,14 @@ class Character extends AnimatedSprite {
 			s.damageType = damageType || DAMAGE_TYPES["PURE"];
 		}
 		s.amount = amount;
-		this.dispatchEvent(EVENTS.STATUS_UPDATED);
+
+		if (updateOthers) {
+			this.dispatchEvent(EVENTS.STATUS_UPDATED);
+		}
 	}
 
 	removeStatus(status) {
-		let s = this.statuses[status];
-		s.v = false;
+		status.v = false;
 		this.dispatchEvent(EVENTS.STATUS_UPDATED);
 	}
 
@@ -219,18 +247,21 @@ class Character extends AnimatedSprite {
 	}
 
 	isAlive() {
-		return this.health > 0;
+		return this.alive;
 	}
 
 	die() {
 		// Override in subclasses
+		this.alive = false;
+		this.dispatchEvent(EVENTS.DIED);
 	}
 
 	killSelf() {
 		this.health = 0;
-		this.dispatchEvent(EVENTS.DIED);
 		this.die();
 	}
+
+	
 
 	
 }

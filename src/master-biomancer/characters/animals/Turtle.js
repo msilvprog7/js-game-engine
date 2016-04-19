@@ -26,7 +26,10 @@ var TURTLE_VARS = {
 	PRIORITY: 3,
 	RESISTANCES: {
 		[DAMAGE_TYPES["PHYSICAL"]]: 1.25
-	}
+	},
+	EXPLOSION_IMAGES: MathUtil.range(16).map((num) => "biomancer/misc/explosions/explosion-" + num + ".png"),
+	EXPLOSION_SOUND_ID: "explosion",
+	EXPLOSION_SOUND_FILENAME: "biomancer/misc/explosion.mp3"
 };
 
 /**
@@ -46,7 +49,23 @@ class Turtle extends Animal {
 			TURTLE_VARS.PRIORITY, TURTLE_VARS.RESISTANCES);
 
 		TURTLE_VARS.count++;
+
+		// Scared animation
 		this.addAnimation("scared", {images: [TURTLE_VARS.SCARED_IMG], loop: true});
+
+		// Explosion animation and behavior (to kill self)
+		this.addAnimation("explosion", {images: TURTLE_VARS.EXPLOSION_IMAGES, loop: false});
+		this.animations["explosion"].setFinishedCallback(function () {
+			this.killSelf();
+		}, this);
+
+		// Explosion sound
+		if (!this.SM.hasSound(TURTLE_VARS.EXPLOSION_SOUND_ID)) {
+			this.SM.loadSound(TURTLE_VARS.EXPLOSION_SOUND_ID, TURTLE_VARS.EXPLOSION_SOUND_FILENAME);
+		}
+
+
+		// Detonation time
 		this.detonationTime = new Date().getTime() + TURTLE_VARS.ATTACK_RATE;
 	}
 
@@ -103,6 +122,12 @@ class Turtle extends Animal {
 	}
 
 	attack() {
+		// Animate (includes killSelf behavior)
+		this.setCurrentAnimation("explosion");
+		this.removeHealth = function (hit, damageType) {
+			// Nothing - let the turle kill itself
+		};
+
 		// Attack enemies in range
 		let enemies = this.getInSightRange();
 		enemies.forEach(function(enemy) {
@@ -119,7 +144,8 @@ class Turtle extends Animal {
 			}
 		});
 
-		this.killSelf();
+		// Play sound
+		this.SM.playSound(TURTLE_VARS.EXPLOSION_SOUND_ID);
 	}
 	
 }

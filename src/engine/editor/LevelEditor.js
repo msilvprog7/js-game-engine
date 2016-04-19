@@ -28,6 +28,7 @@ var LEVEL_EDITOR_VARS = {
 	SNAP_GRID_DISPLAY_RADIUS: 5,
 	DRAW_DRAG_SPEED: 8,
 	DRAW_DRAG_RATE: 1000 / 30,
+	KEY_DRAG_SPEED: 15,
 	DEFAULT_GENERATE_PARMAS: {
 		"Get-Text": "Insert text...",
 		"Exceed-Width": 1,
@@ -46,6 +47,7 @@ class LevelEditor extends DisplayObject {
 		this.canvas = canvas;
 		this.ctx = canvas.getContext("2d");
 		this.currentScale = 1.0;
+		this.keysPressed = [];
 		this.reset();
 	}
 
@@ -159,6 +161,9 @@ class LevelEditor extends DisplayObject {
 	reset() {
 		var that = this;
 
+		// Clear keys
+		this.keysPressed = [];
+
 		// Next draw
 		this.nextDraw = 0;
 		this.currentScale = 1.0;
@@ -205,11 +210,18 @@ class LevelEditor extends DisplayObject {
 		this.canvas.onmouseup = (e) => { e.preventDefault(); e.stopPropagation(); that.mouseUp(e); };
 		this.canvas.onmouseout = (e) => { e.preventDefault(); e.stopPropagation(); that.mouseOut(e); };
 		this.canvas.onmousewheel = (e) => { e.preventDefault(); e.stopPropagation(); that.scroll(e); };
-		window.addEventListener("keydown", function() {
-			this.keysPressed.push(e.keyCode);
+		window.addEventListener("keydown", function(e) {
+			// e.preventDefault();
+			// e.stopPropagation();
+
+			if (that.keysPressed.indexOf(e.keyCode) === -1) {
+				that.keysPressed.push(e.keyCode);
+			}
+
+			that.handleKeys();
 		}, true);
-		window.addEventListener("keyup", function() {
-			this.keysPressed = this.keysPressed.filter(c => c !== e.keyCode);
+		window.addEventListener("keyup", function(e) {
+			that.keysPressed = that.keysPressed.filter(c => c !== e.keyCode);
 		}, true);
 		document.getElementById(LEVEL_EDITOR_VARS.SELECT_CLASS_ID).onchange = (e) => { e.preventDefault(); e.stopPropagation(); that.getDrawingObject(); };
 		document.getElementById(LEVEL_EDITOR_VARS.DRAW_BUTTON_ID).onclick = (e) => { e.preventDefault(); e.stopPropagation(); that.drawClicked(); };
@@ -220,6 +232,33 @@ class LevelEditor extends DisplayObject {
 		this.setDrawing(false);
 
 		// Draw
+		this.draw();
+	}
+
+	handleKeys() {
+		var that = this;
+		this.keysPressed.forEach(function (keycode) {
+			switch (keycode) {
+				// W
+				case 87:
+					that.position.y -= LEVEL_EDITOR_VARS.KEY_DRAG_SPEED;
+					break;
+				// D
+				case 68:
+					that.position.x += LEVEL_EDITOR_VARS.KEY_DRAG_SPEED;
+					break;
+				// S
+				case 83:
+					that.position.y += LEVEL_EDITOR_VARS.KEY_DRAG_SPEED;
+					break;
+				// A
+				case 65:
+					that.position.x -= LEVEL_EDITOR_VARS.KEY_DRAG_SPEED;
+					break;
+			}
+		});
+
+		// don't force, be gentle
 		this.draw();
 	}
 
@@ -945,6 +984,9 @@ class LevelEditor extends DisplayObject {
 	}
 
 	mouseDown(e) {
+		// Focus on canvas
+		this.canvas.focus();
+
 		if (this.draggable) {
 			// Start dragging
 			this.setDraggable(false);

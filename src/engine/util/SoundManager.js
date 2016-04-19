@@ -24,9 +24,10 @@ class SoundManager{
 	}
 
 	playSound(id, options) {
-		if(this.sounds[id] === undefined) {console.error("Sound does not exist");}
+		if(this.sounds[id] === undefined) {console.error("Sound does not exist [" + id + "]");}
 		this.currentSound = this.sounds[id];
 		this.currentSound.load();
+		options = options || {};
 		if(options.pauseMusic) {
 			let that = this;
 			that.pauseMusic();
@@ -36,6 +37,13 @@ class SoundManager{
 					that.currentSound.removeEventListener('ended');
 				}); 
 			}			
+		}
+		if(options.volume && typeof options.volume === "number") {
+			if(options.volume >= 0.0 && options.volume <= 1.0) {
+				this.currentSound.volume = options.volume;
+			} else {
+				console.error("Volume option must be between 0 and 1");
+			}
 		}
 		this.currentSound.play();
 	}
@@ -67,6 +75,10 @@ class SoundManager{
 		if (this.currentMusic !== undefined) {
 			this.currentMusic.play();
 		}
+	}
+
+	hasSound(soundName) {
+		return this.sounds[soundName] !== undefined;
 	}
 
 }

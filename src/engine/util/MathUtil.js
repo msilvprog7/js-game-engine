@@ -167,6 +167,14 @@ class MathUtil {
 		return arguments[MathUtil.randomInt(0, arguments.length - 1)];
 	}
 
+	static eitherFromList(list) {
+		if (list.length === 0) {
+			return undefined;
+		}
+
+		return list[MathUtil.randomInt(0, list.length - 1)];
+	}
+
 	static euclidianDist(pos1, pos2) {
 		return Math.sqrt((pos1.x - pos2.x) * (pos1.x - pos2.x) + (pos1.y - pos2.y) * (pos1.y - pos2.y));
 	}
@@ -186,6 +194,26 @@ class MathUtil {
 		eps = eps || .001;
 
 		return Math.abs(v1 - v2) < eps;
+	}
+
+	static range(limit) {
+		var output = [];
+
+		if (limit < 0) {
+			return output;
+		}
+
+		for (let i = 0; i < limit; i++) {
+			output.push(i);
+		}
+
+		return output;
+	}
+
+	static normalizeVolumeDistance(maxVolume, volumeRange, p1, p2) {
+		let multiplier = (volumeRange - MathUtil.euclidianDist(p1, p2))/volumeRange;
+		multiplier = multiplier > 0 ? multiplier : 0;
+		return maxVolume*multiplier;
 	}
 }
 
