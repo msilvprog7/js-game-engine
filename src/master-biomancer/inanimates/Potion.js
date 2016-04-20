@@ -11,21 +11,21 @@ var POTION_VARS = {
 };
 
 
-class Potion extends AnimatedSprite {
+class Potion extends ScriptObject {
 	
 	constructor(id, idle) {
-		super(id, idle);
+		super(id);
 
-		// Whether or not it has been used
-		this.used = false;
+		// Load image
+		this.loadImage(idle);
+
+		// Visible from the start
+		this.visible = true;
 
 		// Physics
 		this.hasPhysics = true;
 		this.friction = 0.0;
 		this.initCollisions();
-
-		// Set collision listener
-		this.addEventListener(EVENTS.COLLISION, this, this.identifyDrinker, this);
 
 		// Sound manager
 		this.SM = new SoundManager();
@@ -39,7 +39,9 @@ class Potion extends AnimatedSprite {
 	/**
 	 * Figure out which object is the Character to apply the potion to
 	 */
-	identifyDrinker(displayObjects) {
+	script(displayObjects) {
+		super.script();
+		
 		var that = this;
 		displayObjects = displayObjects.filter((displayObject) => displayObject !== that);
 		
@@ -49,8 +51,7 @@ class Potion extends AnimatedSprite {
 	}
 
 	drink(character) {
-		this.used = true;
-
+		// Override in sublass and call super to play sound
 		// Play sound
 		this.SM.playSound(POTION_VARS.DRINKING_SOUND.id);
 	}

@@ -20,12 +20,15 @@ var KEY_SCRIPT_VARS = {
 class KeyScript extends ScriptObject {
 	
 	constructor(id, text) {
-
 		super(id);
 
-		this.visible = KEY_SCRIPT_VARS.VISIBLE;
+		// Load image
 		this.loadImage(KEY_SCRIPT_VARS.FILENAME);
-		this.setScript(this.keyPickup);
+
+		// Visible from the start
+		this.visible = KEY_SCRIPT_VARS.VISIBLE;
+
+		// Add to the number of keys in the UI
 		this.UserInterface.keysToGet++;
 
 		// Sound manager
@@ -37,8 +40,10 @@ class KeyScript extends ScriptObject {
 		}
 	}
 
-	keyPickup() {		
-		this.activated = true;
+	script() {
+		super.script();
+
+		// Decrease keys to get
 		this.UserInterface.keysToGet--;
 
 		// Play sound

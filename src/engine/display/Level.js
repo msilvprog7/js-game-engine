@@ -38,7 +38,6 @@ class Level extends DisplayObjectContainer{
 		this.movers = [];
 		this.obstacles = [];
 		this.scriptObjects = [];
-		this.potions = [];
 		this.game = game;
 	}
 
@@ -93,14 +92,6 @@ class Level extends DisplayObjectContainer{
 		});
 		this.scriptObjects = this.scriptObjects.filter((scriptObject) => (!scriptObject.activated));
 
-		// Remove potions that have been triggered
-		this.potions.forEach(function (potion) {
-			if (potion.used) {
-				that.removeChild(potion);
-			}
-		});
-		this.potions = this.potions.filter((potion) => (!potion.used));
-
 		// Check collisions
 		this.movers.forEach(mover => {
 			this.colliders.forEach(collider => {
@@ -134,13 +125,6 @@ class Level extends DisplayObjectContainer{
 
 		this.scriptObjects.forEach(scriptObject => {
 			if(scriptObject.collidesWith(this.biomancer)) {
-				//Do nothing because the event handles all that jazz
-			}
-		});
-
-		// Potion collisions
-		this.potions.forEach(potion => {
-			if(potion.collidesWith(this.biomancer)) {
 				//Do nothing because the event handles all that jazz
 			}
 		});
@@ -213,8 +197,6 @@ class Level extends DisplayObjectContainer{
 			this.addCollider(entity);
 		} else if(entity instanceof ScriptObject) {
 			this.scriptObjects.push(entity);
-		} else if(entity instanceof Potion) {
-			this.potions.push(entity);
 		}
 
 		if(options["monitorHealth"] !== undefined && options["monitorHealth"]) {
