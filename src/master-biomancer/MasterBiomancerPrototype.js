@@ -17,11 +17,15 @@ class MasterBiomancerGame extends Game{
 		// Sound Manager
 		this.SM = new SoundManager();
 
+		this.SM.loadMusic("background-normal", "biomancer/background/background-normal.wav", true);
+		this.SM.loadMusic("background-nervous", "biomancer/background/background-nervous.wav", true);
+		this.SM.playMusic("background-normal");
 		// Tween Juggler
 		this.TJ = new TweenJuggler();
 
 		this.UI = new UserInterface();
 		this.addChild(this.UI);
+		this.nextMusicFade = new Date().getTime();
 	}
 
 	update(pressedKeys, timedelta){		
@@ -29,11 +33,6 @@ class MasterBiomancerGame extends Game{
 
 		// Update the tween juggler
 		this.TJ.update(timedelta);
-
-		if(pressedKeys.contains(54) && this.UI.dialog === undefined) {
-			let options = {wordTime: 100, pauseOnPeriods: true}
-			this.UI.showDialog("This is a test message. Hopefully this will work perfectly. Test Test Test Test Test Test Test Test Test Test Test Test Test.", options)
-		}
 	}
 
 	draw(g){

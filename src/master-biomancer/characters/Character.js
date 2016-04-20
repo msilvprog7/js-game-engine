@@ -177,6 +177,10 @@ class Character extends AnimatedSprite {
 		return (this.maxHealth <= 0) ? 0 : this.health / this.maxHealth;
 	}
 
+	changeCombatState(state) {
+		this.getLevel().changeCombatState(state);
+	}
+
 	removeHealth(hit, damageType) {
 		// Take damage
 		if(damageType === undefined || this.resistances[damageType] === undefined) {

@@ -125,6 +125,18 @@ var LEVEL_LIST = [
 			type: "Obstacles",
 			resource: "resources/images/biomancer/misc/rock.png"
 		},
+		"Sawblade": {
+			constructor: function () { return new Sawblade(); },
+			addToLevel: addToLevel,
+			generate: undefined,
+			generateParams: -1,
+			generateParamsEditorOption: undefined,
+			options: SAWBLADE_VARS.ADD_DEFAULTS,
+			pivot: SAWBLADE_VARS.IDLE_PIVOT,
+			dimensions: SAWBLADE_VARS.DIMENSIONS,
+			type: "Obstacles",
+			resource: "resources/images/biomancer/misc/sawblade-0.png"
+		},
 
 		/* Dialogue */
 		"DialogueScript": {

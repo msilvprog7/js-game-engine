@@ -23,7 +23,8 @@ var HOTBOT_VARS = {
 	RESISTANCES: {
 		[DAMAGE_TYPES["FIRE"]]: 0.5,
 		[DAMAGE_TYPES["ICE"]]: 1.5
-	}
+	},
+	ATTACK_SOUND: "biomancer/weapons/hotbot/hotbot-attack.wav"
 };
 
 class Hotbot extends Enemy {
@@ -38,6 +39,9 @@ class Hotbot extends Enemy {
 
 		// Time before next rotation
 		this.nextRotation = 0;
+		if(!this.SM.hasSound("hotbot-attack")) {
+			this.SM.loadSound("hotbot-attack", HOTBOT_VARS.ATTACK_SOUND);
+		}
 
 		HOTBOT_VARS.count++;
 	}
@@ -86,6 +90,8 @@ class Hotbot extends Enemy {
 	attack() {
 		var that = this;
 		super.attack();
+
+		this.SM.playSound("hotbot-attack");
 
 		// ATTACK CLOSEST FRIENDLY TARGET
 		this.friendlyFocus.obj.removeHealth(HOTBOT_VARS.ATTACK_DMG, HOTBOT_VARS.DAMAGE_TYPE);

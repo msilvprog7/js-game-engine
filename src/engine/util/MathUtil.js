@@ -187,6 +187,15 @@ class MathUtil {
 		return radians % (2 * Math.PI);
 	}
 
+	static pointCompare(p1, p2, eps) {
+		if(eps === undefined) {
+			return p1.x === p2.x && p1.y === p2.y;
+		}
+		else {
+			return MathUtil.euclidianDist(p1, p2) <= eps;
+		}
+	}
+
 	/**
 	 * Test if two numbers are approximately equal (within eps tolerance)
 	 * */

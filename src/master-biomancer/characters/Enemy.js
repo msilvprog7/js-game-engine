@@ -67,6 +67,7 @@ class Enemy extends Character {
 		} else {
 			this.nextAttackTime = new Date().getTime() + this.attackRate;
 		}
+		this.changeCombatState(true);
 	}
 
 	move() {

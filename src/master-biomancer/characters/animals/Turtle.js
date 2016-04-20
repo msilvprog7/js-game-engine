@@ -139,7 +139,7 @@ class Turtle extends Animal {
 		// Attack destroyable obstacles in range
 		let obstacles = this.getObstaclesInSightRange();
 		obstacles.forEach(function (obstacle) {
-			if (obstacle.distance <= TURTLE_VARS.ATTACK_RANGE) {
+			if (obstacle.constructor.name === "Rock" && obstacle.distance <= TURTLE_VARS.ATTACK_RANGE) {
 				obstacle.obj.destroy();
 			}
 		});

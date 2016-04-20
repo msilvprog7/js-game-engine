@@ -39,6 +39,13 @@ class Level extends DisplayObjectContainer{
 		this.obstacles = [];
 		this.scriptObjects = [];
 		this.game = game;
+		this.inCombat = false;
+		this.dropCombatTime = new Date().getTime();	
+
+		this.addEventListener(EVENTS.COMBAT_STATE_CHANGE, this, function(state){
+			let musicToFade = this.inCombat ? "background-nervous" : "background-normal";		
+			new SoundManager().fadeMusic(musicToFade);
+		}, this);	
 	}
 
 	update(pressedKeys) {
@@ -52,6 +59,10 @@ class Level extends DisplayObjectContainer{
 			}
 		});
 		this.healthBars = this.healthBars.filter((healthBar) => (!healthBar.isDead()));
+
+		if(this.inCombat && this.dropCombatTime < new Date().getTime()) {
+			this.changeCombatState(false);
+		}
 
 		// Remove animals that have spawned and died
 		this.animals.forEach(function (animal) {
@@ -97,28 +108,6 @@ class Level extends DisplayObjectContainer{
 			this.colliders.forEach(collider => {
 				if (mover !== collider) 
 					if (mover.collidesWith(collider)) {
-						// let mHitbox = mover.hitbox.hitbox,
-						// 	cHitbox = collider.hitbox.hitbox,
-						// 	xAdj = 0,
-						// 	yAdj = 0,
-						// 	mPos = mover.getPosition();
-						// //move out left or right
-						// if (mHitbox.tr.x > cHitbox.tl.x) {
-						// 	xAdj = cHitbox.tl.x - mHitbox.tr.x;
-						// } else if (mHitbox.tl.x < cHitbox.tr.x) {
-						// 	xAdj = cHitbox.tr.x - mHitbox.tl.x;
-						// }
-						// //move out top or bottom
-						// if (mHitbox.bl.y > cHitbox.tl.y) {
-						// 	yAdj = cHitbox.tl.y - mHitbox.bl.y;
-						// } else if (mHitbox.tl.y < cHitbox.bl.y) {
-						// 	yAdj = cHitbox.bl.y - mHitbox.tl.y;
-						// }
-
-						// mover.setPosition({
-						// 	x: mPos.x + xAdj,
-						// 	y: mPos.y + yAdj
-						// });
 					}
 			});
 		});
@@ -202,6 +191,17 @@ class Level extends DisplayObjectContainer{
 		if(options["monitorHealth"] !== undefined && options["monitorHealth"]) {
 			this.monitorHealth(entity);
 		}
+	}
+
+	changeCombatState(state) {
+		if(state) {
+			this.dropCombatTime = new Date().getTime() + 5000;
+		}
+		if(state !== this.inCombat) {
+			this.inCombat = state;
+			this.dispatchEvent(EVENTS.COMBAT_STATE_CHANGE, state);
+		}
+		
 	}
 
 	reload() {
