@@ -18,7 +18,7 @@ var SAWBLADE_VARS = {
 		"spinning": {
 			images: ["biomancer/misc/sawblade-0.png", "biomancer/misc/sawblade-1.png", "biomancer/misc/sawblade-2.png", "biomancer/misc/sawblade-3.png"],
 			loop: true,
-			speed: 30
+			speed: 1
 		},
 		"stopped": {
 			images: ["biomancer/misc/sawblade-0.png"],
@@ -63,6 +63,7 @@ class Sawblade extends Obstacle {
 			}
 			this.addAnimation(animation, animationInfo);
 		}
+		this.setCurrentAnimation("spinning");
 	}
 
 	setPosition(point) {
@@ -80,11 +81,12 @@ class Sawblade extends Obstacle {
 	}
 
 	update() {
+		super.update();
 		let currentTime = new Date().getTime();
 		if(!this.stopped) {
 			let speed = SAWBLADE_VARS.SPEED;
 			if(MathUtil.pointCompare(this.nextPoint, this.position, speed)) {
-				this.nextPoint = (MathUtil.pointCompare(this.nextPoint, this.startPoint)) ? this.endPoint : this.startPoint;
+				this.nextPoint = (MathUtil.pointCompare(this.nextPoint, this.startPoint, speed)) ? this.endPoint : this.startPoint;
 			}
 			let myPivot = this.getNormalizedPivotPoint(),
 				xMove = (myPivot.x > this.nextPoint.x) ? -(speed) : (myPivot.x < this.nextPoint.x) ? speed : 0, 

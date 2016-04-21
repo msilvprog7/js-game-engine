@@ -87,8 +87,8 @@ class Spider extends Animal {
 			let obstacles = this.getObstaclesInSightRange(),
 				obsSet = false;
 			for(let k = 0; k < obstacles.length; k++) {
-				if(obstacles[k].constructor.name === "Sawblade" && !obstacles[k].stopped) {
-					this.enemyFocus = obstacle;
+				if(obstacles[k].obj.constructor.name === "Sawblade" && !obstacles[k].obj.stopped) {
+					this.enemyFocus = obstacles[k];
 					obsSet = true;
 					break;
 				}
@@ -137,7 +137,7 @@ class Spider extends Animal {
 		super.attack();
 		
 		if(this.enemyFocus.constructor.name === "Sawblade") {
-			this.enemyFocus.stop();
+			this.enemyFocus.obj.stop();
 		} else {
 			//ATTACK CLOSEST FRIENDLY TARGET		
 	 		this.enemyFocus.obj.addStatus("move-slow", 5000, 0.0);
