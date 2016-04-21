@@ -54,8 +54,8 @@ class Sawblade extends Obstacle {
 		// }
 
 		// Load Animations
-		for(var animation in WOLF_VARS.ANIMATIONS) {
-			let currentAnimation = WOLF_VARS.ANIMATIONS[animation];
+		for(var animation in SAWBLADE_VARS.ANIMATIONS) {
+			let currentAnimation = SAWBLADE_VARS.ANIMATIONS[animation];
 			let animationInfo = {
 				images: currentAnimation.images.map(image => image),
 				loop: currentAnimation.loop,
