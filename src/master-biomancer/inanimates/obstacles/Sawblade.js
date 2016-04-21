@@ -38,8 +38,8 @@ class Sawblade extends Obstacle {
 		SAWBLADE_VARS.count++;
 
 		this.stopped = false;
-		this.startPoint = SAWBLADE_VARS.IDLE_PIVOT;
-		this.endPoint = {x: endPoint.x + SAWBLADE_VARS.IDLE_PIVOT.x, y: endPoint.y + SAWBLADE_VARS.IDLE_PIVOT.y};
+		this.startPoint = {x: 0, y: 0};
+		this.endPoint = endPoint
 		this.nextPoint = endPoint;
 
 		let currentTime = new Date().getTime();
@@ -76,6 +76,7 @@ class Sawblade extends Obstacle {
 			x: this.endPoint.x - this.position.x + point.x,
 			y: this.endPoint.y - this.position.y + point.y
 		};
+		this.nextPoint = this.endPoint;
 
 		super.setPosition(point);
 	}
@@ -88,11 +89,12 @@ class Sawblade extends Obstacle {
 			if(MathUtil.pointCompare(this.nextPoint, this.position, speed)) {
 				this.nextPoint = (MathUtil.pointCompare(this.nextPoint, this.startPoint, speed)) ? this.endPoint : this.startPoint;
 			}
-			let myPivot = this.getNormalizedPivotPoint(),
-				xMove = (myPivot.x > this.nextPoint.x) ? -(speed) : (myPivot.x < this.nextPoint.x) ? speed : 0, 
-				yMove = (myPivot.y > this.nextPoint.y) ? -(speed) : (myPivot.y < this.nextPoint.y) ? speed : 0;
+			let xMove = (this.position.x > this.nextPoint.x) ? -(speed) : (this.position.x < this.nextPoint.x) ? speed : 0, 
+				yMove = (this.position.y > this.nextPoint.y) ? -(speed) : (this.position.y < this.nextPoint.y) ? speed : 0;
 
-			this.setPosition({x: this.position.x + xMove, y: this.position.y + yMove});
+			// Update position
+			this.position = {x: this.position.x + xMove, y: this.position.y + yMove};
+			this.hitbox.update();
 		}		
 		else if(currentTime > this.startTime) {
 			this.start();
