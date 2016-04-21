@@ -32,14 +32,14 @@ var SAWBLADE_VARS = {
 
 class Sawblade extends Obstacle {
 	
-	constructor(startPoint, endPoint) {
+	constructor(endPoint) {
 		super("sawblade-" + SAWBLADE_VARS.count, SAWBLADE_VARS.IDLE, SAWBLADE_VARS.DESTROYABLE);
 
 		SAWBLADE_VARS.count++;
 
 		this.stopped = false;
-		this.startPoint = startPoint;
-		this.endPoint = endPoint;
+		this.startPoint = SAWBLADE_VARS.IDLE_PIVOT;
+		this.endPoint = {x: endPoint.x + SAWBLADE_VARS.IDLE_PIVOT.x, y: endPoint.y + SAWBLADE_VARS.IDLE_PIVOT.y};
 		this.nextPoint = endPoint;
 
 		let currentTime = new Date().getTime();
@@ -54,8 +54,8 @@ class Sawblade extends Obstacle {
 		// }
 
 		// Load Animations
-		for(var animation in WOLF_VARS.ANIMATIONS) {
-			let currentAnimation = WOLF_VARS.ANIMATIONS[animation];
+		for(var animation in SAWBLADE_VARS.ANIMATIONS) {
+			let currentAnimation = SAWBLADE_VARS.ANIMATIONS[animation];
 			let animationInfo = {
 				images: currentAnimation.images.map(image => image),
 				loop: currentAnimation.loop,
@@ -63,6 +63,20 @@ class Sawblade extends Obstacle {
 			}
 			this.addAnimation(animation, animationInfo);
 		}
+	}
+
+	setPosition(point) {
+		// Update start and end position
+		this.startPoint = {
+			x: this.startPoint.x - this.position.x + point.x,
+			y: this.startPoint.y - this.position.y + point.y
+		};
+		this.endPoint = {
+			x: this.endPoint.x - this.position.x + point.x,
+			y: this.endPoint.y - this.position.y + point.y
+		};
+
+		super.setPosition(point);
 	}
 
 	update() {
@@ -113,9 +127,8 @@ class Sawblade extends Obstacle {
 	/**
 	  * Generate Sawblade
 	 */
-	static generateSawblade(startTile, endTile) {
-		
-
+	static generateSawblade(cols, rows) {
+		return new Sawblade({x: (cols - 1) * SAWBLADE_VARS.DIMENSIONS.width, y: (rows - 1) * SAWBLADE_VARS.DIMENSIONS.height});
 	}
 
 }
