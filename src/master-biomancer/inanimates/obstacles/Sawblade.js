@@ -96,9 +96,10 @@ class Sawblade extends Obstacle {
 			this.start();
 		}
 		if(currentTime > this.nextCollisionCheck) {
+			var that = this;
 			this.getLevel().movers.forEach(function(mover) {				
 				if(typeof mover.removeHealth ==="function") {
-					if (mover.health > 0 && this.collidesWith(mover)) {
+					if (mover.health > 0 && that.collidesWith(mover)) {
 						mover.removeHealth(SAWBLADE_VARS.DAMAGE, DAMAGE_TYPES["PHYSICAL"]);
 					}
 				}
