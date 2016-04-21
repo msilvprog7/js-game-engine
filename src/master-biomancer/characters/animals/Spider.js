@@ -136,7 +136,7 @@ class Spider extends Animal {
 	attack() {
 		super.attack();
 		
-		if(this.enemyFocus.constructor.name === "Sawblade") {
+		if(this.enemyFocus.obj.constructor.name === "Sawblade") {
 			this.enemyFocus.obj.stop();
 		} else {
 			//ATTACK CLOSEST FRIENDLY TARGET		

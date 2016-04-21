@@ -27,7 +27,8 @@ var SAWBLADE_VARS = {
 		}
 	},
 	DAMAGE: 300,
-	SPEED: 1
+	SPEED: 20,
+	START_TIME: 3000
 };
 
 class Sawblade extends Obstacle {
@@ -41,6 +42,7 @@ class Sawblade extends Obstacle {
 		this.startPoint = {x: 0, y: 0};
 		this.endPoint = endPoint
 		this.nextPoint = endPoint;
+		this.nextIsStart = false;
 
 		let currentTime = new Date().getTime();
 		this.startTime = currentTime;
@@ -76,7 +78,7 @@ class Sawblade extends Obstacle {
 			x: this.endPoint.x - this.position.x + point.x,
 			y: this.endPoint.y - this.position.y + point.y
 		};
-		this.nextPoint = this.endPoint;
+		this.nextPoint = this.nextIsStart ? this.startPoint : this.endPoint;
 
 		super.setPosition(point);
 	}
@@ -86,8 +88,9 @@ class Sawblade extends Obstacle {
 		let currentTime = new Date().getTime();
 		if(!this.stopped) {
 			let speed = SAWBLADE_VARS.SPEED;
-			if(MathUtil.pointCompare(this.nextPoint, this.position, speed)) {
-				this.nextPoint = (MathUtil.pointCompare(this.nextPoint, this.startPoint, speed)) ? this.endPoint : this.startPoint;
+			if(MathUtil.pointCompare(this.nextPoint, this.position)) {
+				this.nextIsStart = !MathUtil.pointCompare(this.nextPoint, this.startPoint);
+				this.nextPoint = (this.nextIsStart) ? this.endPoint : this.startPoint;
 			}
 			let xMove = (this.position.x > this.nextPoint.x) ? -(speed) : (this.position.x < this.nextPoint.x) ? speed : 0, 
 				yMove = (this.position.y > this.nextPoint.y) ? -(speed) : (this.position.y < this.nextPoint.y) ? speed : 0;
