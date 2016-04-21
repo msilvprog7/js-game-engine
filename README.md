@@ -3,6 +3,10 @@ CS 4730 Game Engine written in JS
 
 Authors: Michael Snider, Kyle Bibler, John Reagan
 
+## Beta Instructions
+
+See controls from Alpha. Keys are new, lots of sounds and some animations, additional levels, dialogue-collision objects, potions, and sawblades (that can be stopped with spiders).
+
 ## Alpha Instructions
 
 Walk around with arrow keys, launch animals with space bar, and use the number keys 1-4 to switch animals. We have two levels, several enemies, different animal types, and a level editor (editor.html). If you need to get through a rock wall, try blowing it up with a turtle. Thanks for playing!
