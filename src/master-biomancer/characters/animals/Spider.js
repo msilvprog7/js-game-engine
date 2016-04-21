@@ -96,7 +96,7 @@ class Spider extends Animal {
 			if(!obsSet) {
 				let enemies = this.getInSightRange();
 				if(enemies.length > 0) {
-					this.enemyFocus = enemies.find(e => !e.statuses["attack-slow"].v);
+					this.enemyFocus = enemies.find(e => !e.obj.statuses["attack-slow"].v);
 				} else {
 					if(this.enemyFocus !== undefined) {
 						//reset search radius
@@ -136,8 +136,8 @@ class Spider extends Animal {
 	attack() {
 		super.attack();
 		
-		if(enemyFocus.constructor.name === "Sawblade") {
-			enemyFocus.stop();
+		if(this.enemyFocus.constructor.name === "Sawblade") {
+			this.enemyFocus.stop();
 		} else {
 			//ATTACK CLOSEST FRIENDLY TARGET		
 	 		this.enemyFocus.obj.addStatus("move-slow", 5000, 0.0);
