@@ -5,7 +5,7 @@ Authors: Michael Snider, Kyle Bibler, John Reagan
 
 ## Beta Instructions
 
-See controls from Alpha. Keys are new, lots of sounds and some animations, additional levels, dialogue-collision objects, potions, and sawblades (that can be stopped with spiders).
+See controls from Alpha. Keys are new, lots of sounds and some animations, additional levels, dialogue-collision objects, potions, and sawblades. You can stop a sawblade with a spider, which slows enemies. There are also states that can exist on the Biomancer, enemies, and animals such as slow, burn, poison, etc. Also, there are animal interactions when wolves attack turtles. This forces players to not use the wolf to attack nearby enemies while also trying to blow up rock walls.
 
 ## Alpha Instructions
 
