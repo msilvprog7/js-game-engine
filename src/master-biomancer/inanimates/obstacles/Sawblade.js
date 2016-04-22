@@ -27,22 +27,29 @@ var SAWBLADE_VARS = {
 		}
 	},
 	DAMAGE: 300,
-	SPEED: 20,
-	START_TIME: 3000
+	FAST_SPEED: 20,
+	SLOW_SPEED: 5,
+	INIT_MOVEMENT_MODIFIER: 1,
+	MOVEMENT_MULTIPLIER: -1,
+	START_TIME: 3000,
+	VERTICAL: "vertical",
+	HORIZONTAL: "horizontal"
 };
 
 class Sawblade extends Obstacle {
 	
-	constructor(endPoint) {
+	constructor(type, speed) {
 		super("sawblade-" + SAWBLADE_VARS.count, SAWBLADE_VARS.IDLE, SAWBLADE_VARS.DESTROYABLE);
 
 		SAWBLADE_VARS.count++;
 
 		this.stopped = false;
-		this.startPoint = {x: 0, y: 0};
-		this.endPoint = endPoint
-		this.nextPoint = endPoint;
-		this.nextIsStart = false;
+		this.type = type;
+		this.movementModifier = SAWBLADE_VARS.INIT_MOVEMENT_MODIFIER;
+		this.speed = speed;
+
+		// Listener for wall collisions
+		this.addEventListener(EVENTS.COLLISION, this, this.switchDirections, this);
 
 		let currentTime = new Date().getTime();
 		this.startTime = currentTime;
@@ -68,51 +75,67 @@ class Sawblade extends Obstacle {
 		this.setCurrentAnimation("spinning");
 	}
 
-	setPosition(point) {
-		// Update start and end position
-		this.startPoint = {
-			x: this.startPoint.x - this.position.x + point.x,
-			y: this.startPoint.y - this.position.y + point.y
-		};
-		this.endPoint = {
-			x: this.endPoint.x - this.position.x + point.x,
-			y: this.endPoint.y - this.position.y + point.y
-		};
-		this.nextPoint = this.nextIsStart ? this.startPoint : this.endPoint;
+	move(amount) {
+		var xMove = 0,
+			yMove = 0;
 
-		super.setPosition(point);
+		switch (this.type) {
+			case SAWBLADE_VARS.VERTICAL:
+				yMove = amount;
+				break;
+			case SAWBLADE_VARS.HORIZONTAL:
+				xMove = amount;
+				break;
+		}
+		
+		// Update position
+		this.setPosition({x: this.position.x + xMove, y: this.position.y + yMove});
 	}
 
 	update() {
 		super.update();
-		let currentTime = new Date().getTime();
-		if(!this.stopped) {
-			let speed = SAWBLADE_VARS.SPEED;
-			if(MathUtil.pointCompare(this.nextPoint, this.position)) {
-				this.nextIsStart = !MathUtil.pointCompare(this.nextPoint, this.startPoint);
-				this.nextPoint = (this.nextIsStart) ? this.endPoint : this.startPoint;
-			}
-			let xMove = (this.position.x > this.nextPoint.x) ? -(speed) : (this.position.x < this.nextPoint.x) ? speed : 0, 
-				yMove = (this.position.y > this.nextPoint.y) ? -(speed) : (this.position.y < this.nextPoint.y) ? speed : 0;
 
-			// Update position
-			this.position = {x: this.position.x + xMove, y: this.position.y + yMove};
-			this.hitbox.update();
+		let currentTime = new Date().getTime();
+
+		if(!this.stopped) {
+			this.move(this.movementModifier * this.speed);
 		}		
 		else if(currentTime > this.startTime) {
 			this.start();
 		}
+
 		if(currentTime > this.nextCollisionCheck) {
 			var that = this;
-			this.getLevel().movers.forEach(function(mover) {				
-				if(typeof mover.removeHealth ==="function") {
+
+			// Mover collisions
+			this.getLevel().movers.forEach(function (mover) {	
+				if(typeof mover.removeHealth === "function") {
 					if (mover.health > 0 && that.collidesWith(mover)) {
 						mover.removeHealth(SAWBLADE_VARS.DAMAGE, DAMAGE_TYPES["PHYSICAL"]);
 					}
 				}
 			});
+
 			this.nextCollisionCheck = currentTime + 100;
 		}
+	}
+
+	switchDirections(displayObjects) {
+		var that = this;
+		displayObjects.forEach(function (collider) {
+			if (collider instanceof WallGroup || collider instanceof Wall) {
+				// Switch direction
+				that.movementModifier *= SAWBLADE_VARS.MOVEMENT_MULTIPLIER;
+				switch (that.type) {
+					case SAWBLADE_VARS.VERTICAL:
+						that.move(that.movementModifier * SAWBLADE_VARS.DIMENSIONS.height);
+						break;
+					case SAWBLADE_VARS.HORIZONTAL:
+						that.move(that.movementModifier * SAWBLADE_VARS.DIMENSIONS.width);
+						break;
+				}
+			}
+		});
 	}
 
 	start() {
@@ -135,8 +158,8 @@ class Sawblade extends Obstacle {
 	/**
 	  * Generate Sawblade
 	 */
-	static generateSawblade(cols, rows) {
-		return new Sawblade({x: (cols - 1) * SAWBLADE_VARS.DIMENSIONS.width, y: (rows - 1) * SAWBLADE_VARS.DIMENSIONS.height});
+	static generateSawblade(type, speed) {
+		return new Sawblade(type, speed);
 	}
 
 }

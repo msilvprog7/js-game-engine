@@ -59,7 +59,6 @@ class Spider extends Animal {
 
 	move() {
 		// Random movement in radius
-		console.log(this.enemyFocus);
 		if(this.enemyFocus !== undefined && (this.enemyFocus.obj.constructor.name==="Sawblade" || this.enemyFocus.obj.isAlive())) {
 			//Move towards enemy
 			let posToMove = this.enemyFocus.obj.getNormalizedPivotPoint(),
