@@ -4,7 +4,8 @@ var LEVEL_LIST = [
 		LEVEL1,
 		LEVEL2,
 		LEVEL3,
-		LEVEL4
+		LEVEL4,
+		LEVEL5
 	],
 
 	addToLevel = function (level, obj, options) { level.addEntityToLevel(obj, options); },
@@ -124,6 +125,34 @@ var LEVEL_LIST = [
 			dimensions: ROCK_VARS.DIMENSIONS,
 			type: "Obstacles",
 			resource: "resources/images/biomancer/misc/rock.png"
+		},
+		"Fast-Vertical-Sawblade": {
+			constructor: function () { return Sawblade.generateSawblade(SAWBLADE_VARS.VERTICAL, SAWBLADE_VARS.FAST_SPEED); },
+			addToLevel: addToLevel,
+			generate: undefined,
+			generateParams: -1,
+			generateParamsEditorOption: undefined,
+			options: SAWBLADE_VARS.ADD_DEFAULTS,
+			pivot: SAWBLADE_VARS.IDLE_PIVOT,
+			dimensions: SAWBLADE_VARS.DIMENSIONS,
+			type: "Obstacles",
+			resource: "resources/images/biomancer/misc/sawblade-0.png",
+			exceedWidth: SAWBLADE_VARS.DIMENSIONS.width,
+			exceedHeight: SAWBLADE_VARS.DIMENSIONS.height
+		},
+		"Fast-Horizontal-Sawblade": {
+			constructor: function () { return Sawblade.generateSawblade(SAWBLADE_VARS.HORIZONTAL, SAWBLADE_VARS.FAST_SPEED); },
+			addToLevel: addToLevel,
+			generate: undefined,
+			generateParams: -1,
+			generateParamsEditorOption: undefined,
+			options: SAWBLADE_VARS.ADD_DEFAULTS,
+			pivot: SAWBLADE_VARS.IDLE_PIVOT,
+			dimensions: SAWBLADE_VARS.DIMENSIONS,
+			type: "Obstacles",
+			resource: "resources/images/biomancer/misc/sawblade-0.png",
+			exceedWidth: SAWBLADE_VARS.DIMENSIONS.width,
+			exceedHeight: SAWBLADE_VARS.DIMENSIONS.height
 		},
 
 		/* Dialogue */

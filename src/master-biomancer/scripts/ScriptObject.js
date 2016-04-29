@@ -9,6 +9,7 @@ class ScriptObject extends DisplayObjectContainer {
 		// Get UI
 		this.UserInterface = new UserInterface();
 
+		// By default, not activated
 		this.activated = false;
 
 		// Hidden
@@ -17,12 +18,14 @@ class ScriptObject extends DisplayObjectContainer {
 		// this.hasPhysics = true;
 		// this.friction = 0.0;
 		// this.initCollisions();
+
+		// Set script listener
+		this.addEventListener(EVENTS.COLLISION, this, this.script, this);
 	}
 
-	setScript(script) {
-		//ABSOLUTELY ALWAYS CALL THIS IN THE CONSTRUCTOR
-		this.script = script;
-		this.addEventListener(EVENTS.COLLISION, this, this.script, this);
+	script() {
+		// Override and call in subclasses to activate
+		this.activated = true;
 	}
 
 

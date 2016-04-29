@@ -59,7 +59,7 @@ class Spider extends Animal {
 
 	move() {
 		// Random movement in radius
-		if(this.enemyFocus !== undefined && this.enemyFocus.obj.isAlive()) {
+		if(this.enemyFocus !== undefined && (this.enemyFocus.obj.constructor.name==="Sawblade" || this.enemyFocus.obj.isAlive())) {
 			//Move towards enemy
 			let posToMove = this.enemyFocus.obj.getNormalizedPivotPoint(),
 				myPos = this.getNormalizedPivotPoint(),
@@ -84,17 +84,29 @@ class Spider extends Animal {
 
 			this.orient(xMove, yMove);
 		} else {
-			let enemies = this.getInSightRange();
-			if(enemies.length > 0) {
-				this.enemyFocus = enemies[0];
-			} else {
-				if(this.enemyFocus !== undefined) {
-					//reset search radius
-					this.walkRangePosition = {x: this.position.x + this.spawnIdlePivot.x, y: this.position.y + this.spawnIdlePivot.y};
+			let obstacles = this.getObstaclesInSightRange(),
+				obsSet = false;
+			for(let k = 0; k < obstacles.length; k++) {
+				if(obstacles[k].obj.constructor.name === "Sawblade" && !obstacles[k].obj.stopped) {
+					this.enemyFocus = obstacles[k];
+					obsSet = true;
+					break;
 				}
-				this.enemyFocus = undefined;
-				this.randomMove();
 			}
+			if(!obsSet) {
+				let enemies = this.getInSightRange();
+				if(enemies.length > 0) {
+					this.enemyFocus = enemies.find(e => !e.obj.statuses["attack-slow"].v);
+				} else {
+					if(this.enemyFocus !== undefined) {
+						//reset search radius
+						this.walkRangePosition = {x: this.position.x + this.spawnIdlePivot.x, y: this.position.y + this.spawnIdlePivot.y};
+					}
+					this.enemyFocus = undefined;
+					this.randomMove();
+				}
+			}
+			
 		}	
 
 		super.move();	
@@ -124,9 +136,15 @@ class Spider extends Animal {
 	attack() {
 		super.attack();
 		
-		//ATTACK CLOSEST FRIENDLY TARGET		
- 		this.enemyFocus.obj.addStatus("move-slow", 5000, 0.0);
- 		this.enemyFocus.obj.addStatus("attack-slow", 5000, 0.5);
+		if(this.enemyFocus.obj.constructor.name === "Sawblade") {
+			this.enemyFocus.obj.stop();
+		} else {
+			//ATTACK CLOSEST FRIENDLY TARGET		
+	 		this.enemyFocus.obj.addStatus("move-slow", 5000, 0.0);
+	 		this.enemyFocus.obj.addStatus("attack-slow", 5000, 0.5);
+		}		
+ 		//Change targets after attacking
+ 		this.enemyFocus = undefined;
 
  		// Play any attack sound
  		this.SM.playSound(MathUtil.eitherFromList(SPIDER_VARS.ATTACK_SOUNDS.map((soundObj) => soundObj.id)));

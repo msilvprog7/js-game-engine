@@ -23,12 +23,10 @@ var DIALOGUE_SCRIPT_VARS = {
 class DialogueScript extends ScriptObject {
 	
 	constructor(id, text) {
-
 		super(id);
 
 		// Set text
 		this.text = this.filter(text);
-		this.setScript(this.show);
 
 		// Sound manager
 		this.SM = new SoundManager();
@@ -46,9 +44,14 @@ class DialogueScript extends ScriptObject {
 		return text.replace(/---/g, " ");
 	}
 
-	show() {
+	/**
+	 * Show dialogue
+	 */
+	script() {
+		super.script();
+
+		// Show dialog
 		this.UserInterface.showDialog(this.text, DIALOGUE_SCRIPT_VARS.OPTIONS);
-		this.activated = true;
 
 		// Play sound
 		this.SM.playSound(DIALOGUE_SCRIPT_VARS.NOTIFICATION_SOUND.id);

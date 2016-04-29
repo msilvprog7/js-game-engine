@@ -152,6 +152,11 @@ class Character extends AnimatedSprite {
 		let m = (this.statuses['move-slow'].v) ? this.maxSpeed * this.statuses['move-slow'].amount : this.maxSpeed;
 		this.aX = (Math.abs(this.vX) >= Math.abs(-Math.sin(this.rotation) * m)) ? 0 : this.aX;
 		this.aY = (Math.abs(this.vY) >= Math.abs(Math.cos(this.rotation) * m)) ? 0 : this.aY;
+
+		if (m === 0) {
+			this.vX = 0;
+			this.vY = 0;
+		}
 	}
 
 	draw(g) {
@@ -175,6 +180,10 @@ class Character extends AnimatedSprite {
 
 	getHealthRatio() {
 		return (this.maxHealth <= 0) ? 0 : this.health / this.maxHealth;
+	}
+
+	changeCombatState(state) {
+		this.getLevel().changeCombatState(state);
 	}
 
 	removeHealth(hit, damageType) {

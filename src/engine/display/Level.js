@@ -38,8 +38,14 @@ class Level extends DisplayObjectContainer{
 		this.movers = [];
 		this.obstacles = [];
 		this.scriptObjects = [];
-		this.potions = [];
 		this.game = game;
+		this.inCombat = false;
+		this.dropCombatTime = new Date().getTime();	
+
+		this.addEventListener(EVENTS.COMBAT_STATE_CHANGE, this, function(state){
+			let musicToFade = this.inCombat ? "background-nervous" : "background-normal";		
+			new SoundManager().fadeMusic(musicToFade);
+		}, this);	
 	}
 
 	update(pressedKeys) {
@@ -53,6 +59,10 @@ class Level extends DisplayObjectContainer{
 			}
 		});
 		this.healthBars = this.healthBars.filter((healthBar) => (!healthBar.isDead()));
+
+		if(this.inCombat && this.dropCombatTime < new Date().getTime()) {
+			this.changeCombatState(false);
+		}
 
 		// Remove animals that have spawned and died
 		this.animals.forEach(function (animal) {
@@ -93,54 +103,17 @@ class Level extends DisplayObjectContainer{
 		});
 		this.scriptObjects = this.scriptObjects.filter((scriptObject) => (!scriptObject.activated));
 
-		// Remove potions that have been triggered
-		this.potions.forEach(function (potion) {
-			if (potion.used) {
-				that.removeChild(potion);
-			}
-		});
-		this.potions = this.potions.filter((potion) => (!potion.used));
-
 		// Check collisions
 		this.movers.forEach(mover => {
 			this.colliders.forEach(collider => {
 				if (mover !== collider) 
 					if (mover.collidesWith(collider)) {
-						// let mHitbox = mover.hitbox.hitbox,
-						// 	cHitbox = collider.hitbox.hitbox,
-						// 	xAdj = 0,
-						// 	yAdj = 0,
-						// 	mPos = mover.getPosition();
-						// //move out left or right
-						// if (mHitbox.tr.x > cHitbox.tl.x) {
-						// 	xAdj = cHitbox.tl.x - mHitbox.tr.x;
-						// } else if (mHitbox.tl.x < cHitbox.tr.x) {
-						// 	xAdj = cHitbox.tr.x - mHitbox.tl.x;
-						// }
-						// //move out top or bottom
-						// if (mHitbox.bl.y > cHitbox.tl.y) {
-						// 	yAdj = cHitbox.tl.y - mHitbox.bl.y;
-						// } else if (mHitbox.tl.y < cHitbox.bl.y) {
-						// 	yAdj = cHitbox.bl.y - mHitbox.tl.y;
-						// }
-
-						// mover.setPosition({
-						// 	x: mPos.x + xAdj,
-						// 	y: mPos.y + yAdj
-						// });
 					}
 			});
 		});
 
 		this.scriptObjects.forEach(scriptObject => {
 			if(scriptObject.collidesWith(this.biomancer)) {
-				//Do nothing because the event handles all that jazz
-			}
-		});
-
-		// Potion collisions
-		this.potions.forEach(potion => {
-			if(potion.collidesWith(this.biomancer)) {
 				//Do nothing because the event handles all that jazz
 			}
 		});
@@ -213,13 +186,22 @@ class Level extends DisplayObjectContainer{
 			this.addCollider(entity);
 		} else if(entity instanceof ScriptObject) {
 			this.scriptObjects.push(entity);
-		} else if(entity instanceof Potion) {
-			this.potions.push(entity);
 		}
 
 		if(options["monitorHealth"] !== undefined && options["monitorHealth"]) {
 			this.monitorHealth(entity);
 		}
+	}
+
+	changeCombatState(state) {
+		if(state) {
+			this.dropCombatTime = new Date().getTime() + 5000;
+		}
+		if(state !== this.inCombat) {
+			this.inCombat = state;
+			this.dispatchEvent(EVENTS.COMBAT_STATE_CHANGE, state);
+		}
+		
 	}
 
 	reload() {

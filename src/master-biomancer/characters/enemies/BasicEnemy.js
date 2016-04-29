@@ -42,9 +42,6 @@ class BasicEnemy extends Enemy {
 
 		BASIC_ENEMY_VARS.count++;
 
-		// Sound manager
-		this.SM = new SoundManager();
-
 		// Load sounds
 		var that = this;
 		BASIC_ENEMY_VARS.ATTACK_SOUNDS.forEach(function (soundObj) {

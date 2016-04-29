@@ -674,7 +674,7 @@ class LevelEditor extends DisplayObject {
 	 */
 	setDrawDragging(value, e) {
 		if (this.drawDragging && !value) {
-			this.generateCurrentObject();
+			this.generateCurrentObject(e);
 		}
 
 		this.drawDragging = value;
