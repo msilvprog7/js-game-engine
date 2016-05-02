@@ -10,7 +10,8 @@ var SEALED_WALL_VARS = {
 		indexReferencePlacing: false, //True is before, false is after
 		monitorHealth: false //True only if monitor health from start
 	},
-	TIME_BETWEEN_WALLS: 150,
+	TIME_BETWEEN_WALLS: 250,
+	SOUND: {id: "door-slam-sound", sound: "biomancer/misc/door-slam.mp3", length: 1000},
 	count: 0
 };
 
@@ -20,6 +21,12 @@ class SealedWall extends ScriptObject {
 	constructor(id) {
 		super(id);
 
+		// Sound manager
+		this.SM = new SoundManager();
+
+		if (!this.SM.hasSound(SEALED_WALL_VARS.SOUND.id)) {
+			this.SM.loadSound(SEALED_WALL_VARS.SOUND.id, SEALED_WALL_VARS.SOUND.sound);
+		}
 	}
 
 	script() {
@@ -34,6 +41,13 @@ class SealedWall extends ScriptObject {
 				that.getLevel().addWall(wall);
 			}, timeDiff);
 			timeDiff += SEALED_WALL_VARS.TIME_BETWEEN_WALLS;
+		});
+
+		// Play sound 3 times
+		[0, 1, 2].forEach(function (time) {
+			setTimeout(function () {
+				that.SM.playSound(SEALED_WALL_VARS.SOUND.id);
+			}, time * SEALED_WALL_VARS.SOUND.length);
 		});
 	}
 
