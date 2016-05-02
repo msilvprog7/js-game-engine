@@ -1,12 +1,12 @@
 "use strict";
 
 var LEVEL_LIST = [
-		BOSSBATTLE,
 		LEVEL1,
 		LEVEL2,
 		LEVEL3,
 		LEVEL4,
-		LEVEL5
+		LEVEL5,
+		BOSSBATTLE,
 	],
 
 	addToLevel = function (level, obj, options) { level.addEntityToLevel(obj, options); },
