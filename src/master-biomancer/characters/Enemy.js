@@ -57,7 +57,8 @@ class Enemy extends Character {
 	canAttack() {
 		return this.friendlyFocus !== undefined && 
 			new Date().getTime() > this.nextAttackTime && 
-			this.friendlyFocus.distance <= this.attackRange;
+			this.friendlyFocus.distance <= this.attackRange
+			&& this.hasLineOfSight(this.friendlyFocus.obj);
 	}
 
 	attack() {
