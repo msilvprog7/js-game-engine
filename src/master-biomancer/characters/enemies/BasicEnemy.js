@@ -59,15 +59,51 @@ class BasicEnemy extends Enemy {
 			this.vX = 0;
 			this.vY = 0;
 		} else {
+			let posToMove,
+				myPos = this.getMidpoint(),
+				hasLOS; // = this.hasLineOfSight(this.friendlyFocus.obj);
+
 			//MOVE TOWARDS HIGHEST PRIORITY FRIENDLY, CLOSEST IF FRIENDLIES SHARE PRIORITY
 			if(friendlies.length > 0 && (this.friendlyFocus === undefined || friendlies[0].obj !== this.friendlyFocus || !this.friendlyFocus.obj.isAlive())) {
 				this.friendlyFocus = friendlies[0];
 			}
-			let posToMove = this.friendlyFocus.obj.getPosition(),
-				xMove = (this.position.x-CHARACTER_VARS.MOVE_EPSILON > posToMove.x) ? -1 : (this.position.x+CHARACTER_VARS.MOVE_EPSILON < posToMove.x) ? 1 : 0, 
-				yMove = (this.position.y-CHARACTER_VARS.MOVE_EPSILON > posToMove.y) ? -1 : (this.position.y+CHARACTER_VARS.MOVE_EPSILON < posToMove.y) ? 1 : 0;
 
-			if(this.friendlyFocus.distance <= this.attackRange) { 
+			hasLOS = this.hasLineOfSight(this.friendlyFocus.obj);
+			if (hasLOS) {
+				posToMove = this.friendlyFocus.obj.getPosition();
+			} else {
+				// get aStarPath if needed
+				let time = new Date().getTime(),
+					grid = this.getLevel().getGrid();
+
+				myPos = grid.getObject(this.id).getPixelOrigin();
+
+				this.updatePath(this.friendlyFocus.obj);
+				// try to find secondary target
+				if (this.path.length === 0) {
+					let newTarget = this.getSecondaryTarget(friendlies);
+					if (newTarget !== -1) {
+						// found target
+						this.friendlyFocus = newTarget;
+						this.path = [this.friendlyFocus.obj.getPosition()];
+						hasLOS = true;
+					} else {
+						// no target found, don't move
+						return;
+					}
+				}
+				
+				posToMove = this.path[0];
+			}
+
+			// Not sure if we should use move_epsilon, do on others
+			// let	xMove = (myPos.x-CHARACTER_VARS.MOVE_EPSILON > posToMove.x) ? -1 : (myPos.x+CHARACTER_VARS.MOVE_EPSILON < posToMove.x) ? 1 : 0, 
+			// 	yMove = (myPos.y-CHARACTER_VARS.MOVE_EPSILON > posToMove.y) ? -1 : (myPos.y+CHARACTER_VARS.MOVE_EPSILON < posToMove.y) ? 1 : 0;
+
+			let	xMove = (myPos.x > posToMove.x) ? -1 : (myPos.x < posToMove.x) ? 1 : 0, 
+				yMove = (myPos.y > posToMove.y) ? -1 : (myPos.y < posToMove.y) ? 1 : 0;		
+
+			if(this.friendlyFocus.distance <= this.attackRange && hasLOS) { 
 				this.orient(xMove, yMove);
 				return; 
 			}
@@ -82,19 +118,21 @@ class BasicEnemy extends Enemy {
 
 	attack() {
 		super.attack();
+		if (this.hasLineOfSight(this.friendlyFocus.obj)) {
 
-		//ATTACK CLOSEST FRIENDLY TARGET
-		let friendPivot = this.friendlyFocus.obj.getNormalizedPivotPoint(),
-			myPivot = this.getNormalizedPivotPoint(),
-			direction = MathUtil['3PI2']-Math.atan2((myPivot.y - friendPivot.y), (friendPivot.x - myPivot.x));
+			//ATTACK CLOSEST FRIENDLY TARGET
+			let friendPivot = this.friendlyFocus.obj.getNormalizedPivotPoint(),
+				myPivot = this.getNormalizedPivotPoint(),
+				direction = MathUtil['3PI2']-Math.atan2((myPivot.y - friendPivot.y), (friendPivot.x - myPivot.x));
 
-		if(direction >= MathUtil['2PI']) { 
-			direction -= MathUtil['2PI'];
-		}
- 		new Bullet(this, BASIC_ENEMY_VARS.BULLET_IMG, BASIC_ENEMY_VARS.BULLET_SPEED, BASIC_ENEMY_VARS.ATTACK_DMG, 
- 			BASIC_ENEMY_VARS.DAMAGE_TYPE, direction, this.getLevel(), BASIC_ENEMY_VARS.BULLET_FUNCTION);
+			if(direction >= MathUtil['2PI']) { 
+				direction -= MathUtil['2PI'];
+			}
+	 		new Bullet(this, BASIC_ENEMY_VARS.BULLET_IMG, BASIC_ENEMY_VARS.BULLET_SPEED, BASIC_ENEMY_VARS.ATTACK_DMG, 
+	 			BASIC_ENEMY_VARS.DAMAGE_TYPE, direction, this.getLevel(), BASIC_ENEMY_VARS.BULLET_FUNCTION);
 
- 		// Play sound
- 		this.SM.playSound(MathUtil.eitherFromList(BASIC_ENEMY_VARS.ATTACK_SOUNDS_LIST));
+	 		// Play sound
+	 		this.SM.playSound(MathUtil.eitherFromList(BASIC_ENEMY_VARS.ATTACK_SOUNDS_LIST));
+ 		}
 	}
 }

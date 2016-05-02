@@ -49,14 +49,25 @@ class EventDispatcher{
 	}
 
 	dispatchEvent(eventType, data) {
-		// End early
-		if (this.events[eventType] === undefined) {
-			return;
-		}		
-		// Call callbacks
-		if (data === undefined) { data = []; }
-		else if(data.iterator === undefined) { data = [data];}
-		this.events[eventType].forEach(e => { if (typeof(e.callback) === "function") { e.callback.call(e.context, ...data); } });
+		
+		if (eventType instanceof Event) {
+			let e = eventType;
+			this.events[e.eventType].forEach(l => {
+				if (typeof(l.callback) === "function")
+					l.callback(e);
+			});
+
+		} else if (typeof eventType == 'string') {
+
+			// End early
+			if (this.events[eventType] === undefined) {
+				return;
+			}		
+			// Call callbacks
+			if (data === undefined) { data = []; }
+			else if(data.iterator === undefined) { data = [data];}
+			this.events[eventType].forEach(e => { if (typeof(e.callback) === "function") { e.callback.call(e.context, ...data); } });
+		}
 	}
 
 }

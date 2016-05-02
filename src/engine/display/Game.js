@@ -59,9 +59,9 @@ class Game extends DisplayObjectContainer{
 		this.levelParser = new LevelParser(classReferences);
 	}
 
-	addLevel(levelId, levelStr) {
-		this.levelParser.store(levelId, levelStr);
-		this.levelsList.push(levelId);
+	addLevel(level) {
+		this.levelParser.store(level.id, level.level, level.tl, level.br);
+		this.levelsList.push(level.id);
 
 		// Set current level to first
 		if (this.levelsList.length === 1) {

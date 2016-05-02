@@ -63,8 +63,34 @@ class Hotbot extends Enemy {
 			if(friendlies.length > 0 && (this.friendlyFocus === undefined || friendlies[0].obj !== this.friendlyFocus || !this.friendlyFocus.obj.isAlive())) {
 				this.friendlyFocus = friendlies[0];
 			}
-			let posToMove = this.friendlyFocus.obj.getPosition(),
-				xMove = (this.position.x-CHARACTER_VARS.MOVE_EPSILON > posToMove.x) ? -1 : (this.position.x+CHARACTER_VARS.MOVE_EPSILON < posToMove.x) ? 1 : 0, 
+			let hasLOS = this.hasLineOfSight(this.friendlyFocus.obj),
+				posToMove;
+
+			if (hasLOS) {
+				posToMove = this.friendlyFocus.obj.getPosition();
+			} else {
+				let time = new Date().getTime(),
+					grid = this.getLevel().getGrid();
+
+				this.updatePath(this.friendlyFocus.obj);
+
+				if (this.path.length === 0) {
+					// find secondary target
+					let newTarget = this.getSecondaryTarget(friendlies);
+					if (newTarget !== -1) {
+						this.friendlyFocus = newTarget;
+						this.path = [this.friendlyFocus.obj.getPosition()];
+						hasLOS = true;
+					} else {
+						// no target found
+						return;
+					}
+				}
+				posToMove = this.path[0];
+			}
+
+				
+			let xMove = (this.position.x-CHARACTER_VARS.MOVE_EPSILON > posToMove.x) ? -1 : (this.position.x+CHARACTER_VARS.MOVE_EPSILON < posToMove.x) ? 1 : 0, 
 				yMove = (this.position.y-CHARACTER_VARS.MOVE_EPSILON > posToMove.y) ? -1 : (this.position.y+CHARACTER_VARS.MOVE_EPSILON < posToMove.y) ? 1 : 0;
 
 			if(this.friendlyFocus.distance <= this.attackRange) { 
