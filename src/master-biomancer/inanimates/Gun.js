@@ -4,7 +4,7 @@ var GUN_VARS = {
 	ID: "gun",
 	FILENAME: "biomancer/main-char/gun.png",
 	RECHARGE_RATE: 1000, // ms
-	ANIMALS: ["WOLF", "SPIDER", "PENGUIN", "TURTLE"],
+	ANIMALS: ["WOLF", "SPIDER", "PENGUIN", "TURTLE", "DRAGON"],
 	LAUNCH_OFFSET: {x: 7.5, y: 36}
 };
 
@@ -75,6 +75,9 @@ class Gun extends Sprite {
 				break;
 			case "TURTLE":
 				animal = new Turtle();
+				break;
+			case "DRAGON":
+				animal = new Dragon();
 				break;
 			default:
 				return animal;

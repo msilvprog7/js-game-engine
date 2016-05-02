@@ -38,6 +38,13 @@ class Animation {
 		}
 	}
 
+	reload() {
+		this.finished = false;
+		if(!this.loop) {
+			this.currentFrame = 0;
+		}
+	}
+
 	nextFrame() {
 		var increment = (this.reverse) ? -1 : 1;
 		this.currentFrame += increment;
@@ -172,6 +179,7 @@ class AnimatedSprite extends Sprite{
 		var animation = this.animations[property];
 		if (animation) {
 			this.loaded = animation.isLoaded();
+			animation.reload();
 			this.displayImage = animation.getFrameImage();
 			this.currentAnimation = property;
 		}

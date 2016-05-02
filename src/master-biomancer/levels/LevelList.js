@@ -75,6 +75,18 @@ var LEVEL_LIST = [
 			type: "Enemies",
 			resource: "resources/images/biomancer/enemies/elemental-sentry/elemental-sentry-fire.png"
 		},
+		"BossEnemy": {
+			constructor: function () { return new BossEnemy(); },
+			addToLevel: addToLevel,
+			generate: undefined,
+			generateParams: -1,
+			generateParamsEditorOption: undefined,
+			options: ENEMY_VARS.ADD_DEFAULTS,
+			pivot: BOSS_ENEMY_VARS.SPAWN_IDLE_PIVOT,
+			dimensions: BOSS_ENEMY_VARS.SPAWN_DIMENSIONS,
+			type: "Enemies",
+			resource: "resources/images/biomancer/enemies/boss-enemy/boss-enemy-idle.png"
+		},
 		"Exit": {
 			constructor: function () { return new Exit(); },
 			addToLevel: addToLevel,

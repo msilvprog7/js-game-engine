@@ -3,7 +3,7 @@
 var BOSS_ENEMY_VARS = {
 	count: 0,
 	SIGHT_RANGE: 3000,
-	ATTACK_RANGE: [500, 100, 700 3000],
+	ATTACK_RANGE: [500, 100, 700, 3000],
 	ATTACK_DMG: [10, 20, 15, 20],
 	DAMAGE_TYPE: [
 		DAMAGE_TYPES["LASER"],
@@ -175,13 +175,13 @@ class BossEnemy extends Enemy {
 
 	attack() {
 		super.attack();
+		let myPivot = this.getNormalizedPivotPoint();
 		switch(this.phase) {			
 			case 2:
 				this.friendlyFocus.obj.removeHealth(BOSS_ENEMY_VARS.ATTACK_DMG[this.phase-1], BOSS_ENEMY_VARS.DAMAGE_TYPE[this.phase-1]);
 				this.friendlyFocus.obj.addStatus("move-slow", 5000, 0.0);
 				break;
-			case 4:
-				let myPivot = this.getNormalizedPivotPoint();
+			case 4:				
 				this.getInSight(BOSS_ENEMY_VARS.SIGHT_RANGE).forEach(friendly => {
 					let friendPivot = friendly.obj.getNormalizedPivotPoint(),					
 						direction = MathUtil['3PI2']-Math.atan2((myPivot.y - friendPivot.y), (friendPivot.x - myPivot.x));
@@ -190,13 +190,12 @@ class BossEnemy extends Enemy {
 					}
 			 		new Bullet(this, BOSS_ENEMY_VARS.BULLET_IMG, BOSS_ENEMY_VARS.BULLET_SPEED, BOSS_ENEMY_VARS.ATTACK_DMG, 
 			 			BOSS_ENEMY_VARS.DAMAGE_TYPE, direction, this.getLevel(), BOSS_ENEMY_VARS.BULLET_FUNCTION[this.phase-1]);
-					});
+				});
 				break;
 			case 3:
 			default: //phase 1
 			//ATTACK CLOSEST FRIENDLY TARGET
 				let friendPivot = this.friendlyFocus.obj.getNormalizedPivotPoint(),
-					myPivot = this.getNormalizedPivotPoint(),
 					direction = MathUtil['3PI2']-Math.atan2((myPivot.y - friendPivot.y), (friendPivot.x - myPivot.x));
 
 				if(direction >= MathUtil['2PI']) { 
@@ -228,7 +227,13 @@ class BossEnemy extends Enemy {
 		this.phase = 4;
 		this.attackRange = BOSS_ENEMY_VARS.ATTACK_RANGE[this.phase-1];
 		//Give player the dragon so he can defeat the boss
+		let level = this.getLevel(),
+			biomancerGun = level.biomancer.gun;
+		let UI = new UserInterface();
+		UI.animalContainer.addAnimal("dragon", 4);
+		biomancerGun.addAnimalToGun("DRAGON");
 
+		//Break environment maybe?
 	}
 
 	removeHealth(hit, damageType) {

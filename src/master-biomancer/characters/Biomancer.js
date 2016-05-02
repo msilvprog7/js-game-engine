@@ -72,6 +72,10 @@ class Biomancer extends Friendly {
 
 			else if(pressedKeys.contains(52)) {
 				this.gun.swapAnimal("TURTLE");			
+			} 
+
+			else if(pressedKeys.contains(53)) {
+				this.gun.swapAnimal("DRAGON");	
 			}
 
 			else if(pressedKeys.contains(9)) {
