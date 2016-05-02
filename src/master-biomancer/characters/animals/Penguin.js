@@ -58,12 +58,37 @@ class Penguin extends Animal {
 		// Random movement in radius
 		if(this.enemyFocus !== undefined && this.enemyFocus.obj.isAlive()) {
 			//Move towards enemy
-			let posToMove = this.enemyFocus.obj.getNormalizedPivotPoint(),
-				myPos = this.getNormalizedPivotPoint(),
-				xMove = (myPos.x-CHARACTER_VARS.MOVE_EPSILON > posToMove.x) ? -1 : (myPos.x+CHARACTER_VARS.MOVE_EPSILON < posToMove.x) ? 1 : 0, 
-				yMove = (myPos.y-CHARACTER_VARS.MOVE_EPSILON > posToMove.y) ? -1 : (myPos.y+CHARACTER_VARS.MOVE_EPSILON < posToMove.y) ? 1 : 0;
+			let hasLOS = this.hasLineOfSight(this.enemyFocus.obj),
+				posToMove,
+				myPos,
+				xMove,
+				yMove;
 
-			if(this.enemyFocus.distance <= this.attackRange) { 
+			if (hasLOS) {
+				posToMove = this.enemyFocus.obj.getNormalizedPivotPoint();
+				myPos = this.getNormalizedPivotPoint();
+			} else {
+				this.updatePath(this.enemyFocus.obj);
+				if (this.path.length === 0) {
+					let enemies = this.getInSightRange(),
+						newTarget = this.getSecondaryTarget(enemies);
+
+					if (newTarget !== -1) {
+						this.enemyFocus = newTarget;
+						this.path = [this.enemyFocus.obj.getPosition()];
+						hasLOS = true;
+					} else {
+						return;
+					}
+				}
+				posToMove = this.path[0];
+				myPos = this.getLevel().getGrid().getObject(this.id).getPixelOrigin();
+			}
+			
+			xMove = (myPos.x-CHARACTER_VARS.MOVE_EPSILON > posToMove.x) ? -1 : (myPos.x+CHARACTER_VARS.MOVE_EPSILON < posToMove.x) ? 1 : 0;
+			yMove = (myPos.y-CHARACTER_VARS.MOVE_EPSILON > posToMove.y) ? -1 : (myPos.y+CHARACTER_VARS.MOVE_EPSILON < posToMove.y) ? 1 : 0;
+
+			if(this.enemyFocus.distance <= this.attackRange && hasLOS) { 
 				this.orient(xMove, yMove);
 				this.vX = 0;
 				this.vY = 0;
@@ -124,16 +149,18 @@ class Penguin extends Animal {
 		super.attack();
 		
 		//ATTACK CLOSEST ENEMY TARGET
-		let enemyPivot = this.enemyFocus.obj.getNormalizedPivotPoint(),
-			myPivot = this.getNormalizedPivotPoint(),
-			direction = MathUtil['3PI2']-Math.atan2((myPivot.y - enemyPivot.y), (enemyPivot.x - myPivot.x));
+		if (this.hasLineOfSight(this.enemyFocus.obj)) {
+			let enemyPivot = this.enemyFocus.obj.getNormalizedPivotPoint(),
+				myPivot = this.getNormalizedPivotPoint(),
+				direction = MathUtil['3PI2']-Math.atan2((myPivot.y - enemyPivot.y), (enemyPivot.x - myPivot.x));
 
-		if(direction >= MathUtil['2PI']) { 
-			direction -= MathUtil['2PI'];
-		}
-		
- 		new Bullet(this, PENGUIN_VARS.BULLET_IMG, PENGUIN_VARS.BULLET_SPEED, PENGUIN_VARS.ATTACK_DMG, 
- 			PENGUIN_VARS.DAMAGE_TYPE, direction, this.getLevel(), PENGUIN_VARS.BULLET_FUNCTION);
+			if(direction >= MathUtil['2PI']) { 
+				direction -= MathUtil['2PI'];
+			}
+			
+	 		new Bullet(this, PENGUIN_VARS.BULLET_IMG, PENGUIN_VARS.BULLET_SPEED, PENGUIN_VARS.ATTACK_DMG, 
+	 			PENGUIN_VARS.DAMAGE_TYPE, direction, this.getLevel(), PENGUIN_VARS.BULLET_FUNCTION);
+	 	}
 	}
 	
 }

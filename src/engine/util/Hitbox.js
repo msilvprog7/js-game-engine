@@ -82,11 +82,12 @@ class Hitbox {
 	}
 
 	setHitboxFromImage(image) {
+		// minus 1 bc occupies pixels 0 to width-1
 		this.rawHitbox = {
 			tl: new Point(0, 0), 
-			tr: new Point(image.width, 0),		
-			br: new Point(image.width, image.height), 
-			bl: new Point(0, image.height)			
+			tr: new Point(image.width-1, 0),		
+			br: new Point(image.width-1, image.height-1), 
+			bl: new Point(0, image.height-1)			
 		};
 		this.update();
 	}

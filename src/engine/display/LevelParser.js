@@ -8,7 +8,7 @@ class LevelParser {
 		this.levels = {};
 	}
 
-	store(id, str) {
+	store(id, str, tl, br) {
 		// Create if necessary
 		if (this.levels[id] === undefined || this.levels[id] === null) {
 			this.levels[id] = {};
@@ -17,6 +17,8 @@ class LevelParser {
 		// Set content and loaded
 		this.levels[id].level = str;
 		this.levels[id].loaded = true;
+		this.levels[id].tl = tl;
+		this.levels[id].br = br;
 	}
 
 	get(id, game) {
@@ -37,12 +39,13 @@ class LevelParser {
 			return null;
 		}
 
-		return this.parse(id, levelObj.level, game);
+		return this.parse(id, levelObj, game);
 	}
 
-	parse(id, str, game) {
+	parse(id, levelObj, game) {
 		var level = new Level(id, game);
-		return this.parseLevel(str, level);
+		level.setCorners([levelObj.tl, levelObj.br]);
+		return this.parseLevel(levelObj.level, level);
 	}
 
 	parseLevel(str, level) {

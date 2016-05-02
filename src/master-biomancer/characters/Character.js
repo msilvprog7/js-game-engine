@@ -73,6 +73,11 @@ class Character extends AnimatedSprite {
 
 		// Set max speed
 		this.maxSpeed = maxSpeed;
+
+		// A star vars
+		this.path = [];
+		this.lastPathTime = new Date().getTime();
+
 	}
 
 	update(pressedKeys) {
@@ -113,7 +118,7 @@ class Character extends AnimatedSprite {
 		this.setRotation(direction);
 
 		// Reform hitbox
-		this.hitbox.applyBoundingBox();
+		// this.hitbox.applyBoundingBox();
 	}
 
 	orient(x, y) {
@@ -271,6 +276,45 @@ class Character extends AnimatedSprite {
 	}
 
 	
+	/**
+	 * Check if other character is in line of site.
+	 */
+	hasLineOfSight(target) {
+		return this.getLevel().getGrid().hasLineOfSight(this.id, target.id);
+	}
 
-	
+	/**
+	 * Get position to move using A*
+	 */
+	updatePath(target) {
+		let time = new Date().getTime(),
+			grid = this.getLevel().getGrid(),
+			origin = grid.getObject(this.id).getPixelOrigin();
+
+		if (time - this.lastPathTime > 500) {
+			this.path = grid.getObjectPath(this.id, target.id);
+			this.lastPathTime = time;
+		}
+
+		// unshift first if made it
+		if (this.path.length > 0 && Math.abs(this.path[0].x-origin.x) < 25 && Math.abs(this.path[0].y - origin.y) < 25) {
+			this.path.shift();
+		}
+		// posToMove = Math.abs(this.path[0].x-midpoint.x) > CHARACTER_VARS.MOVE_EPSILON || Math.abs(this.path[0].y - midpoint.y) > CHARACTER_VARS.MOVE_EPSILON ? this.path[0] : this.path[1];
+		// posToMove = this.path[0];
+		// return path;
+	}
+
+	/**
+	 * Get secondary target if A* path not found
+	 */
+	getSecondaryTarget(targets) {
+		for (let target of targets) {
+			if (this.hasLineOfSight(target.obj)) {
+				return target
+			}
+		}
+		// no target found
+		return -1;
+	}
 }

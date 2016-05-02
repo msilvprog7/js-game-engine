@@ -179,7 +179,7 @@ class LevelEditor extends DisplayObject {
 		this.setPosition({x: -this.canvas.width / 2, y: -this.canvas.height / 2});
 
 		// Create level
-		this.level = new Level("level", undefined);
+		this.level = new Level("level", undefined, true);
 		this.level.setPosition({x: -this.position.x, y: -this.position.y}); // Always negative of the current editors
 		this.level.monitorHealth = function (entity) { };
 
@@ -556,7 +556,7 @@ class LevelEditor extends DisplayObject {
 		this.level.removeChildren();
 
 		// Prepare
-		tempLevel = new Level(levelObj.id, undefined);
+		tempLevel = new Level(levelObj.id, undefined, true);
 		tempLevel.monitorHealth = function (entity) { };
 
 		// Set display
@@ -603,10 +603,14 @@ class LevelEditor extends DisplayObject {
 	}
 
 	getLevelEncoding() {
-		var encoding = "{\n" + 
-			"\tid: \"" + document.getElementById(LEVEL_EDITOR_VARS.LEVEL_ID_INPUT).value + "\",\n" + 
-			"\tlevel: \"" + this.level.children.reduce((pv, cv) => pv + cv.id, "") + "\"\n" + 
-			"}";
+		var corners = this.getCorners(),
+			encoding = "{\n" + 
+				"\tid: \"" + document.getElementById(LEVEL_EDITOR_VARS.LEVEL_ID_INPUT).value + "\",\n" + 
+				"\tlevel: \"" + this.level.children.reduce((pv, cv) => pv + cv.id, "") + "\",\n" + 
+				"\ttl: {x: " + corners[0].x + ", y: " + corners[0].y + "},\n" +
+				"\tbr: {x: " + corners[1].x + ", y: " + corners[1].y + "}\n" +
+				"}";
+
 		return encoding;
 	}
 
@@ -1066,6 +1070,31 @@ class LevelEditor extends DisplayObject {
 
 	formatNumber(num) {
 		return Math.floor(num);
+	}
+
+
+	getCorners() {
+		var tl = {},
+			br = {};
+		
+		for (let child of this.level.children) {
+			// check tl
+			let pos0 = child.getPosition(),
+				pos1 = {
+					x: pos0.x + child.getWidth(),
+					y: pos0.y + child.getHeight()
+				};
+
+			child.getWidth();
+			child.getHeight();
+
+			tl.x = (tl.x === undefined || pos0.x < tl.x) ? pos0.x : tl.x;
+			tl.y = (tl.y === undefined || pos0.y < tl.y) ? pos0.y : tl.y;
+			br.x = (br.x === undefined || pos1.x > br.x) ? pos1.x : br.x;
+			br.y = (br.y === undefined || pos1.y > br.y) ? pos1.y : br.y;
+		}
+
+		return [tl, br];
 	}
 
 }
