@@ -1,6 +1,7 @@
 "use strict";
 
 var LEVEL_LIST = [
+		BOSSBATTLE,
 		LEVEL1,
 		LEVEL2,
 		LEVEL3,
@@ -163,6 +164,22 @@ var LEVEL_LIST = [
 			generateParams: 3,
 			generateParamsEditorOption: ["Get-Text", "Exceed-Width", "Exceed-Height"],
 			options: DIALOGUE_SCRIPT_VARS.ADD_DEFAULTS,
+			pivot: undefined,
+			dimensions: undefined,
+			type: "Scripts",
+			resource: "resources/images/biomancer/misc/dialogue.png",
+			exceedWidth: 50,
+			exceedHeight: 50
+		},
+
+		/* Scripts */
+		"SealedWall": {
+			constructor: undefined,
+			addToLevel: addToLevel,
+			generate: function (cols) { return SealedWall.generateSealedWall(cols); },
+			generateParams: 1,
+			generateParamsEditorOption: ["Exceed-Width"],
+			options: SEALED_WALL_VARS.ADD_DEFAULTS,
 			pivot: undefined,
 			dimensions: undefined,
 			type: "Scripts",
