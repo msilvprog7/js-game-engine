@@ -26,6 +26,10 @@ class MasterBiomancerGame extends Game{
 		this.UI = new UserInterface();
 		this.addChild(this.UI);
 		this.nextMusicFade = new Date().getTime();
+
+		// this.menus = {main: new Menu('main')};
+		this.initializeMenus();
+		this.showMenu('main');
 	}
 
 	update(pressedKeys, timedelta){		
@@ -33,6 +37,9 @@ class MasterBiomancerGame extends Game{
 
 		// Update the tween juggler
 		this.TJ.update(timedelta);
+		if (pressedKeys.contains(27)) {
+			this.showMenu('main');
+		}
 	}
 
 	draw(g){
@@ -49,6 +56,56 @@ class MasterBiomancerGame extends Game{
 		// Load
 		//this.nextLevel();
 		this.reloadLevel();
+	}
+
+	initializeMenus() {
+		// main menu
+		var mainMenu = new Menu('main', this),
+			opt1 = new MenuOption('opt1', 'Start Game', function (game) {
+				game.setCurrentLevel(0);
+			}),
+			opt2 = new MenuOption('opt2', 'Select Level', function (game) {
+				game.showMenu('selectLevel');
+			});
+
+		opt1.setPosition({y:300, x:200});
+		opt2.setPosition({y:350, x: 200})
+		mainMenu.addOption(opt1);
+		mainMenu.addOption(opt2);
+		mainMenu.setFontSize(30);
+		mainMenu.setFont('Montserrat');
+
+
+		var text = new TextDO('title', 'Master Biomancer', '50px Montserrat');
+		text.setPosition({x:200, y: 150});
+		mainMenu.addChild(text);
+
+		//Level select menu
+		var levelMenu = new Menu('selectLevel', this),
+			levels = this.getLevelsList();
+
+		for (let i=0; i < levels.length; i++) {
+			var level = levels[i],
+				title = level.split('-').join(' '),
+				opt = new MenuOption('level' + i, title, function (game) {
+					game.setCurrentLevel(i);
+				});
+
+			opt.setPosition({x:200, y: 150 + i*50});
+			levelMenu.addOption(opt);
+		}
+		var lmBack = new MenuOption('lm-back', 'Back', function (game) {
+			game.showMenu('main');
+		});
+		lmBack.setPosition({x:200, y:500});
+
+		levelMenu.addOption(lmBack);
+
+
+		this.menus = {
+			'main': mainMenu,
+			'selectLevel': levelMenu
+		};
 	}
 }
 
