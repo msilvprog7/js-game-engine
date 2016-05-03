@@ -39,6 +39,7 @@ class Level extends DisplayObjectContainer{
 		this.obstacles = [];
 		this.scriptObjects = [];
 		this.game = game;
+		this.keys = 0;
 		this.inCombat = false;
 		this.dropCombatTime = new Date().getTime();	
 
@@ -186,6 +187,10 @@ class Level extends DisplayObjectContainer{
 			this.addCollider(entity);
 		} else if(entity instanceof ScriptObject) {
 			this.scriptObjects.push(entity);
+			if(entity.constructor.name === "KeyScript") {
+				this.keys++;
+				console.log("THERE ARE " + this.keys + " KEYS IN THE LEVEL");
+			}
 		}
 
 		if(options["monitorHealth"] !== undefined && options["monitorHealth"]) {

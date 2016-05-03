@@ -72,7 +72,7 @@ class Game extends DisplayObjectContainer{
 	reloadLevel() {
 		this.removeChildren();
 		this.addChild(this.createCurrentLevel());
-		// new UserInterface().reloadDefaults();
+		new UserInterface().reloadDefaults();
 		this.addChild(new UserInterface());
 	}
 

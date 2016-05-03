@@ -46,7 +46,7 @@ class Exit extends Sprite {
 		if(this.biomancer !== undefined && currentTime > this.nextUpdate) {
 			if(this.collidesWith(this.biomancer)) {
 				//You win the game			
-				let remainingKeys = this.UI.keysToGet;
+				let remainingKeys = this.getLevel().keys;
 				if(remainingKeys > 0 && this.currentKeys !== remainingKeys) {
 					this.currentKeys = remainingKeys;
 					let message = "I still need " + remainingKeys + " more " + ((remainingKeys > 1) ? "keys" : "key") + " to open this door";

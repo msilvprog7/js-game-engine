@@ -28,9 +28,6 @@ class KeyScript extends ScriptObject {
 		// Visible from the start
 		this.visible = KEY_SCRIPT_VARS.VISIBLE;
 
-		// Add to the number of keys in the UI
-		this.UserInterface.keysToGet++;
-
 		// Sound manager
 		this.SM = new SoundManager();
 
@@ -44,7 +41,7 @@ class KeyScript extends ScriptObject {
 		super.script();
 
 		// Decrease keys to get
-		this.UserInterface.keysToGet--;
+		this.getLevel().keys--;
 
 		// Play sound
 		this.SM.playSound(KEY_SCRIPT_VARS.KEY_COLLECT_SOUND.id);
