@@ -37,9 +37,9 @@ var BOSS_ENEMY_VARS = {
 			[DAMAGE_TYPES["FIRE"]]: 1.2,
 		}
 	],
-	SPAWN_IDLE: "biomancer/enemies/basic-enemy/basic-enemy.png",
-	SPAWN_IDLE_PIVOT: {x: 35, y: 15},
-	SPAWN_DIMENSIONS: {width: 70, height: 70},
+	SPAWN_IDLE: "biomancer/enemies/boss-enemy/boss-enemy.png",
+	SPAWN_IDLE_PIVOT: {x: 50, y: 50},
+	SPAWN_DIMENSIONS: {width: 100, height: 100},
 	BULLET_IMG: [
 		"biomancer/misc/bullet.png",
 		"biomancer/misc/bullet.png",
