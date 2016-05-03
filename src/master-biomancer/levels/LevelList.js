@@ -1,6 +1,7 @@
 "use strict";
 
 var LEVEL_LIST = [
+		BOSSBATTLE,
 		LEVEL1,
 		LEVEL2,
 		LEVEL3,

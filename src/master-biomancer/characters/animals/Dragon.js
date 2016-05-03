@@ -128,15 +128,15 @@ class Dragon extends Animal {
 
 			this.orient(xMove, yMove);
 		} else {
-			let enemies = this.getInSightRange(["Wolf"]);
+			let enemies = this.getInSightRange(["Wolf", "Penguin"]);
 			let currentAnimation = this.getCurrentAnimation();
 				if(currentAnimation.id !== "attack" || currentAnimation.finished) {
 					this.setCurrentAnimation("fly");
 				}
 			if(enemies.length > 0) {
-				let wolfFocus  = enemies.find(enemy => enemy instanceof Wolf);
-				if(wolfFocus) {
-					this.enemyFocus = wolfFocus; 
+				let animalFocus  = enemies.find(enemy => enemy.constructor.name === "Wolf" || enemy.constructor.name === "Penguin");
+				if(animalFocus) {
+					this.enemyFocus = animalFocus; 
 				} else {
 					this.enemyFocus = enemies[0];
 				}

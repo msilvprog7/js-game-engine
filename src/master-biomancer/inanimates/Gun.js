@@ -4,7 +4,7 @@ var GUN_VARS = {
 	ID: "gun",
 	FILENAME: "biomancer/main-char/gun.png",
 	RECHARGE_RATE: 1000, // ms
-	ANIMALS: ["WOLF", "SPIDER", "PENGUIN", "TURTLE", "DRAGON"],
+	ANIMALS: ["WOLF", "SPIDER", "PENGUIN", "TURTLE"],
 	LAUNCH_OFFSET: {x: 7.5, y: 36}
 };
 

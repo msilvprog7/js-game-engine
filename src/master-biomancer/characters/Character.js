@@ -272,7 +272,8 @@ class Character extends AnimatedSprite {
 
 	killSelf() {
 		this.health = 0;
-		this.die();
+		this.alive = false;
+		this.dispatchEvent(EVENTS.DIED);		
 	}
 
 	

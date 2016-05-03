@@ -124,9 +124,7 @@ class Turtle extends Animal {
 	attack() {
 		// Animate (includes killSelf behavior)
 		this.setCurrentAnimation("explosion");
-		this.removeHealth = function (hit, damageType) {
-			// Nothing - let the turle kill itself
-		};
+		this.health = 0;
 
 		// Attack enemies in range
 		let enemies = this.getInSightRange();
@@ -135,6 +133,11 @@ class Turtle extends Animal {
 				enemy.obj.removeHealth(TURTLE_VARS.ATTACK_DAMAGE, TURTLE_VARS.DAMAGE_TYPE);
 			}
 		});
+
+		this.SM.playSound(TURTLE_VARS.EXPLOSION_SOUND_ID);				
+		this.getCurrentAnimation().setFinishedCallback(function() {
+			this.killSelf();
+		}, this);
 
 		// Attack destroyable obstacles in range
 		let obstacles = this.getObstaclesInSightRange();
@@ -145,7 +148,6 @@ class Turtle extends Animal {
 		});
 
 		// Play sound
-		this.SM.playSound(TURTLE_VARS.EXPLOSION_SOUND_ID);
 	}
 	
 }

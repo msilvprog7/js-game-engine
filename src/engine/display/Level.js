@@ -17,7 +17,7 @@ var LEVEL_VARS = {
 		indexReferencePlacing: true, //True or undefined is before, false is after
 		monitorHealth: false //True only if monitor health from start
 	},
-	MAX_ANIMALS: 6,
+	MAX_ANIMALS: 3,
 	GRID_TILE_SIZE: 25
 };
 
