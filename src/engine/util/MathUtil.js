@@ -224,6 +224,13 @@ class MathUtil {
 		multiplier = multiplier > 0 ? multiplier : 0;
 		return maxVolume*multiplier;
 	}
+
+	static getMidpoint(tl, br) {
+		return {
+			x: (tl.x + br.x)/2,
+			y: (tl.y + br.y)/2
+		}
+	}
 }
 
 var init_pi = function() {

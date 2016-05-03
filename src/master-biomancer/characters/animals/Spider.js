@@ -3,7 +3,7 @@
 // Duration will equal (HEALTH / DECAY_AMOUNT) * ANIMAL_VARS.NEXT_DECAY
 var SPIDER_VARS = {
 	count: 0,
-	HEALTH: 30,
+	HEALTH: 20,
 	LAUNCH_IDLE: "biomancer/animals/spider/spider-launch.png",
 	LAUNCH_IDLE_PIVOT: {x: 6, y: 6},
 	LAUNCH_SPEED: 20,
@@ -11,7 +11,7 @@ var SPIDER_VARS = {
 	SPAWN_IDLE: "biomancer/animals/spider/spider-spawn.png",
 	SPAWN_IDLE_PIVOT: {x: 25, y: 25},
 	DECAY_AMOUNT: 1,
-	TURN_PROBABILITY: 0.1,
+	TURN_PROBABIITY: 0.1,
 	WALK_PROBABILITY: 0.75,
 	WALK_SPEED: 1,
 	RUN_SPEED: 7,

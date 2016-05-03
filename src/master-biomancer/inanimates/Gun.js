@@ -76,6 +76,9 @@ class Gun extends Sprite {
 			case "TURTLE":
 				animal = new Turtle();
 				break;
+			case "DRAGON":
+				animal = new Dragon();
+				break;
 			default:
 				return animal;
 		}

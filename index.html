@@ -11,6 +11,8 @@
 		</canvas>
 	</center>
 
+	<link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+
 	<!-- Game Engine -->
 	<script type="text/javascript" src="src/engine/util/ArrayList.js"></script>
 	<script type="text/javascript" src="src/engine/util/GameClock.js"></script>
@@ -22,13 +24,19 @@
 	<script type="text/javascript" src="src/engine/tween/TweenJuggler.js"></script>
 	<script type="text/javascript" src="src/engine/tween/TweenParam.js"></script>
 	<script type="text/javascript" src="src/engine/tween/Tween.js"></script>
+	
+	<!-- Events -->
+	<script type="text/javascript" src="src/engine/events/Event.js"></script>
 	<script type="text/javascript" src="src/engine/events/EventList.js"></script>
 	<script type="text/javascript" src="src/engine/events/EventDispatcher.js"></script>
+	<script type="text/javascript" src="src/engine/events/MoveEvent.js"></script>
+
 	<script type="text/javascript" src="src/engine/display/DisplayObject.js"></script>
 	<script type="text/javascript" src="src/engine/display/DisplayObjectContainer.js"></script>
 	<script type="text/javascript" src="src/engine/display/Sprite.js"></script>
 	<script type="text/javascript" src="src/engine/display/AnimatedSprite.js"></script>
 	<script type="text/javascript" src="src/engine/display/Game.js"></script>
+	<script type="text/javascript" src="src/engine/display/AStarGrid.js"></script>
 	<script type="text/javascript" src="src/engine/display/Level.js"></script>
 	<script type="text/javascript" src="src/engine/display/LevelParser.js"></script>
 	<script type="text/javascript" src="src/engine/display/shapes/Rectangle.js"></script>
@@ -43,6 +51,8 @@
 	<script type="text/javascript" src="src/master-biomancer/scripts/DialogueScript.js"></script>
 	<script type="text/javascript" src="src/master-biomancer/scripts/Potion.js"></script>
 	<script type="text/javascript" src="src/master-biomancer/scripts/potions/HealthPotion.js"></script>
+	<script type="text/javascript" src="src/master-biomancer/scripts/SealedWall.js"></script>
+
 
 	<!-- Characters -->
 	<script type="text/javascript" src="src/master-biomancer/characters/Character.js"></script>
@@ -53,6 +63,7 @@
 	<script type="text/javascript" src="src/master-biomancer/characters/animals/Spider.js"></script>
 	<script type="text/javascript" src="src/master-biomancer/characters/animals/Penguin.js"></script>
 	<script type="text/javascript" src="src/master-biomancer/characters/animals/Turtle.js"></script>
+	<script type="text/javascript" src="src/master-biomancer/characters/animals/Dragon.js"></script>
 
 	<script type="text/javascript" src="src/master-biomancer/characters/Biomancer.js"></script>
 
@@ -60,6 +71,7 @@
 	<script type="text/javascript" src="src/master-biomancer/characters/enemies/BasicEnemy.js"></script>
 	<script type="text/javascript" src="src/master-biomancer/characters/enemies/Hotbot.js"></script>
 	<script type="text/javascript" src="src/master-biomancer/characters/enemies/ElementalSentry.js"></script>
+	<script type="text/javascript" src="src/master-biomancer/characters/enemies/BossEnemy.js"></script>
 	<script type="text/javascript" src="src/master-biomancer/characters/enemies/SuperSentry.js"></script>
 
 	<!-- Inanimates -->
@@ -78,8 +90,10 @@
 	<script type="text/javascript" src="src/master-biomancer/levels/level-3.js"></script>
 	<script type="text/javascript" src="src/master-biomancer/levels/level-4.js"></script>
 	<script type="text/javascript" src="src/master-biomancer/levels/level-5.js"></script>
+	<script type="text/javascript" src="src/master-biomancer/levels/boss-battle.js"></script>
 	<script type="text/javascript" src="src/master-biomancer/levels/LevelList.js"></script>
 
+	<script type="text/javascript" src="src/master-biomancer/misc/Menu.js"></script>
 
 	<!-- Game -->
 	<script type="text/javascript" src="src/master-biomancer/MasterBiomancerPrototype.js"></script>

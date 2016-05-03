@@ -3,9 +3,14 @@
 var LEVEL_LIST = [
 		LEVEL5,
 		LEVEL4,
+<<<<<<< HEAD
 		LEVEL3,
 		LEVEL2,
 		LEVEL1
+=======
+		LEVEL5,
+		BOSSBATTLE,
+>>>>>>> origin/master
 	],
 
 	addToLevel = function (level, obj, options) { level.addEntityToLevel(obj, options); },
@@ -73,6 +78,18 @@ var LEVEL_LIST = [
 			dimensions: ELEMENTAL_SENTRY_VARS.SPAWN_DIMENSIONS,
 			type: "Enemies",
 			resource: "resources/images/biomancer/enemies/elemental-sentry/elemental-sentry-fire.png"
+		},
+		"BossEnemy": {
+			constructor: function () { return new BossEnemy(); },
+			addToLevel: addToLevel,
+			generate: undefined,
+			generateParams: -1,
+			generateParamsEditorOption: undefined,
+			options: ENEMY_VARS.ADD_DEFAULTS,
+			pivot: BOSS_ENEMY_VARS.SPAWN_IDLE_PIVOT,
+			dimensions: BOSS_ENEMY_VARS.SPAWN_DIMENSIONS,
+			type: "Enemies",
+			resource: "resources/images/biomancer/enemies/boss-enemy/boss-enemy-idle.png"
 		},
 		"Exit": {
 			constructor: function () { return new Exit(); },
@@ -163,6 +180,22 @@ var LEVEL_LIST = [
 			generateParams: 3,
 			generateParamsEditorOption: ["Get-Text", "Exceed-Width", "Exceed-Height"],
 			options: DIALOGUE_SCRIPT_VARS.ADD_DEFAULTS,
+			pivot: undefined,
+			dimensions: undefined,
+			type: "Scripts",
+			resource: "resources/images/biomancer/misc/dialogue.png",
+			exceedWidth: 50,
+			exceedHeight: 50
+		},
+
+		/* Scripts */
+		"SealedWall": {
+			constructor: undefined,
+			addToLevel: addToLevel,
+			generate: function (cols) { return SealedWall.generateSealedWall(cols); },
+			generateParams: 1,
+			generateParamsEditorOption: ["Exceed-Width"],
+			options: SEALED_WALL_VARS.ADD_DEFAULTS,
 			pivot: undefined,
 			dimensions: undefined,
 			type: "Scripts",

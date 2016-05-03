@@ -15,5 +15,6 @@ var EVENTS = {
 	COLLISION_RIGHT: "collision-right",
 	COLLISION_TOP: "collision-top",
 	COLLISION_BOTTOM: "collision-bottom",
-	COMBAT_STATE_CHANGE: "combat-state-changed"
+	COMBAT_STATE_CHANGE: "combat-state-changed",
+	BOSS_ENGAGED: "boss-engaged"
 };

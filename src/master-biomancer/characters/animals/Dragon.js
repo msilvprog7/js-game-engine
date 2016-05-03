@@ -3,63 +3,55 @@
 // Duration will equal (HEALTH / DECAY_AMOUNT) * ANIMAL_VARS.NEXT_DECAY
 var DRAGON_VARS = {
 	count: 0,
-	HEALTH: 40,
-	LAUNCH_IDLE: "biomancer/animals/dragon/dragon_launch_0.png",
-	LAUNCH_IDLE_PIVOT: {x: 6, y: 15},
-	LAUNCH_SPEED: 8,
-	LAUNCH_DURATION: 750,
-	SPAWN_IDLE: "biomancer/animals/dragon/dragon_idle_0.png",
-	SPAWN_IDLE_PIVOT: {x: 12, y: 29},
+	HEALTH: 100,
+	LAUNCH_IDLE: "biomancer/animals/dragon/dragon_launch.png",
+	LAUNCH_IDLE_PIVOT: {x: 10, y: 10},
+	LAUNCH_SPEED: 3,
+	LAUNCH_DURATION: 250,
+	SPAWN_IDLE: "biomancer/animals/dragon/dragon_fly_0.png",
+	SPAWN_IDLE_PIVOT: {x: 75, y: 50},
 	DECAY_AMOUNT: 1,
-	TURN_PROBABILITY: 0.1,
+	TURN_PROBABILITY: 0.2,
 	WALK_PROBABILITY: 0.75,
-	WALK_SPEED: 1,
-	RUN_SPEED: 8,
-	MAX_SPEED: 8,
-	WALK_RANGE: 100,
-	SIGHT_RANGE: 350,
-	ATTACK_RATE: 1000,
-	ATTACK_RANGE: 100,
-	ATTACK_DAMAGE: 5,
-	DAMAGE_TYPE: DAMAGE_TYPES["PHYSICAL"],
+	WALK_SPEED: 2,
+	RUN_SPEED: 4,
+	MAX_SPEED: 4,
+	WALK_RANGE: 500,
+	SIGHT_RANGE: 700,
+	ATTACK_RATE: 2500,
+	ATTACK_RANGE: 150,
+	ATTACK_DAMAGE: 25,
+	DAMAGE_TYPE: DAMAGE_TYPES["FIRE"],
 	RESISTANCES: {
-		[DAMAGE_TYPES["FIRE"]]: 1.5,
-		[DAMAGE_TYPES["LASER"]]: 1.25,
+		[DAMAGE_TYPES["FIRE"]]: 0.5,
+		[DAMAGE_TYPES["LASER"]]: 0.8,
 		[DAMAGE_TYPES["PHYSICAL"]]: 0.7
 	},
 	IMAGE_PATH: "biomancer/animals/dragon/",
 	ANIMATIONS: {
-		"walk": {
-			images: ["dragon_walk_0.png","dragon_walk_1.png","dragon_walk_2.png","dragon_walk_3.png"],
-			loop: true,
-			speed: 30
-		},
-		"run": {
-			images: ["dragon_run_0.png","dragon_run_1.png","dragon_run_2.png","dragon_run_3.png"],
+		"fly": {
+			images: ["dragon_fly_0.png","dragon_fly_1.png","dragon_fly_2.png","dragon_fly_1.png"],
 			loop: true,
 			speed: 15
 		},
 		"attack": {
-			images: ["dragon_attack_0.png","dragon_attack_1.png","dragon_attack_2.png","dragon_attack_3.png", "dragon_attack_4.png"],
+			images: ["dragon_attack_0.png","dragon_attack_1.png","dragon_attack_2.png","dragon_attack_3.png"],
 			loop: false,
 			speed: 15
 		},
 		"death": {
-			images: ["dragon_death_0.png", "dragon_death_1.png", "dragon_death_2.png"],
+			images: ["dragon_fly_0.png","dragon_fly_1.png","dragon_fly_2.png","dragon_fly_1.png"],
 			loop: false,
 			speed: 50
 		}
 	},
 	ATTACK_SOUNDS: [
-		"biomancer/animals/dragon/dragon_attack_0.mp3",
-		"biomancer/animals/dragon/dragon_attack_1.mp3",
-		"biomancer/animals/dragon/dragon_attack_2.mp3",
-		"biomancer/animals/dragon/dragon_attack_3.mp3"
+		"biomancer/animals/dragon/dragon_fire.mp3",
 	],
-	ATTACK_SOUNDS_VOLUME: 0.3,
+	ATTACK_SOUNDS_VOLUME: 0.5,
 	MAX_VOLUME_RANGE: 1500,
-	DEATH_SOUND: "biomancer/animals/dragon/dragon-whimper.mp3",
-	DEATH_SOUND_ID: "dragon-death-whimper",
+	// DEATH_SOUND: "biomancer/animals/dragon/dragon-whimper.mp3",
+	// DEATH_SOUND_ID: "dragon-death-whimper",
 	PRIORTY: 2
 };
 
@@ -89,6 +81,7 @@ class Dragon extends Animal {
 			}
 			this.addAnimation(animation, animationInfo);
 		}
+		this.setCurrentAnimation("fly");
 
 		var that = this;
 		DRAGON_VARS.ATTACK_SOUNDS.forEach(function(soundfile, index) {
@@ -98,9 +91,9 @@ class Dragon extends Animal {
 		});
 
 		// Death sound
-		if (!this.SM.hasSound(DRAGON_VARS.DEATH_SOUND_ID)) {
-			this.SM.loadSound(DRAGON_VARS.DEATH_SOUND_ID, DRAGON_VARS.DEATH_SOUND);
-		}
+		// if (!this.SM.hasSound(DRAGON_VARS.DEATH_SOUND_ID)) {
+		// 	this.SM.loadSound(DRAGON_VARS.DEATH_SOUND_ID, DRAGON_VARS.DEATH_SOUND);
+		// }
 	}
 
 	move() {
@@ -126,7 +119,7 @@ class Dragon extends Animal {
 			} else {
 				let currentAnimation = this.getCurrentAnimation();
 				if(currentAnimation.id !== "attack" || currentAnimation.finished) {
-					this.setCurrentAnimation("run");
+					this.setCurrentAnimation("fly");
 				}
 			}
 
@@ -135,11 +128,15 @@ class Dragon extends Animal {
 
 			this.orient(xMove, yMove);
 		} else {
-			let enemies = this.getInSightRange(["Wolf"]);
+			let enemies = this.getInSightRange(["Wolf", "Penguin"]);
+			let currentAnimation = this.getCurrentAnimation();
+				if(currentAnimation.id !== "attack" || currentAnimation.finished) {
+					this.setCurrentAnimation("fly");
+				}
 			if(enemies.length > 0) {
-				let wolfFocus  = enemies.find(enemy => enemy instanceof Wolf);
-				if(wolfFocus) {
-					this.enemyFocus = wolfFocus; 
+				let animalFocus  = enemies.find(enemy => enemy.constructor.name === "Wolf" || enemy.constructor.name === "Penguin");
+				if(animalFocus) {
+					this.enemyFocus = animalFocus; 
 				} else {
 					this.enemyFocus = enemies[0];
 				}
@@ -161,7 +158,7 @@ class Dragon extends Animal {
 
 		let currentAnimation = this.getCurrentAnimation();
 		if(currentAnimation.id !== "attack" || currentAnimation.finished) {
-			this.setCurrentAnimation("walk");
+			this.setCurrentAnimation("fly");
 		}
 
 		// Try to move forward
@@ -188,7 +185,7 @@ class Dragon extends Animal {
 			this.alive = false;
 			this.dispatchEvent(EVENTS.DIED);
 		}, this);
-		this.SM.playSound(DRAGON_VARS.DEATH_SOUND_ID);
+		// this.SM.playSound(DRAGON_VARS.DEATH_SOUND_ID);
 	}
 
 	attack() {
@@ -201,6 +198,7 @@ class Dragon extends Animal {
 		});
 		//ATTACK CLOSEST FRIENDLY TARGET		
  		this.enemyFocus.obj.removeHealth(DRAGON_VARS.ATTACK_DAMAGE, DRAGON_VARS.DAMAGE_TYPE);
+ 		this.enemyFocus.obj.addStatus("dot", 5000, DRAGON_VARS.ATTACK_DAMAGE/5, DRAGON_VARS.DAMAGE_TYPE);
 	}
 	
 }

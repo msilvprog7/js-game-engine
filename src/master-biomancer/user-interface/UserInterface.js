@@ -88,6 +88,15 @@ class UIAnimalDisplay extends DisplayObjectContainer {
 		this.nextUpdate = new Date().getTime();
 	}
 
+	newAnimal(animalName) {
+		let newA = {
+			image: "biomancer/ui/ui-animal-container-" + animalName.toLowerCase() + ".png",
+			name: animalName.toLowerCase()		
+		};
+		this.availableAnimals.push(newA);
+		this.addAnimal(newA, this.availableAnimals.length-1);
+	}
+
 	addAnimal(animal, index) {
 		animal.underIcon = new DisplayObjectContainer("ui-animal-under-"+animal.name, UI_ANIMAL_VARS.ANIMAL_CONTAINER_BLANK);
 		animal.icon = new DisplayObjectContainer("ui-animal-"+animal.name, animal.image);

@@ -17,7 +17,8 @@ var LEVEL_VARS = {
 		indexReferencePlacing: true, //True or undefined is before, false is after
 		monitorHealth: false //True only if monitor health from start
 	},
-	MAX_ANIMALS: 6
+	MAX_ANIMALS: 3,
+	GRID_TILE_SIZE: 25
 };
 
 /**
@@ -26,7 +27,7 @@ var LEVEL_VARS = {
  * */
 class Level extends DisplayObjectContainer{
 
-	constructor(id, game) {
+	constructor(id, game, noGrid) {
 		super(id, undefined);
 		this.focusChild = undefined;
 		this.biomancer = undefined;
@@ -47,6 +48,9 @@ class Level extends DisplayObjectContainer{
 			let musicToFade = this.inCombat ? "background-nervous" : "background-normal";		
 			new SoundManager().fadeMusic(musicToFade);
 		}, this);	
+		
+		if (!noGrid)
+			this.aStarGrid = new AStarGrid(this);
 	}
 
 	update(pressedKeys) {
@@ -72,6 +76,7 @@ class Level extends DisplayObjectContainer{
 				that.removeFriendly(animal);
 				that.removeCollider(animal);
 				that.removeMover(animal);
+				that.removeFromAStarGrid(animal);
 			}
 		});
 		this.animals = this.animals.filter((animal) => (!animal.hasSpawned() || animal.isAlive()));
@@ -82,6 +87,7 @@ class Level extends DisplayObjectContainer{
 				that.removeChild(enemy);
 				that.removeCollider(enemy);
 				that.removeMover(enemy);
+				that.removeFromAStarGrid(enemy);
 			}
 		});
 		this.enemies = this.enemies.filter((enemy) => (enemy.isAlive()));
@@ -92,6 +98,7 @@ class Level extends DisplayObjectContainer{
 				that.removeChild(obstacle);
 				that.removeCollider(obstacle);
 				that.removeMover(obstacle);
+				that.removeFromAStarGrid(obstacle);
 			}
 		});
 		this.obstacles = this.obstacles.filter((obstacle) => (!obstacle.destroyed));
@@ -168,12 +175,14 @@ class Level extends DisplayObjectContainer{
 			this.enemies.push(entity);
 			this.addMover(entity);
 			this.addCollider(entity);
+			this.addToAStarGrid(entity, true, true);
 		} else if(entity instanceof Animal){
 			this.addFriendly(entity);
 			this.animals.push(entity);
 			if(this.animals.length > LEVEL_VARS.MAX_ANIMALS) {
 				this.animals[0].killSelf();
 			}
+			this.addToAStarGrid(entity, true, true);
 		} else if(entity instanceof Biomancer) {
 			this.addFriendly(entity);
 			this.setFocusChild(entity);
@@ -181,10 +190,12 @@ class Level extends DisplayObjectContainer{
 			entity.addEventListener(EVENTS.DIED, this, function () {
 				that.reload();
 			});
+			this.addToAStarGrid(entity, true, true);
 		} else if(entity instanceof Obstacle) {
 			this.obstacles.push(entity);
 			this.addMover(entity);
 			this.addCollider(entity);
+			this.addToAStarGrid(entity, true, false);
 		} else if(entity instanceof ScriptObject) {
 			this.scriptObjects.push(entity);
 			if(entity.constructor.name === "KeyScript") {
@@ -275,7 +286,43 @@ class Level extends DisplayObjectContainer{
 	addWall(wall) {
 		this.addChild(wall);
 		this.addCollider(wall);
+		this.addToAStarGrid(wall, false);
 		return this;
+	}
+
+	addToAStarGrid(entity, isDynamic, isMover) {
+		if (this.aStarGrid) {
+			var tl = entity.hitbox.hitbox.tl,
+				br = entity.hitbox.hitbox.br;
+
+			if (isDynamic) {
+				// marking all dynamic entries as single tiles
+				this.aStarGrid.addObject(entity, tl, br, isMover);
+			} else {
+				this.aStarGrid.addStatic(tl, br);
+			}
+		}
+	}
+
+	removeFromAStarGrid(entity) {
+		if (this.aStarGrid)
+			this.aStarGrid.removeObject(entity);
+	}
+
+	getGrid() { 
+		if (this.aStarGrid)
+			return this.aStarGrid; 
+	}
+
+	setCorners(corners) {
+		if (this.aStarGrid) {
+			this.topLeft = corners[0];
+			this.bottomRight = corners[1];
+
+			// generate initial A* grid
+			
+			this.aStarGrid.generateGrid(this.topLeft, this.bottomRight, LEVEL_VARS.GRID_TILE_SIZE);
+		}
 	}
 
 	/**
@@ -307,4 +354,6 @@ class Level extends DisplayObjectContainer{
 
 		return generatedTile;
 	}
+
+
 }

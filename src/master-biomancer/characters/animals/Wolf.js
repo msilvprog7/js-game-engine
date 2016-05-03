@@ -20,7 +20,7 @@ var WOLF_VARS = {
 	SIGHT_RANGE: 350,
 	ATTACK_RATE: 1000,
 	ATTACK_RANGE: 100,
-	ATTACK_DAMAGE: 5,
+	ATTACK_DAMAGE: 4,
 	DAMAGE_TYPE: DAMAGE_TYPES["PHYSICAL"],
 	RESISTANCES: {
 		[DAMAGE_TYPES["FIRE"]]: 1.5,
@@ -107,9 +107,22 @@ class Wolf extends Animal {
 		// Random movement in radius
 		if(this.enemyFocus !== undefined && this.enemyFocus.obj.isAlive()) {
 			//Move towards enemy
-			let posToMove = this.enemyFocus.obj.getNormalizedPivotPoint(),
-				myPos = this.getNormalizedPivotPoint(),
-				xMove = (myPos.x-CHARACTER_VARS.MOVE_EPSILON > posToMove.x) ? -1 : (myPos.x+CHARACTER_VARS.MOVE_EPSILON < posToMove.x) ? 1 : 0, 
+			let posToMove,
+				myPos;
+			if (this.hasLineOfSight(this.enemyFocus.obj)) {
+				posToMove = this.enemyFocus.obj.getNormalizedPivotPoint();
+				myPos = this.getNormalizedPivotPoint();
+			} else {
+				this.updatePath(this.enemyFocus.obj);
+				if (this.path.length === 0) {
+					return;
+				} 
+				posToMove = this.path[0];
+				myPos = this.getLevel().getGrid().getObject(this.id).getPixelOrigin();
+			}
+
+
+			let xMove = (myPos.x-CHARACTER_VARS.MOVE_EPSILON > posToMove.x) ? -1 : (myPos.x+CHARACTER_VARS.MOVE_EPSILON < posToMove.x) ? 1 : 0, 
 				yMove = (myPos.y-CHARACTER_VARS.MOVE_EPSILON > posToMove.y) ? -1 : (myPos.y+CHARACTER_VARS.MOVE_EPSILON < posToMove.y) ? 1 : 0;
 
 			if(this.enemyFocus.distance <= this.attackRange) { 

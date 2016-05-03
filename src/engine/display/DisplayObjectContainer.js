@@ -12,6 +12,7 @@ class DisplayObjectContainer extends DisplayObject{
 	}
 
 	draw (g) {
+		super.draw(g);
 		this.applyTransformations(g);
 
 		if(this.visible){
@@ -123,6 +124,30 @@ class DisplayObjectContainer extends DisplayObject{
 
 	getChildren() {
 		return this.children;
+	}
+	getWidth() {
+		var origin = this.getPosition(),
+			width = super.getWidth();
+		for (let child of this.children) {
+			let pos = child.getPosition(),
+				cWidth = child.getWidth();
+
+			width = Math.max(width, pos.x + cWidth);
+		}
+
+		return width;
+	}
+
+	getHeight() {
+		var height = super.getHeight();
+		for (let child of this.children) {
+			let pos = child.getPosition(),
+				cHeight = child.getHeight();
+
+			height = Math.max(height, pos.y + cHeight);
+		}
+
+		return height;
 	}
 
 }

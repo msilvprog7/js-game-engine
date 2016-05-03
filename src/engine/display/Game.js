@@ -18,6 +18,7 @@ class Game extends DisplayObjectContainer{
 		this.gameClock = new GameClock();
 
 		this.pressedKeys = new ArrayList();
+		this.inMenu = true;
 
 		// Create Levels
 		this.initializeLevels();
@@ -25,6 +26,28 @@ class Game extends DisplayObjectContainer{
 		/* Setup a key listener */
 		window.addEventListener("keydown", onKeyDown, true);
 		window.addEventListener("keyup", onKeyUp, true);
+
+		// Set up click listener
+		canvas.addEventListener('click', this.handleClick);
+	}
+
+	handleClick(e) {
+		var that = Game.instance;
+
+		if (that.inMenu) {
+			var x = event.pageX - that.canvas.offsetLeft,
+				y = e.pageY - that.canvas.offsetTop;
+
+			for (let clickable of that.menu.getOptions()) {
+				let pos = clickable.getPosition(),
+					width = clickable.getWidth(),
+					height = clickable.getHeight();
+
+				if (y > pos.y - height && y < pos.y && x > pos.x && x < pos.x + width) {
+					clickable.click(that);
+				}
+			}
+		}
 	}
 
 	static getInstance(){ 
@@ -35,9 +58,13 @@ class Game extends DisplayObjectContainer{
 		super.update(pressedKeys);
 
 		// Center on level's focus child
-		var focusChild = this.getCurrentLevel().getFocusChild();
-		if (focusChild !== undefined) {
-			this.centerOn({x: focusChild.position.x + focusChild.pivotPoint.x, y: focusChild.position.y + focusChild.pivotPoint.y});
+		if (!this.inMenu) {
+			var focusChild = this.getCurrentLevel().getFocusChild();
+			if (focusChild !== undefined) {
+				this.centerOn({x: focusChild.position.x + focusChild.pivotPoint.x, y: focusChild.position.y + focusChild.pivotPoint.y});
+			}	
+		} else {
+			this.setPosition({x:0, y:0});
 		}
 	}
 
@@ -59,9 +86,9 @@ class Game extends DisplayObjectContainer{
 		this.levelParser = new LevelParser(classReferences);
 	}
 
-	addLevel(levelId, levelStr) {
-		this.levelParser.store(levelId, levelStr);
-		this.levelsList.push(levelId);
+	addLevel(level) {
+		this.levelParser.store(level.id, level.level, level.tl, level.br);
+		this.levelsList.push(level.id);
 
 		// Set current level to first
 		if (this.levelsList.length === 1) {
@@ -74,6 +101,7 @@ class Game extends DisplayObjectContainer{
 		this.addChild(this.createCurrentLevel());
 		new UserInterface().reloadDefaults();
 		this.addChild(new UserInterface());
+		this.inMenu = false;
 	}
 
 	nextLevel() {
@@ -119,6 +147,18 @@ class Game extends DisplayObjectContainer{
 
 	pause(){
 		this.playing = false;
+	}
+
+	showMenu(id) {
+		this.removeChildren();
+		this.addChild(this.menus[id]);
+		this.inMenu = true;
+		this.menu = this.menus[id];
+	}
+
+	setCurrentLevel(index) {
+		this.currentLevelIndex = index;
+		this.reloadLevel();
 	}
 
 

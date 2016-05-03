@@ -3,7 +3,7 @@
 // Duration will equal (HEALTH / DECAY_AMOUNT) * ANIMAL_VARS.NEXT_DECAY
 var TURTLE_VARS = {
 	count: 0,
-	HEALTH: 100,
+	HEALTH: 50,
 	LAUNCH_IDLE: "biomancer/animals/turtle/turtle-launch.png",
 	LAUNCH_IDLE_PIVOT: {x: 6, y: 6},
 	LAUNCH_SPEED: 6,
@@ -19,7 +19,7 @@ var TURTLE_VARS = {
 	MAX_SPEED: 2,
 	WALK_RANGE: 400,
 	SIGHT_RANGE: 500,
-	ATTACK_RATE: 10000,
+	ATTACK_RATE: 7000,
 	ATTACK_DAMAGE: 50,
 	DAMAGE_TYPE: DAMAGE_TYPES["EXPLOSIVE"],
 	ATTACK_RANGE: 150,
@@ -124,9 +124,7 @@ class Turtle extends Animal {
 	attack() {
 		// Animate (includes killSelf behavior)
 		this.setCurrentAnimation("explosion");
-		this.removeHealth = function (hit, damageType) {
-			// Nothing - let the turle kill itself
-		};
+		this.health = 0;
 
 		// Attack enemies in range
 		let enemies = this.getInSightRange();
@@ -135,6 +133,11 @@ class Turtle extends Animal {
 				enemy.obj.removeHealth(TURTLE_VARS.ATTACK_DAMAGE, TURTLE_VARS.DAMAGE_TYPE);
 			}
 		});
+
+		this.SM.playSound(TURTLE_VARS.EXPLOSION_SOUND_ID);				
+		this.getCurrentAnimation().setFinishedCallback(function() {
+			this.killSelf();
+		}, this);
 
 		// Attack destroyable obstacles in range
 		let obstacles = this.getObstaclesInSightRange();
@@ -145,7 +148,6 @@ class Turtle extends Animal {
 		});
 
 		// Play sound
-		this.SM.playSound(TURTLE_VARS.EXPLOSION_SOUND_ID);
 	}
 	
 }

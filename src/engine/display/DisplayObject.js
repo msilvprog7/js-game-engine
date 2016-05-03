@@ -79,6 +79,12 @@ class DisplayObject extends EventDispatcher{
 				x: pos.x + this.vX,
 				y: pos.y + this.vY
 			});
+
+			if (this.vX !== 0 || this.vY !== 0) {
+				// get top left and bottom right
+				let hitbox = this.hitbox.hitbox;
+				this.dispatchEvent(new MoveEvent(MoveEvent.POSITION_CHANGED(), this, hitbox.tl, hitbox.br));
+			}
 		}
 	}
 
@@ -90,14 +96,10 @@ class DisplayObject extends EventDispatcher{
 			this.applyTransformations(g);
 			if(this.loaded) {
 				g.drawImage(this.displayImage,0,0);
-
-				// Test drawing hitbox
-				// this.drawHitbox(g);
 			}
 			this.reverseTransformations(g);
-
-			// Test drawing transformed hitbox
-			this.drawTransformedHitbox(g);
+			// for debugging
+			// this.hitbox.drawHitbox(g);
 		}
 	}
 	
@@ -329,6 +331,11 @@ class DisplayObject extends EventDispatcher{
 				//console.log(that.id + ": collision right");
 			});
 
+	}
+
+	getMidpoint() {
+		var hb = this.hitbox.hitbox;
+		return MathUtil.getMidpoint(hb.tl, hb.br);
 	}
 	
 }
