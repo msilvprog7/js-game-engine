@@ -3,6 +3,10 @@ CS 4730 Game Engine written in JS
 
 Authors: Michael Snider, Kyle Bibler, John Reagan
 
+## Final Game
+
+A new menu to select levels or play the game from start to finish (5 levels and a boss). A* implemented for enemy movement. Game tuned to be more balanced from start to finish.
+
 ## Beta Instructions
 
 See controls from Alpha. Keys are new, lots of sounds and some animations, additional levels, dialogue-collision objects, potions, and sawblades. You can stop a sawblade with a spider, which slows enemies. There are also states that can exist on the Biomancer, enemies, and animals such as slow, burn, poison, etc. Also, there are animal interactions when wolves attack turtles. This forces players to not use the wolf to attack nearby enemies while also trying to blow up rock walls.
